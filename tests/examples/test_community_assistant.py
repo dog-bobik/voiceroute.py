@@ -1,0 +1,179 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+from uuid import UUID
+
+import pytest
+from examples.community_assistant.config import CommunityAssistantConfig
+from examples.community_assistant.extensions.diagnostics import Diagnostics
+from examples.community_assistant.extensions.general import General
+from examples.community_assistant.extensions.knowledge import FAQRepository, Knowledge
+from examples.community_assistant.extensions.messages import (
+    bot_owned_target,
+    format_messages,
+    valid_sequence,
+)
+
+from voiceroute import Bot, Context, Forbidden, Message, NotFound, RateLimited, User
+
+
+class FakeMessages:
+    def __init__(self, history: tuple[Message, ...] = ()) -> None:
+        self.sent: list[tuple[str, UUID]] = []
+        self.history_items = history
+
+    async def send(
+        self,
+        *_args: Any,
+        body: str = "",
+        client_message_id: UUID,
+        **_kwargs: Any,
+    ) -> Message:
+        if len(_args) >= 3:
+            body = str(_args[2])
+        self.sent.append((body, client_message_id))
+        return make_message(body=body, author=User(2, "bot", "Bot", bot=True))
+
+    async def history(self, *_args: Any, **_kwargs: Any) -> Any:
+        return type("Page", (), {"items": self.history_items})()
+
+
+def make_message(
+    *,
+    body: str = "/ping",
+    seq: str = "10",
+    author: User | None = None,
+) -> Message:
+    return Message(
+        seq=seq,
+        community_id="community",
+        channel_id="channel",
+        body=body,
+        author=author or User(1, "member", "Member"),
+    )
+
+
+def make_context(messages: FakeMessages, *args: str, command: str = "test") -> Context:
+    return Context(
+        message=make_message(),
+        command=command,
+        args=args,
+        _messages=messages,  # type: ignore[arg-type]
+        prefix="/",
+    )
+
+
+def test_config_reads_optional_values_and_requires_token() -> None:
+    config = CommunityAssistantConfig.from_env({"VOICEROUTE_BOT_TOKEN": " secret "})
+    assert config.token == "secret"
+    assert config.community_id is None
+    assert config.channel_id is None
+    assert config.command_prefix == "/"
+
+    with pytest.raises(ValueError, match="VOICEROUTE_BOT_TOKEN"):
+        CommunityAssistantConfig.from_env({})
+    with pytest.raises(ValueError, match="COMMUNITY_ID"):
+        CommunityAssistantConfig.from_env(
+            {"VOICEROUTE_BOT_TOKEN": "token", "VOICEROUTE_CHANNEL_ID": "channel"}
+        )
+
+
+def test_faq_repository_loads_json_and_rejects_duplicate_slugs(tmp_path: Path) -> None:
+    faq_path = tmp_path / "faq.json"
+    faq_path.write_text(
+        json.dumps([{"slug": "start", "title": "Start", "content": "Answer"}]),
+        encoding="utf-8",
+    )
+    assert FAQRepository(faq_path).load()[0].title == "Start"
+
+    faq_path.write_text(
+        json.dumps(
+            [
+                {"slug": "same", "title": "One", "content": "A"},
+                {"slug": "SAME", "title": "Two", "content": "B"},
+            ]
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="unique"):
+        FAQRepository(faq_path).load()
+
+
+@pytest.mark.asyncio
+async def test_help_ping_and_faq_commands(tmp_path: Path) -> None:
+    bot = Bot(token="vrb_test")
+    general = General(bot)
+    messages = FakeMessages()
+    await bot.add_extension(general)
+
+    await general.help_command(make_context(messages, command="help"))
+    await general.ping(make_context(messages, command="ping"))
+    assert "Команды Community Assistant" in messages.sent[0][0]
+    assert messages.sent[1][0].startswith("Pong! Обработка:")
+
+    faq_path = tmp_path / "faq.json"
+    faq_path.write_text(
+        json.dumps([{"slug": "start", "title": "Начало", "content": "Ответ"}]),
+        encoding="utf-8",
+    )
+    knowledge = Knowledge(FAQRepository(faq_path))
+    await knowledge.faq(make_context(messages, command="faq"))
+    await knowledge.faq(make_context(messages, "missing", command="faq"))
+    await knowledge.faq(make_context(messages, "search", command="faq"))
+    assert "start" in messages.sent[2][0]
+    assert "Неизвестная тема" in messages.sent[3][0]
+    assert "Укажите запрос" in messages.sent[4][0]
+    await bot.close()
+
+
+def test_search_formatting_is_bounded_and_readable() -> None:
+    items = tuple(
+        make_message(body="x" * 500, seq=str(index), author=User(index, "u", "User"))
+        for index in range(12)
+    )
+    result = format_messages("Результаты:", items)
+    assert len(result) <= 4000
+    assert "#0 · User:" in result
+    assert "…и ещё 2" in result or "…результат обрезан" in result
+
+
+@pytest.mark.asyncio
+async def test_management_checks_require_sequence_and_bot_message() -> None:
+    bot_message = make_message(seq="42", author=User(2, "bot", "Bot", bot=True))
+    messages = FakeMessages((bot_message,))
+    valid = make_context(messages, "42")
+    invalid = make_context(messages, "abc")
+    assert valid_sequence(valid)
+    assert not valid_sequence(invalid)
+    assert await bot_owned_target(valid)
+    assert not await bot_owned_target(invalid)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("error", "expected"),
+    [
+        (Forbidden(403, "no"), "Недостаточно прав"),
+        (NotFound(404, "gone"), "не найден"),
+        (RateLimited(429, "slow", retry_after=2.5), "2.5 с"),
+    ],
+)
+async def test_api_errors_become_friendly_messages(error: Exception, expected: str) -> None:
+    bot = Bot(token="vrb_test")
+    diagnostics = Diagnostics(bot)
+    messages = FakeMessages()
+    await diagnostics.command_error(error, make_context(messages))
+    assert expected in messages.sent[0][0]
+    await bot.close()
+
+
+@pytest.mark.asyncio
+async def test_repeated_delivery_reuses_idempotency_key() -> None:
+    messages = FakeMessages()
+    first = make_context(messages, command="ping")
+    repeated = make_context(messages, command="ping")
+    await first.reply("Pong!")
+    await repeated.reply("Pong!")
+    assert messages.sent[0][1] == messages.sent[1][1]

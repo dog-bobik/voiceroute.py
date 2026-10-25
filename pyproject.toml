@@ -50,6 +50,7 @@ packages = ["src/voiceroute"]
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers"
 asyncio_mode = "auto"
+pythonpath = ["."]
 testpaths = ["tests"]
 markers = ["integration: requires a live VoiceRoute environment"]
 
@@ -73,4 +74,5 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "ASYNC", "RUF"]
+allowed-confusables = ["В", "Н", "е", "о", "с"]
 

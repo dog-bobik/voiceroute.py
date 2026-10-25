@@ -29,6 +29,8 @@ python -m pip install -e '.[dev]'
 Примеры автоматически читают локальный `.env` из корня репозитория. В нём
 достаточно указать `VOICEROUTE_BOT_TOKEN`; production используется по умолчанию.
 
+Полноценный демонстрационный пример: [Community Assistant Bot](examples/community_assistant/README.md).
+
 ## Минимальный бот
 
 ```python
