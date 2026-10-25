@@ -16,4 +16,7 @@
 - Постраничное восстановление backlog перед переходом к live SSE.
 - Публичный `EventTransport` и `LegacySSETransport`, отделяющие runtime от сетевого
   протокола событий.
+- Независимые `Command`, `CommandRegistry`, `CommandInvocation` и
+  `PrefixCommandAdapter` с aliases, группами, типизированными аргументами и command
+  lifecycle events.
 
