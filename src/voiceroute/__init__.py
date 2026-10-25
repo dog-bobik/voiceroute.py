@@ -1,28 +1,44 @@
 """Async Python SDK and bot framework for VoiceRoute."""
 
+from voiceroute.bot import Bot
 from voiceroute.client import VoiceRouteClient
+from voiceroute.commands import Context
 from voiceroute.errors import (
     BadRequest,
     Conflict,
     Forbidden,
     HTTPError,
+    NoChannelsAvailable,
     NotFound,
     RateLimited,
     ServiceUnavailable,
+    SSEError,
     Unauthorized,
     ValidationError,
     VoiceRouteError,
 )
-from voiceroute.models import BotIdentity, User
+from voiceroute.events import AccessLost, BotEvent, MessageUpserted
+from voiceroute.models import BotIdentity, Channel, Community, Message, MessagePage, User
 
 __all__ = [
+    "AccessLost",
     "BadRequest",
+    "Bot",
+    "BotEvent",
     "BotIdentity",
+    "Channel",
+    "Community",
     "Conflict",
+    "Context",
     "Forbidden",
     "HTTPError",
+    "Message",
+    "MessagePage",
+    "MessageUpserted",
+    "NoChannelsAvailable",
     "NotFound",
     "RateLimited",
+    "SSEError",
     "ServiceUnavailable",
     "Unauthorized",
     "User",

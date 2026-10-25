@@ -1,6 +1,7 @@
 """Asynchronous HTTP transport."""
 
-from collections.abc import Mapping
+from collections.abc import AsyncIterator, Mapping
+from contextlib import asynccontextmanager
 from typing import Any
 
 import httpx
@@ -56,7 +57,12 @@ class HTTPTransport:
             raise ClientClosedError("the VoiceRoute client is closed")
 
         try:
-            response = await self._client.request(method, path, params=params, json=json)
+            response = await self._client.request(
+                method,
+                path,
+                params=self._clean_params(params),
+                json=json,
+            )
         except httpx.HTTPError as exc:
             raise TransportError("VoiceRoute request failed") from exc
 
@@ -77,6 +83,32 @@ class HTTPTransport:
         if not self._closed:
             self._closed = True
             await self._client.aclose()
+
+    @asynccontextmanager
+    async def stream(
+        self,
+        path: str,
+        *,
+        params: Mapping[str, str | int | None] | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> AsyncIterator[httpx.Response]:
+        """Open an authenticated streaming response."""
+        if self._closed:
+            raise ClientClosedError("the VoiceRoute client is closed")
+
+        try:
+            async with self._client.stream(
+                "GET",
+                path,
+                params=self._clean_params(params),
+                headers=headers,
+            ) as response:
+                if response.is_error:
+                    await response.aread()
+                    self._raise_for_response(response)
+                yield response
+        except httpx.HTTPError as exc:
+            raise TransportError("VoiceRoute stream failed") from exc
 
     @staticmethod
     def _raise_for_response(response: httpx.Response) -> None:
@@ -103,3 +135,11 @@ class HTTPTransport:
                 retry_after,
             )
         raise error_type(response.status_code, message, details, request_id)
+
+    @staticmethod
+    def _clean_params(
+        params: Mapping[str, str | int | None] | None,
+    ) -> dict[str, str | int] | None:
+        if params is None:
+            return None
+        return {key: value for key, value in params.items() if value is not None}

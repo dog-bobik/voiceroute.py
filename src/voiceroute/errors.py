@@ -70,5 +70,13 @@ class TransportError(VoiceRouteError):
     """The request could not be completed at the network layer."""
 
 
+class SSEError(VoiceRouteError):
+    """An SSE stream returned malformed or unsupported data."""
+
+
+class NoChannelsAvailable(VoiceRouteError):
+    """The bot cannot discover any accessible text channels."""
+
+
 class ClientClosedError(VoiceRouteError):
     """An operation was attempted after closing the client."""

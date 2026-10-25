@@ -2,7 +2,7 @@
 
 from types import TracebackType
 
-from voiceroute.api import BotsAPI
+from voiceroute.api import BotsAPI, CommunitiesAPI, EventsAPI, MessagesAPI
 from voiceroute.config import ClientConfig
 from voiceroute.transport import HTTPTransport
 
@@ -24,6 +24,9 @@ class VoiceRouteClient:
             timeout=config.timeout,
         )
         self.bots = BotsAPI(self._transport)
+        self.communities = CommunitiesAPI(self._transport)
+        self.events = EventsAPI(self._transport)
+        self.messages = MessagesAPI(self._transport)
 
     async def close(self) -> None:
         """Close network resources owned by this client."""
