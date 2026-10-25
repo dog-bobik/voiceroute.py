@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import inspect
 import shlex
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
 from typing import Any, TypeVar
 
@@ -36,12 +36,13 @@ class Bot:
         token: str,
         community_id: str | None = None,
         channel_id: str | None = None,
-        command_prefix: str = "!",
+        command_prefix: str | Sequence[str] = ("/", "!"),
         base_url: str = "https://voiceroute.cc",
         max_event_streams: int = 32,
     ) -> None:
-        if not command_prefix:
-            raise ValueError("command_prefix cannot be empty")
+        prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
+        if not prefixes or any(not prefix for prefix in prefixes):
+            raise ValueError("command_prefix must contain non-empty strings")
         if channel_id is not None and community_id is None:
             raise ValueError("community_id is required when channel_id is provided")
         if not 1 <= max_event_streams <= 32:
@@ -49,7 +50,7 @@ class Bot:
         self.client = VoiceRouteClient(token=token, base_url=base_url)
         self.community_id = community_id
         self.channel_id = channel_id
-        self.command_prefix = command_prefix
+        self.command_prefixes = tuple(dict.fromkeys(sorted(prefixes, key=len, reverse=True)))
         self.max_event_streams = max_event_streams
         self.user: BotIdentity | None = None
         self.listening_channels: tuple[ChannelTarget, ...] = ()
@@ -112,9 +113,12 @@ class Bot:
         await self._dispatch("on_message", message)
         if not self._can_invoke_command(message):
             return
+        prefix = self._matching_prefix(message.body)
+        if prefix is None:
+            return
 
         try:
-            parts = shlex.split(message.body[len(self.command_prefix) :])
+            parts = shlex.split(message.body[len(prefix) :])
         except ValueError as exc:
             await self._dispatch_error(exc)
             return
@@ -189,7 +193,10 @@ class Bot:
             return False
         if self.user is not None and message.author.id == self.user.user.id:
             return False
-        return message.body.startswith(self.command_prefix)
+        return self._matching_prefix(message.body) is not None
+
+    def _matching_prefix(self, body: str) -> str | None:
+        return next((prefix for prefix in self.command_prefixes if body.startswith(prefix)), None)
 
     async def _dispatch(self, event_name: str, *args: Any) -> None:
         handler = self._events.get(event_name)

@@ -36,6 +36,18 @@ async def test_command_receives_parsed_arguments() -> None:
     assert captured[0].args == ("hello world",)
 
 
+@pytest.mark.parametrize("body", ["/ping", "!ping"])
+async def test_default_command_prefixes_accept_slash_and_bang(body: str) -> None:
+    runtime = Bot(token="vrb_secret")
+    handler = AsyncMock()
+    runtime.command("ping")(handler)
+
+    await runtime._handle_message(MessageUpserted(incoming_message(body), "1"))
+    await runtime.close()
+
+    handler.assert_awaited_once()
+
+
 @pytest.mark.parametrize("bot,edited", [(True, False), (False, True)])
 async def test_command_ignores_bots_and_edits(bot: bool, edited: bool) -> None:
     runtime = Bot(
