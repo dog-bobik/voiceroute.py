@@ -26,26 +26,30 @@ source .venv/bin/activate
 python -m pip install -e '.[dev]'
 ```
 
-## Минимальный пример
+## Минимальный бот
 
 ```python
-import asyncio
 import os
 
-from voiceroute import VoiceRouteClient
+from voiceroute import Bot, Context
+
+bot = Bot(
+    token=os.environ["VOICEROUTE_BOT_TOKEN"],
+    community_id=os.environ["VOICEROUTE_COMMUNITY_ID"],
+    channel_id=os.environ["VOICEROUTE_CHANNEL_ID"],
+)
 
 
-async def main() -> None:
-    async with VoiceRouteClient(token=os.environ["VOICEROUTE_BOT_TOKEN"]) as client:
-        identity = await client.bots.get_current()
-        print(identity.user.display_name)
+@bot.command()
+async def ping(context: Context) -> None:
+    await context.reply("Pong!")
 
 
-asyncio.run(main())
+bot.run()
 ```
 
-Полноценный `Bot` API, обработчики событий и команды будут добавлены после
-стабилизации HTTP transport и SSE.
+Ответ использует стабильный UUID, производный от исходного сообщения. Повторная
+доставка SSE-события поэтому не создаст дубликат ответа.
 
 ## Состояние реализации
 
@@ -53,10 +57,11 @@ asyncio.run(main())
 | --- | --- |
 | Bot-аутентификация | Основа готова |
 | Профиль текущего бота | Основа готова |
-| Сообщества и каналы | Запланировано |
-| Сообщения | Запланировано |
-| SSE и восстановление курсора | Запланировано |
-| Команды и middleware | Запланировано |
+| Сообщества и каналы | Базовое чтение готово |
+| Сообщения | История и отправка готовы |
+| SSE и восстановление курсора | Основа готова |
+| Prefix-команды | Основа готова |
+| Middleware | Запланировано |
 | Треды, вложения и реакции | Запланировано |
 | Роли и модерация | Запланировано |
 | Голос для сторонних ботов | Не поддерживается API [VoiceRoute](https://voiceroute.cc) |

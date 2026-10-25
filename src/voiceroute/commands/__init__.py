@@ -1,1 +1,5 @@
-"""Command framework; public APIs will be added after event transport stabilization."""
+"""Command framework primitives."""
+
+from voiceroute.commands.context import Context
+
+__all__ = ["Context"]
