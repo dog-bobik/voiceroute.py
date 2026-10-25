@@ -57,7 +57,12 @@ class HTTPTransport:
             raise ClientClosedError("the VoiceRoute client is closed")
 
         try:
-            response = await self._client.request(method, path, params=params, json=json)
+            response = await self._client.request(
+                method,
+                path,
+                params=self._clean_params(params),
+                json=json,
+            )
         except httpx.HTTPError as exc:
             raise TransportError("VoiceRoute request failed") from exc
 
@@ -92,7 +97,12 @@ class HTTPTransport:
             raise ClientClosedError("the VoiceRoute client is closed")
 
         try:
-            async with self._client.stream("GET", path, params=params, headers=headers) as response:
+            async with self._client.stream(
+                "GET",
+                path,
+                params=self._clean_params(params),
+                headers=headers,
+            ) as response:
                 if response.is_error:
                     await response.aread()
                     self._raise_for_response(response)
@@ -125,3 +135,11 @@ class HTTPTransport:
                 retry_after,
             )
         raise error_type(response.status_code, message, details, request_id)
+
+    @staticmethod
+    def _clean_params(
+        params: Mapping[str, str | int | None] | None,
+    ) -> dict[str, str | int] | None:
+        if params is None:
+            return None
+        return {key: value for key, value in params.items() if value is not None}

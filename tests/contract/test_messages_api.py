@@ -57,6 +57,7 @@ async def test_history_passes_string_cursor() -> None:
         )
 
     assert route.calls[0].request.url.params["afterSeq"] == "9007199254740993"
+    assert "beforeSeq" not in route.calls[0].request.url.params
     assert page.next_before_seq == "10"
 
 

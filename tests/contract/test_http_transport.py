@@ -71,3 +71,20 @@ async def test_transport_cannot_be_reused_after_close() -> None:
 
     with pytest.raises(ClientClosedError):
         await transport.request("GET", "/api/bots/@me")
+
+
+@respx.mock
+async def test_transport_omits_none_query_parameters() -> None:
+    route = respx.get("https://voiceroute.cc/api/communities").mock(
+        return_value=httpx.Response(200, json={"items": []})
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+
+    await transport.request(
+        "GET",
+        "/api/communities",
+        params={"after": None, "limit": 50},
+    )
+    await transport.close()
+
+    assert str(route.calls[0].request.url) == "https://voiceroute.cc/api/communities?limit=50"
