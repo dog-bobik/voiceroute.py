@@ -22,4 +22,5 @@
 - Command pipeline с async middleware, checks, cooldowns и concurrency limits.
 - Расширения с декларативными командами/listeners, атомарной регистрацией и module
   load/unload/reload lifecycle.
+- Явный runtime lifecycle, graceful shutdown и независимый supervision channel consumers.
 
