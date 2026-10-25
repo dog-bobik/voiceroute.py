@@ -30,9 +30,11 @@ dev = [
   "pytest>=8.3",
   "pytest-asyncio>=0.24",
   "pytest-cov>=6",
+  "python-dotenv>=1.0,<2",
   "respx>=0.22",
   "ruff>=0.8",
 ]
+examples = ["python-dotenv>=1.0,<2"]
 docs = ["mkdocs-material>=9.5", "mkdocstrings[python]>=0.27"]
 
 [project.urls]

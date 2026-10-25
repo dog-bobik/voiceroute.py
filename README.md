@@ -26,6 +26,9 @@ source .venv/bin/activate
 python -m pip install -e '.[dev]'
 ```
 
+Примеры автоматически читают локальный `.env` из корня репозитория. В нём
+достаточно указать `VOICEROUTE_BOT_TOKEN`; production используется по умолчанию.
+
 ## Минимальный бот
 
 ```python

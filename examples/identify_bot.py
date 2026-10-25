@@ -2,8 +2,13 @@
 
 import asyncio
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 from voiceroute import VoiceRouteClient
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
 async def main() -> None:
