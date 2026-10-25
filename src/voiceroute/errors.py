@@ -86,6 +86,14 @@ class ClientClosedError(VoiceRouteError):
     """An operation was attempted after closing the client."""
 
 
+class BotAlreadyRunning(VoiceRouteError):
+    """The same Bot instance is already starting or running."""
+
+
+class BotClosed(VoiceRouteError):
+    """A closed Bot instance cannot be started again."""
+
+
 class CommandError(VoiceRouteError):
     """Base exception raised while resolving or invoking a command."""
 

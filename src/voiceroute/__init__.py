@@ -23,6 +23,8 @@ from voiceroute.commands import (
 from voiceroute.errors import (
     BadArgument,
     BadRequest,
+    BotAlreadyRunning,
+    BotClosed,
     CheckFailure,
     CommandError,
     CommandNotFound,
@@ -64,6 +66,7 @@ from voiceroute.events import (
 )
 from voiceroute.extensions import Extension, ExtensionCommand, command, listener
 from voiceroute.models import BotIdentity, Channel, Community, Message, MessagePage, User
+from voiceroute.runtime import RuntimeState
 from voiceroute.transport import RateLimiter
 
 __all__ = [
@@ -71,6 +74,8 @@ __all__ = [
     "BadArgument",
     "BadRequest",
     "Bot",
+    "BotAlreadyRunning",
+    "BotClosed",
     "BotEvent",
     "BotIdentity",
     "BucketType",
@@ -119,6 +124,7 @@ __all__ = [
     "PrefixCommandAdapter",
     "RateLimited",
     "RateLimiter",
+    "RuntimeState",
     "SSEError",
     "ServiceUnavailable",
     "StreamCheckpoint",
