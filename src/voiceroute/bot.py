@@ -12,7 +12,13 @@ from typing import Any, TypeVar
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands.context import Context
 from voiceroute.errors import NoChannelsAvailable
-from voiceroute.events import AccessLost, MessageUpserted
+from voiceroute.events import (
+    AccessLost,
+    CursorStore,
+    MemoryCursorStore,
+    MessageUpserted,
+    StreamCheckpoint,
+)
 from voiceroute.models import BotIdentity, Channel, Message
 
 AsyncHandler = Callable[..., Awaitable[None]]
@@ -40,6 +46,7 @@ class Bot:
         base_url: str = "https://voiceroute.cc",
         max_event_streams: int = 32,
         initial_after_seq: str | None = "0",
+        cursor_store: CursorStore | None = None,
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
         if not prefixes or any(not prefix for prefix in prefixes):
@@ -54,6 +61,8 @@ class Bot:
         self.command_prefixes = tuple(dict.fromkeys(sorted(prefixes, key=len, reverse=True)))
         self.max_event_streams = max_event_streams
         self.initial_after_seq = initial_after_seq
+        self.cursor_store = cursor_store or MemoryCursorStore()
+        self.base_url = base_url.rstrip("/")
         self.user: BotIdentity | None = None
         self.listening_channels: tuple[ChannelTarget, ...] = ()
         self._commands: dict[str, AsyncHandler] = {}
@@ -143,17 +152,40 @@ class Bot:
             await self._dispatch_error(exc)
 
     async def _consume_channel(self, target: ChannelTarget) -> None:
+        stream_key = self._stream_key(target)
+        checkpoint = await self.cursor_store.load(stream_key)
+        change_cursor = checkpoint.change_cursor if checkpoint is not None else None
+        after_seq = checkpoint.message_seq if checkpoint is not None else self.initial_after_seq
+
         async for event in self.client.events.listen_messages(
             target.community_id,
             target.channel_id,
-            after_seq=self.initial_after_seq,
+            after_seq=after_seq,
+            cursor=change_cursor,
         ):
             if self._closed:
                 return
             if isinstance(event, AccessLost):
                 await self._dispatch("on_access_lost", event, target)
+                await self._save_checkpoint(stream_key, event.cursor, after_seq)
                 return
             await self._handle_message(event)
+            after_seq = event.message.seq
+            await self._save_checkpoint(stream_key, event.cursor, after_seq)
+
+    async def _save_checkpoint(
+        self,
+        stream_key: str,
+        change_cursor: str | None,
+        message_seq: str | None,
+    ) -> None:
+        await self.cursor_store.save(
+            stream_key,
+            StreamCheckpoint(change_cursor=change_cursor, message_seq=message_seq),
+        )
+
+    def _stream_key(self, target: ChannelTarget) -> str:
+        return f"{self.base_url}|messages|{target.community_id}|{target.channel_id}"
 
     async def _discover_channels(self) -> list[ChannelTarget]:
         if self.community_id is not None and self.channel_id is not None:

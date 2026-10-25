@@ -5,7 +5,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from voiceroute import Bot, Context
+from voiceroute import Bot, Context, FileCursorStore
 from voiceroute.errors import NoChannelsAvailable
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
@@ -13,6 +13,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 bot = Bot(
     token=os.environ["VOICEROUTE_BOT_TOKEN"],
     base_url=os.getenv("VOICEROUTE_URL", "https://voiceroute.cc"),
+    cursor_store=FileCursorStore(".voiceroute/cursors.json"),
 )
 
 

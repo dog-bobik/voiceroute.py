@@ -34,10 +34,11 @@ python -m pip install -e '.[dev]'
 ```python
 import os
 
-from voiceroute import Bot, Context
+from voiceroute import Bot, Context, FileCursorStore
 
 bot = Bot(
     token=os.environ["VOICEROUTE_BOT_TOKEN"],
+    cursor_store=FileCursorStore(".voiceroute/cursors.json"),
 )
 
 
@@ -60,6 +61,10 @@ bot.run()
 При первом подключении он запрашивает историю после `seq=0`, чтобы не пропустить
 команды, отправленные незадолго до запуска. Идемпотентные ответы защищают от
 дубликатов при повторном получении тех же сообщений.
+
+`FileCursorStore` атомарно сохраняет обработанную позицию с правами `0600`.
+Cursor обновляется только после успешного завершения обработчика, поэтому после
+сбоя событие будет доставлено повторно. Подробнее: [события и восстановление](docs/events.md).
 
 ## Состояние реализации
 
