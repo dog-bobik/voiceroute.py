@@ -15,7 +15,7 @@ async def test_list_communities_and_channels() -> None:
     respx.get("https://voiceroute.cc/api/communities/community-id/channels").mock(
         return_value=httpx.Response(
             200,
-            json={"items": [{"id": "channel-id", "name": "general", "type": "text"}]},
+            json={"items": [{"id": "channel-id", "name": "general", "kind": "text"}]},
         )
     )
 

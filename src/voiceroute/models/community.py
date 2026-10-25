@@ -35,20 +35,28 @@ class Channel:
 
     id: str
     name: str
-    type: str
+    kind: str
     community_id: str | None = None
     category_id: str | None = None
     position: int | None = None
     extra: MappingProxyType[str, Any] = field(default_factory=lambda: MappingProxyType({}))
 
+    @property
+    def type(self) -> str:
+        """Compatibility alias for the channel kind."""
+        return self.kind
+
     @classmethod
     def from_dict(cls, data: dict[str, Any], *, community_id: str | None = None) -> Self:
         raw_position = data.get("position")
-        known = {"id", "name", "type", "communityId", "categoryId", "position"}
+        known = {"id", "name", "kind", "type", "communityId", "categoryId", "position"}
+        raw_kind = data.get("kind", data.get("type"))
+        if raw_kind is None:
+            raise ValueError("channel payload is missing kind")
         return cls(
             id=str(data["id"]),
             name=str(data["name"]),
-            type=str(data["type"]),
+            kind=str(raw_kind),
             community_id=community_id or _optional_string(data.get("communityId")),
             category_id=_optional_string(data.get("categoryId")),
             position=int(raw_position) if raw_position is not None else None,

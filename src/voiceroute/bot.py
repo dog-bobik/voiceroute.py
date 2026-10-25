@@ -177,7 +177,7 @@ class Bot:
 
     @staticmethod
     def _is_text_channel(channel: Channel) -> bool:
-        return channel.type.casefold() == "text"
+        return channel.kind.casefold() == "text"
 
     def _can_invoke_command(self, message: Message) -> bool:
         if message.deleted or message.edited_at is not None or message.webhook:
