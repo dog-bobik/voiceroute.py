@@ -1,6 +1,7 @@
 """Asynchronous HTTP transport."""
 
-from collections.abc import Mapping
+from collections.abc import AsyncIterator, Mapping
+from contextlib import asynccontextmanager
 from typing import Any
 
 import httpx
@@ -77,6 +78,27 @@ class HTTPTransport:
         if not self._closed:
             self._closed = True
             await self._client.aclose()
+
+    @asynccontextmanager
+    async def stream(
+        self,
+        path: str,
+        *,
+        params: Mapping[str, str | int | None] | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> AsyncIterator[httpx.Response]:
+        """Open an authenticated streaming response."""
+        if self._closed:
+            raise ClientClosedError("the VoiceRoute client is closed")
+
+        try:
+            async with self._client.stream("GET", path, params=params, headers=headers) as response:
+                if response.is_error:
+                    await response.aread()
+                    self._raise_for_response(response)
+                yield response
+        except httpx.HTTPError as exc:
+            raise TransportError("VoiceRoute stream failed") from exc
 
     @staticmethod
     def _raise_for_response(response: httpx.Response) -> None:

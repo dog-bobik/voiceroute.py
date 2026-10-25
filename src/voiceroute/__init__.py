@@ -9,14 +9,18 @@ from voiceroute.errors import (
     NotFound,
     RateLimited,
     ServiceUnavailable,
+    SSEError,
     Unauthorized,
     ValidationError,
     VoiceRouteError,
 )
+from voiceroute.events import AccessLost, BotEvent, MessageUpserted
 from voiceroute.models import BotIdentity, Channel, Community, Message, MessagePage, User
 
 __all__ = [
+    "AccessLost",
     "BadRequest",
+    "BotEvent",
     "BotIdentity",
     "Channel",
     "Community",
@@ -25,8 +29,10 @@ __all__ = [
     "HTTPError",
     "Message",
     "MessagePage",
+    "MessageUpserted",
     "NotFound",
     "RateLimited",
+    "SSEError",
     "ServiceUnavailable",
     "Unauthorized",
     "User",
