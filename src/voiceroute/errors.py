@@ -74,6 +74,10 @@ class SSEError(VoiceRouteError):
     """An SSE stream returned malformed or unsupported data."""
 
 
+class CursorStoreError(VoiceRouteError):
+    """A durable event checkpoint could not be read or written."""
+
+
 class NoChannelsAvailable(VoiceRouteError):
     """The bot cannot discover any accessible text channels."""
 

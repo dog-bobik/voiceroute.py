@@ -6,7 +6,7 @@ import asyncio
 import json
 from collections.abc import AsyncIterator
 
-from voiceroute.errors import SSEError
+from voiceroute.errors import RateLimited, ServiceUnavailable, SSEError, TransportError
 from voiceroute.events.models import AccessLost, BotEvent, MessageUpserted
 from voiceroute.events.sse import SSEDecoder
 from voiceroute.models import Message
@@ -44,23 +44,29 @@ class EventsAPI:
             headers = {"Last-Event-ID": last_cursor} if last_cursor is not None else None
             decoder = SSEDecoder()
 
-            async with self._transport.stream(path, params=params, headers=headers) as response:
-                async for line in response.aiter_lines():
-                    frame = decoder.feed_line(line)
-                    if frame is None:
-                        continue
-                    if frame.id is not None:
-                        last_cursor = frame.id
-                    backoff = 1.0
+            retry_delay: float | None = None
+            try:
+                async with self._transport.stream(path, params=params, headers=headers) as response:
+                    async for line in response.aiter_lines():
+                        frame = decoder.feed_line(line)
+                        if frame is None:
+                            continue
+                        if frame.id is not None:
+                            last_cursor = frame.id
+                        backoff = 1.0
 
-                    event = self._decode(frame.event, frame.data, last_cursor)
-                    yield event
-                    if isinstance(event, AccessLost):
-                        return
+                        event = self._decode(frame.event, frame.data, last_cursor)
+                        yield event
+                        if isinstance(event, AccessLost):
+                            return
+            except RateLimited as exc:
+                retry_delay = exc.retry_after
+            except (ServiceUnavailable, TransportError):
+                pass
 
             if not reconnect:
                 return
-            await asyncio.sleep(backoff)
+            await asyncio.sleep(retry_delay if retry_delay is not None else backoff)
             backoff = min(backoff * 2, max_backoff)
 
     @staticmethod

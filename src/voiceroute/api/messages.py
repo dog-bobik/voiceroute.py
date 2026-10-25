@@ -75,6 +75,7 @@ class MessagesAPI:
                 "attachmentIds": list(attachment_ids),
                 "stickerIds": list(sticker_ids),
             },
+            retryable=True,
         )
         if payload is None:
             raise RuntimeError("VoiceRoute returned no sent message")
