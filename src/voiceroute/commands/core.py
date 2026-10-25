@@ -149,6 +149,16 @@ class CommandRegistry:
     def get(self, name: str) -> Command | None:
         return self._lookups.get(_normalize_path(name))
 
+    def remove(self, command: Command) -> None:
+        """Remove one exact command and all of its aliases."""
+        registered = self._commands.get(command.path)
+        if registered is not command:
+            raise KeyError(command.name)
+        del self._commands[command.path]
+        for path in (command.path, *command.aliases):
+            if self._lookups.get(path) is command:
+                del self._lookups[path]
+
     def resolve(self, tokens: Sequence[str]) -> tuple[Command, CommandInvocation]:
         normalized = tuple(token.casefold() for token in tokens)
         for size in range(len(normalized), 0, -1):

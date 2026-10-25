@@ -165,3 +165,19 @@ class MaxConcurrencyReached(CommandError):
         self.limit = limit
         self.bucket = bucket
         super().__init__(f"{command}: maximum concurrency {limit} reached for {bucket}")
+
+
+class ExtensionError(VoiceRouteError):
+    """Base exception raised while managing an extension."""
+
+
+class ExtensionAlreadyLoaded(ExtensionError):
+    """An extension with the same qualified name is already active."""
+
+
+class ExtensionNotLoaded(ExtensionError):
+    """The requested extension or module is not active."""
+
+
+class ExtensionSetupError(ExtensionError):
+    """An extension module does not expose a valid setup contract."""
