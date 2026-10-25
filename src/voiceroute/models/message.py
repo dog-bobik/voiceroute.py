@@ -21,6 +21,7 @@ class Message:
     reply_to_seq: str | None = None
     edited_at: str | None = None
     deleted_at: str | None = None
+    version: int | None = None
     webhook: bool = False
     attachment_ids: tuple[str, ...] = ()
     sticker_ids: tuple[str, ...] = ()
@@ -43,6 +44,7 @@ class Message:
             "replyToSeq",
             "editedAt",
             "deletedAt",
+            "version",
             "webhook",
             "attachmentIds",
             "stickerIds",
@@ -57,6 +59,7 @@ class Message:
             reply_to_seq=_optional_string(data.get("replyToSeq")),
             edited_at=_optional_string(data.get("editedAt")),
             deleted_at=_optional_string(data.get("deletedAt")),
+            version=int(data["version"]) if data.get("version") is not None else None,
             webhook=bool(data.get("webhook", False)),
             attachment_ids=tuple(str(value) for value in data.get("attachmentIds", ())),
             sticker_ids=tuple(str(value) for value in data.get("stickerIds", ())),
