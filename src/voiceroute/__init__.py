@@ -62,6 +62,8 @@ from voiceroute.events import (
     LegacySSETransport,
     MemoryCursorStore,
     MessageUpserted,
+    RedisCursorStore,
+    SQLiteCursorStore,
     StreamCheckpoint,
 )
 from voiceroute.extensions import Extension, ExtensionCommand, command, listener
@@ -124,7 +126,9 @@ __all__ = [
     "PrefixCommandAdapter",
     "RateLimited",
     "RateLimiter",
+    "RedisCursorStore",
     "RuntimeState",
+    "SQLiteCursorStore",
     "SSEError",
     "ServiceUnavailable",
     "StreamCheckpoint",
