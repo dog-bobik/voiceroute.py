@@ -92,6 +92,65 @@ async def on_command_error(error: Exception, ctx: Context | None) -> None: ...
 передаются в `on_command_error`; без такого обработчика применяется существующий
 `on_error`.
 
+## Checks
+
+Checks выполняются до cooldown и middleware. Predicate может быть обычной или асинхронной
+функцией и получает `Context`.
+
+```python
+from voiceroute import CheckFailure, Context, check
+
+
+async def is_owner(ctx: Context) -> bool:
+    return ctx.message.author is not None and ctx.message.author.id == 42
+
+
+@bot.command()
+@check(is_owner)
+async def reload(ctx: Context) -> None:
+    await ctx.reply("Reloaded")
+```
+
+Неуспешная проверка создаёт `CheckFailure` и передаётся в `on_command_error`.
+
+## Cooldowns и concurrency
+
+```python
+from voiceroute import BucketType, Context, cooldown, max_concurrency
+
+
+@bot.command()
+@cooldown(2, 10, bucket=BucketType.USER)
+@max_concurrency(1, bucket=BucketType.CHANNEL)
+async def render(ctx: Context, prompt: str) -> None: ...
+```
+
+Bucket может быть `GLOBAL`, `COMMUNITY`, `CHANNEL` или `USER`. Cooldown отклоняет лишний
+вызов через `CommandOnCooldown` с `retry_after`. Concurrency limit действует только пока
+callback выполняется и освобождается даже после исключения.
+
+Декораторы конфигурации располагаются под `@bot.command()`, чтобы metadata была добавлена
+к callback до его регистрации.
+
+## Middleware
+
+Middleware регистрируется в порядке выполнения и решает, продолжать ли pipeline:
+
+```python
+@bot.middleware
+async def log_command(ctx: Context, call_next) -> None:
+    print("before", ctx.command)
+    await call_next()
+    print("after", ctx.command)
+```
+
+Middleware может не вызывать `call_next`, чтобы остановить команду. Повторный вызов
+`call_next` считается ошибкой. Порядок pipeline:
+
+```text
+parse → checks → cooldown → concurrency → middleware → typed conversion → callback
+```
+
 ## Граница будущего API
 
 Эти команды являются prefix-командами поверх сообщений и не регистрируются в интерфейсе

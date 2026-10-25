@@ -26,8 +26,8 @@
 ## 0.4 — расширяемый фреймворк
 
 - extensions;
-- middleware и checks;
-- cooldowns;
+- middleware и checks — реализовано process-local ядро;
+- cooldowns и concurrency limits — реализовано process-local ядро;
 - фоновые задачи;
 - дополнительные адаптеры хранения курсоров для SQLite и Redis;
 
