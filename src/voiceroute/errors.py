@@ -137,3 +137,31 @@ class UnsupportedCommandParameter(CommandError):
         self.parameter = parameter
         self.reason = reason
         super().__init__(f"unsupported command parameter {parameter}: {reason}")
+
+
+class CheckFailure(CommandError):
+    """A command predicate rejected an invocation."""
+
+    def __init__(self, command: str, check: str) -> None:
+        self.command = command
+        self.check = check
+        super().__init__(f"{command}: check failed: {check}")
+
+
+class CommandOnCooldown(CommandError):
+    """A command exceeded its configured invocation rate."""
+
+    def __init__(self, command: str, retry_after: float) -> None:
+        self.command = command
+        self.retry_after = retry_after
+        super().__init__(f"{command}: retry after {retry_after:.3f} seconds")
+
+
+class MaxConcurrencyReached(CommandError):
+    """A command already has the maximum number of active invocations."""
+
+    def __init__(self, command: str, limit: int, bucket: str) -> None:
+        self.command = command
+        self.limit = limit
+        self.bucket = bucket
+        super().__init__(f"{command}: maximum concurrency {limit} reached for {bucket}")

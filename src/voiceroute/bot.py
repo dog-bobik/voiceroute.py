@@ -8,7 +8,14 @@ from collections.abc import Awaitable, Callable, Sequence
 from typing import Any, TypeVar
 
 from voiceroute.client import VoiceRouteClient
-from voiceroute.commands import Command, CommandRegistry, Context, PrefixCommandAdapter
+from voiceroute.commands import (
+    Command,
+    CommandPipeline,
+    CommandRegistry,
+    Context,
+    Middleware,
+    PrefixCommandAdapter,
+)
 from voiceroute.errors import CommandError, CommandNotFound, NoChannelsAvailable
 from voiceroute.events import (
     AccessLost,
@@ -63,6 +70,7 @@ class Bot:
         self.user: BotIdentity | None = None
         self.listening_channels: tuple[ChannelTarget, ...] = ()
         self.command_registry = CommandRegistry()
+        self.command_pipeline = CommandPipeline()
         self._events: dict[str, AsyncHandler] = {}
         self._closed = False
 
@@ -99,6 +107,11 @@ class Bot:
     def get_command(self, name: str) -> Command | None:
         """Find a command by canonical name or alias."""
         return self.command_registry.get(name)
+
+    def middleware(self, handler: Middleware) -> Middleware:
+        """Register global command middleware in declaration order."""
+        self.command_pipeline.add_middleware(handler)
+        return handler
 
     def event(self, handler: HandlerT) -> HandlerT:
         """Register an async handler named on_ready, on_message, on_access_lost, or on_error."""
@@ -160,7 +173,7 @@ class Bot:
         )
         try:
             await self._dispatch("on_command", context)
-            await command.invoke(context, invocation.arguments)
+            await self.command_pipeline.invoke(command, context, invocation.arguments)
             await self._dispatch("on_command_complete", context)
         except Exception as exc:
             await self._dispatch_command_error(exc, context)

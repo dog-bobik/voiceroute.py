@@ -9,6 +9,14 @@ from dataclasses import dataclass
 from typing import Union, get_args, get_origin, get_type_hints
 
 from voiceroute.commands.context import Context
+from voiceroute.commands.pipeline import (
+    Check,
+    ConcurrencyLimit,
+    Cooldown,
+    command_checks,
+    command_concurrency,
+    command_cooldown,
+)
 from voiceroute.errors import (
     BadArgument,
     CommandNotFound,
@@ -51,6 +59,9 @@ class Command:
     description: str = ""
     usage: str | None = None
     parameters: tuple[CommandParameter, ...] = ()
+    checks: tuple[Check, ...] = ()
+    cooldown: Cooldown | None = None
+    concurrency: ConcurrencyLimit | None = None
 
     @property
     def name(self) -> str:
@@ -76,6 +87,9 @@ class Command:
             description=description if description is not None else inspect.getdoc(callback) or "",
             usage=usage,
             parameters=parameters,
+            checks=command_checks(callback),
+            cooldown=command_cooldown(callback),
+            concurrency=command_concurrency(callback),
         )
 
     async def invoke(self, context: Context, arguments: Sequence[str]) -> None:
