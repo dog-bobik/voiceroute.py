@@ -156,6 +156,8 @@ class Bot:
         checkpoint = await self.cursor_store.load(stream_key)
         change_cursor = checkpoint.change_cursor if checkpoint is not None else None
         after_seq = checkpoint.message_seq if checkpoint is not None else self.initial_after_seq
+        if change_cursor is None:
+            after_seq = await self._catch_up_history(target, stream_key, after_seq)
 
         async for event in self.client.events.listen_messages(
             target.community_id,
@@ -172,6 +174,32 @@ class Bot:
             await self._handle_message(event)
             after_seq = event.message.seq
             await self._save_checkpoint(stream_key, event.cursor, after_seq)
+
+    async def _catch_up_history(
+        self,
+        target: ChannelTarget,
+        stream_key: str,
+        after_seq: str | None,
+    ) -> str | None:
+        if after_seq is None:
+            return None
+
+        current_seq = after_seq
+        while True:
+            page = await self.client.messages.history(
+                target.community_id,
+                target.channel_id,
+                limit=100,
+                after_seq=current_seq,
+            )
+            if not page.items:
+                return current_seq
+            for message in page.items:
+                await self._handle_message(MessageUpserted(message=message, cursor=None))
+                current_seq = message.seq
+                await self._save_checkpoint(stream_key, None, current_seq)
+            if len(page.items) < 100:
+                return current_seq
 
     async def _save_checkpoint(
         self,

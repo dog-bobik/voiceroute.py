@@ -13,4 +13,5 @@
 - Восстанавливаемые SSE-потоки с checkpoint после успешной обработки.
 - Атомарное файловое и process-local хранилища cursor.
 - Общий sliding-window rate limiter и безопасные retry с учётом `Retry-After`.
+- Постраничное восстановление backlog перед переходом к live SSE.
 
