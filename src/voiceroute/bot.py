@@ -39,6 +39,7 @@ class Bot:
         command_prefix: str | Sequence[str] = ("/", "!"),
         base_url: str = "https://voiceroute.cc",
         max_event_streams: int = 32,
+        initial_after_seq: str | None = "0",
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
         if not prefixes or any(not prefix for prefix in prefixes):
@@ -52,6 +53,7 @@ class Bot:
         self.channel_id = channel_id
         self.command_prefixes = tuple(dict.fromkeys(sorted(prefixes, key=len, reverse=True)))
         self.max_event_streams = max_event_streams
+        self.initial_after_seq = initial_after_seq
         self.user: BotIdentity | None = None
         self.listening_channels: tuple[ChannelTarget, ...] = ()
         self._commands: dict[str, AsyncHandler] = {}
@@ -144,6 +146,7 @@ class Bot:
         async for event in self.client.events.listen_messages(
             target.community_id,
             target.channel_id,
+            after_seq=self.initial_after_seq,
         ):
             if self._closed:
                 return

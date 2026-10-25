@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from voiceroute import Bot, Context, NoChannelsAvailable
+from voiceroute.bot import ChannelTarget
 from voiceroute.events import MessageUpserted
 from voiceroute.models import Channel, Community, Message, User
 
@@ -138,3 +139,30 @@ def test_run_treats_keyboard_interrupt_as_graceful_shutdown() -> None:
 
     with patch("voiceroute.bot.asyncio.run", side_effect=interrupt):
         runtime.run()
+
+
+async def test_channel_consumer_requests_initial_replay() -> None:
+    runtime = Bot(token="vrb_secret")
+    captured: dict[str, str | None] = {}
+
+    async def stream(
+        community_id: str,
+        channel_id: str,
+        *,
+        after_seq: str | None = None,
+    ):
+        captured["community_id"] = community_id
+        captured["channel_id"] = channel_id
+        captured["after_seq"] = after_seq
+        if False:
+            yield None
+
+    runtime.client.events.listen_messages = stream  # type: ignore[method-assign]
+    await runtime._consume_channel(ChannelTarget("community-id", "channel-id"))
+    await runtime.close()
+
+    assert captured == {
+        "community_id": "community-id",
+        "channel_id": "channel-id",
+        "after_seq": "0",
+    }
