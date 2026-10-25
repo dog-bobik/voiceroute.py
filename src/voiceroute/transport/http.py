@@ -1,5 +1,7 @@
 """Asynchronous HTTP transport."""
 
+import asyncio
+import random
 from collections.abc import AsyncIterator, Mapping
 from contextlib import asynccontextmanager
 from typing import Any
@@ -20,6 +22,7 @@ from voiceroute.errors import (
     ValidationError,
 )
 from voiceroute.transport.auth import BotAuth
+from voiceroute.transport.rate_limit import RateLimiter
 
 _ERRORS: dict[int, type[HTTPError]] = {
     400: BadRequest,
@@ -36,13 +39,25 @@ _ERRORS: dict[int, type[HTTPError]] = {
 class HTTPTransport:
     """Small HTTP layer shared by all resource APIs."""
 
-    def __init__(self, *, token: str, base_url: str, timeout: float) -> None:
+    def __init__(
+        self,
+        *,
+        token: str,
+        base_url: str,
+        timeout: float,
+        rate_limiter: RateLimiter | None = None,
+        max_attempts: int = 3,
+    ) -> None:
+        if max_attempts <= 0:
+            raise ValueError("max_attempts must be positive")
         auth = BotAuth(token)
         self._client = httpx.AsyncClient(
             base_url=base_url,
             headers={**auth.headers(), "Accept": "application/json"},
             timeout=timeout,
         )
+        self._rate_limiter = rate_limiter or RateLimiter()
+        self._max_attempts = max_attempts
         self._closed = False
 
     async def request(
@@ -52,19 +67,40 @@ class HTTPTransport:
         *,
         params: Mapping[str, str | int | None] | None = None,
         json: Any = None,
+        retryable: bool | None = None,
     ) -> dict[str, Any] | None:
         if self._closed:
             raise ClientClosedError("the VoiceRoute client is closed")
 
-        try:
-            response = await self._client.request(
-                method,
-                path,
-                params=self._clean_params(params),
-                json=json,
-            )
-        except httpx.HTTPError as exc:
-            raise TransportError("VoiceRoute request failed") from exc
+        can_retry = (
+            retryable if retryable is not None else method.upper() in {"GET", "HEAD", "OPTIONS"}
+        )
+        response: httpx.Response | None = None
+        for attempt in range(1, self._max_attempts + 1):
+            await self._rate_limiter.acquire()
+            try:
+                response = await self._client.request(
+                    method,
+                    path,
+                    params=self._clean_params(params),
+                    json=json,
+                )
+            except httpx.HTTPError as exc:
+                if can_retry and attempt < self._max_attempts:
+                    await self._sleep_before_retry(attempt)
+                    continue
+                raise TransportError("VoiceRoute request failed") from exc
+
+            if response.status_code == 429 and attempt < self._max_attempts:
+                await self._sleep_for_rate_limit(response, attempt)
+                continue
+            if response.status_code == 503 and can_retry and attempt < self._max_attempts:
+                await self._sleep_before_retry(attempt)
+                continue
+            break
+
+        if response is None:
+            raise TransportError("VoiceRoute request produced no response")
 
         if response.is_error:
             self._raise_for_response(response)
@@ -96,6 +132,7 @@ class HTTPTransport:
         if self._closed:
             raise ClientClosedError("the VoiceRoute client is closed")
 
+        await self._rate_limiter.acquire()
         try:
             async with self._client.stream(
                 "GET",
@@ -143,3 +180,25 @@ class HTTPTransport:
         if params is None:
             return None
         return {key: value for key, value in params.items() if value is not None}
+
+    async def _sleep_for_rate_limit(self, response: httpx.Response, attempt: int) -> None:
+        retry_after = self._parse_retry_after(response)
+        if retry_after is None:
+            await self._sleep_before_retry(attempt)
+        else:
+            await asyncio.sleep(retry_after)
+
+    @staticmethod
+    async def _sleep_before_retry(attempt: int) -> None:
+        maximum = min(0.5 * (2 ** (attempt - 1)), 5.0)
+        await asyncio.sleep(random.uniform(0.0, maximum))
+
+    @staticmethod
+    def _parse_retry_after(response: httpx.Response) -> float | None:
+        raw_value = response.headers.get("Retry-After")
+        if raw_value is None:
+            return None
+        try:
+            return max(0.0, float(raw_value))
+        except ValueError:
+            return None

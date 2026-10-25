@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock, patch
+
 import httpx
 import pytest
 import respx
@@ -28,7 +30,12 @@ async def test_transport_maps_unauthorized_response() -> None:
     respx.get("https://voiceroute.cc/api/bots/@me").mock(
         return_value=httpx.Response(401, json={"error": "revoked"})
     )
-    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+    transport = HTTPTransport(
+        token="vrb_secret",
+        base_url="https://voiceroute.cc",
+        timeout=1,
+        max_attempts=1,
+    )
 
     with pytest.raises(Unauthorized, match="401"):
         await transport.request("GET", "/api/bots/@me")
@@ -44,13 +51,51 @@ async def test_transport_preserves_retry_after() -> None:
             json={"error": "slow down"},
         )
     )
-    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+    transport = HTTPTransport(
+        token="vrb_secret",
+        base_url="https://voiceroute.cc",
+        timeout=1,
+        max_attempts=1,
+    )
 
     with pytest.raises(RateLimited) as captured:
         await transport.request("GET", "/api/communities")
     await transport.close()
 
     assert captured.value.retry_after == 1.5
+
+
+@respx.mock
+async def test_transport_retries_rate_limit_with_retry_after() -> None:
+    route = respx.get("https://voiceroute.cc/api/communities").mock(
+        side_effect=[
+            httpx.Response(429, headers={"Retry-After": "2"}, json={"error": "slow down"}),
+            httpx.Response(200, json={"items": []}),
+        ]
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+
+    with patch("voiceroute.transport.http.asyncio.sleep", new=AsyncMock()) as sleep:
+        payload = await transport.request("GET", "/api/communities")
+    await transport.close()
+
+    assert payload == {"items": []}
+    assert route.call_count == 2
+    sleep.assert_awaited_once_with(2.0)
+
+
+@respx.mock
+async def test_transport_does_not_retry_unsafe_network_failure() -> None:
+    route = respx.post("https://voiceroute.cc/api/action").mock(
+        side_effect=httpx.ConnectError("connection lost")
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+
+    with pytest.raises(TransportError):
+        await transport.request("POST", "/api/action", json={"value": 1})
+    await transport.close()
+
+    assert route.call_count == 1
 
 
 @respx.mock

@@ -4,7 +4,7 @@ from types import TracebackType
 
 from voiceroute.api import BotsAPI, CommunitiesAPI, EventsAPI, MessagesAPI
 from voiceroute.config import ClientConfig
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import HTTPTransport, RateLimiter
 
 
 class VoiceRouteClient:
@@ -16,12 +16,16 @@ class VoiceRouteClient:
         token: str,
         base_url: str = "https://voiceroute.cc",
         timeout: float = 30.0,
+        rate_limiter: RateLimiter | None = None,
+        max_attempts: int = 3,
     ) -> None:
         config = ClientConfig(base_url=base_url, timeout=timeout)
         self._transport = HTTPTransport(
             token=token,
             base_url=config.base_url,
             timeout=config.timeout,
+            rate_limiter=rate_limiter,
+            max_attempts=max_attempts,
         )
         self.bots = BotsAPI(self._transport)
         self.communities = CommunitiesAPI(self._transport)

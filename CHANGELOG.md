@@ -12,4 +12,5 @@
 - Базовые модели и API профиля текущего бота.
 - Восстанавливаемые SSE-потоки с checkpoint после успешной обработки.
 - Атомарное файловое и process-local хранилища cursor.
+- Общий sliding-window rate limiter и безопасные retry с учётом `Retry-After`.
 

@@ -28,6 +28,7 @@ from voiceroute.events import (
     StreamCheckpoint,
 )
 from voiceroute.models import BotIdentity, Channel, Community, Message, MessagePage, User
+from voiceroute.transport import RateLimiter
 
 __all__ = [
     "AccessLost",
@@ -51,6 +52,7 @@ __all__ = [
     "NoChannelsAvailable",
     "NotFound",
     "RateLimited",
+    "RateLimiter",
     "SSEError",
     "ServiceUnavailable",
     "StreamCheckpoint",

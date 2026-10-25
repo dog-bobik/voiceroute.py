@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock, patch
+
 import httpx
 import pytest
 import respx
@@ -76,3 +78,25 @@ async def test_send_rejects_empty_message() -> None:
     async with VoiceRouteClient(token="vrb_secret") as client:
         with pytest.raises(ValueError, match="must contain"):
             await client.messages.send("community-id", "channel-id")
+
+
+@respx.mock
+async def test_idempotent_send_retries_network_failure_with_same_body() -> None:
+    route = respx.post(BASE_PATH).mock(
+        side_effect=[
+            httpx.ConnectError("connection lost"),
+            httpx.Response(201, json={"message": message_payload()}),
+        ]
+    )
+
+    with patch("voiceroute.transport.http.asyncio.sleep", new=AsyncMock()):
+        async with VoiceRouteClient(token="vrb_secret") as client:
+            await client.messages.send(
+                "community-id",
+                "channel-id",
+                "Pong!",
+                client_message_id="operation-id",
+            )
+
+    assert route.call_count == 2
+    assert route.calls[0].request.content == route.calls[1].request.content
