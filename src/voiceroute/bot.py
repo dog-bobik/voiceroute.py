@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import importlib
 import inspect
+import logging
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
 from types import ModuleType
@@ -20,6 +21,8 @@ from voiceroute.commands import (
     PrefixCommandAdapter,
 )
 from voiceroute.errors import (
+    BotAlreadyRunning,
+    BotClosed,
     CommandError,
     CommandNotFound,
     ExtensionAlreadyLoaded,
@@ -38,9 +41,11 @@ from voiceroute.events import (
 from voiceroute.events.transport import ChannelTarget
 from voiceroute.extensions import Extension, extension_command, listener_name
 from voiceroute.models import BotIdentity, Channel, Message
+from voiceroute.runtime import RuntimeState
 
 AsyncHandler = Callable[..., Awaitable[None]]
 HandlerT = TypeVar("HandlerT", bound=AsyncHandler)
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,6 +73,7 @@ class Bot:
         initial_after_seq: str | None = "0",
         cursor_store: CursorStore | None = None,
         event_transport: EventTransport | None = None,
+        max_consumer_backoff: float = 30.0,
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
         self.command_adapter = PrefixCommandAdapter(prefixes)
@@ -75,11 +81,14 @@ class Bot:
             raise ValueError("community_id is required when channel_id is provided")
         if not 1 <= max_event_streams <= 32:
             raise ValueError("max_event_streams must be between 1 and 32")
+        if max_consumer_backoff <= 0:
+            raise ValueError("max_consumer_backoff must be positive")
         self.client = VoiceRouteClient(token=token, base_url=base_url)
         self.community_id = community_id
         self.channel_id = channel_id
         self.command_prefixes = self.command_adapter.prefixes
         self.max_event_streams = max_event_streams
+        self.max_consumer_backoff = max_consumer_backoff
         self.initial_after_seq = initial_after_seq
         self.cursor_store = cursor_store or MemoryCursorStore()
         self.base_url = base_url.rstrip("/")
@@ -95,6 +104,10 @@ class Bot:
         self._events: dict[str, list[AsyncHandler]] = {}
         self._extensions: dict[str, ExtensionRegistration] = {}
         self._extension_modules: dict[str, str] = {}
+        self._consumer_tasks: set[asyncio.Task[None]] = set()
+        self._ready = asyncio.Event()
+        self._stop_lock = asyncio.Lock()
+        self.state = RuntimeState.CREATED
         self._closed = False
 
     def command(
@@ -273,20 +286,34 @@ class Bot:
         return extension
 
     async def start(self) -> None:
-        """Authenticate and process channel events until stopped or access is lost."""
-        self.user = await self.client.bots.get_current()
-        self.listening_channels = tuple(await self._discover_channels())
-        await self._dispatch("on_ready")
-
+        """Initialize the runtime and process events until every consumer stops."""
+        if self.state in (RuntimeState.STARTING, RuntimeState.RUNNING, RuntimeState.STOPPING):
+            raise BotAlreadyRunning("bot is already starting or running")
+        if self.state is RuntimeState.CLOSED:
+            raise BotClosed("a closed bot instance cannot be started again")
+        self.state = RuntimeState.STARTING
         try:
-            async with asyncio.TaskGroup() as tasks:
-                for target in self.listening_channels:
-                    tasks.create_task(
-                        self._consume_channel(target),
-                        name=f"voiceroute:{target.community_id}:{target.channel_id}",
-                    )
+            await self.setup_hook()
+            self.user = await self.client.bots.get_current()
+            self.listening_channels = tuple(await self._discover_channels())
+            await self._dispatch("on_connect")
+            self.state = RuntimeState.RUNNING
+            self._ready.set()
+            await self._dispatch("on_ready")
+
+            self._consumer_tasks = {
+                asyncio.create_task(
+                    self._supervise_channel(target),
+                    name=f"voiceroute:{target.community_id}:{target.channel_id}",
+                )
+                for target in self.listening_channels
+            }
+            await asyncio.gather(*self._consumer_tasks, return_exceptions=True)
         finally:
-            await self.close()
+            await self.stop()
+
+    async def setup_hook(self) -> None:
+        """Override to initialize application resources before authentication."""
 
     def run(self) -> None:
         """Run the bot in a new asyncio event loop."""
@@ -295,11 +322,83 @@ class Bot:
         except KeyboardInterrupt:
             pass
 
-    async def close(self) -> None:
-        """Stop the runtime and release its HTTP connections."""
-        if not self._closed:
+    async def stop(self) -> None:
+        """Idempotently stop consumers, extensions, hooks, and network resources."""
+        async with self._stop_lock:
+            if self.state is RuntimeState.CLOSED:
+                return
+            self.state = RuntimeState.STOPPING
             self._closed = True
-            await self.client.close()
+            self._ready.clear()
+
+            current = asyncio.current_task()
+            tasks = tuple(task for task in self._consumer_tasks if task is not current)
+            for task in tasks:
+                task.cancel()
+            if tasks:
+                await asyncio.gather(*tasks, return_exceptions=True)
+            self._consumer_tasks.clear()
+
+            try:
+                await self._dispatch("on_shutdown")
+            finally:
+                for name in tuple(reversed(self._extensions)):
+                    try:
+                        await self.remove_extension(name)
+                    except Exception:
+                        logger.exception(
+                            "extension teardown failed during shutdown",
+                            extra={"name": name},
+                        )
+                try:
+                    await self.client.close()
+                finally:
+                    self.state = RuntimeState.CLOSED
+
+    async def close(self) -> None:
+        """Alias for stop, retained for client-style resource management."""
+        await self.stop()
+
+    async def wait_until_ready(self) -> None:
+        """Wait until authentication, discovery, and on_ready have started."""
+        if self.state is RuntimeState.CLOSED:
+            raise BotClosed("bot was closed before becoming ready")
+        await self._ready.wait()
+
+    def is_ready(self) -> bool:
+        """Return whether the runtime is currently accepting events."""
+        return self.state is RuntimeState.RUNNING and self._ready.is_set()
+
+    def is_closed(self) -> bool:
+        """Return whether network resources have been permanently closed."""
+        return self.state is RuntimeState.CLOSED
+
+    async def _supervise_channel(self, target: ChannelTarget) -> None:
+        backoff = 1.0
+        while not self._closed:
+            try:
+                await self._consume_channel(target)
+                return
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:
+                if self._closed:
+                    return
+                logger.exception(
+                    "channel consumer failed",
+                    extra={
+                        "community_id": target.community_id,
+                        "channel_id": target.channel_id,
+                    },
+                )
+                await self._dispatch("on_disconnect", target, exc)
+                delay = backoff
+                await self._dispatch("on_reconnect", target, delay)
+                await asyncio.sleep(delay)
+                if self._closed:
+                    return
+                await self._dispatch("on_resumed", target)
+                backoff = min(backoff * 2, self.max_consumer_backoff)
 
     async def _handle_message(self, event: MessageUpserted) -> None:
         message = event.message

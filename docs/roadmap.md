@@ -30,6 +30,7 @@
 - cooldowns и concurrency limits — реализовано process-local ядро;
 - фоновые задачи;
 - дополнительные адаптеры хранения курсоров для SQLite и Redis;
+- supervised runtime lifecycle и graceful shutdown — реализовано;
 
 ## 1.0 — стабильный API
 
