@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
 import inspect
 from collections.abc import Awaitable, Callable, Sequence
-from typing import Any, TypeVar
+from dataclasses import dataclass
+from types import ModuleType
+from typing import Any, TypeVar, cast
 
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands import (
@@ -16,7 +19,14 @@ from voiceroute.commands import (
     Middleware,
     PrefixCommandAdapter,
 )
-from voiceroute.errors import CommandError, CommandNotFound, NoChannelsAvailable
+from voiceroute.errors import (
+    CommandError,
+    CommandNotFound,
+    ExtensionAlreadyLoaded,
+    ExtensionNotLoaded,
+    ExtensionSetupError,
+    NoChannelsAvailable,
+)
 from voiceroute.events import (
     AccessLost,
     CursorStore,
@@ -26,10 +36,21 @@ from voiceroute.events import (
     MessageUpserted,
 )
 from voiceroute.events.transport import ChannelTarget
+from voiceroute.extensions import Extension, extension_command, listener_name
 from voiceroute.models import BotIdentity, Channel, Message
 
 AsyncHandler = Callable[..., Awaitable[None]]
 HandlerT = TypeVar("HandlerT", bound=AsyncHandler)
+
+
+@dataclass(frozen=True, slots=True)
+class ExtensionRegistration:
+    """Handlers installed by one extension instance."""
+
+    extension: Extension
+    commands: tuple[Command, ...]
+    listeners: tuple[tuple[str, AsyncHandler], ...]
+    module_name: str | None = None
 
 
 class Bot:
@@ -71,7 +92,9 @@ class Bot:
         self.listening_channels: tuple[ChannelTarget, ...] = ()
         self.command_registry = CommandRegistry()
         self.command_pipeline = CommandPipeline()
-        self._events: dict[str, AsyncHandler] = {}
+        self._events: dict[str, list[AsyncHandler]] = {}
+        self._extensions: dict[str, ExtensionRegistration] = {}
+        self._extension_modules: dict[str, str] = {}
         self._closed = False
 
     def command(
@@ -116,8 +139,138 @@ class Bot:
     def event(self, handler: HandlerT) -> HandlerT:
         """Register an async handler named on_ready, on_message, on_access_lost, or on_error."""
         self._ensure_async(handler)
-        self._events[handler.__name__] = handler
+        self.add_listener(handler, handler.__name__)
         return handler
+
+    def add_listener(self, handler: AsyncHandler, name: str | None = None) -> None:
+        """Register an async event listener."""
+        self._ensure_async(handler)
+        self._events.setdefault(name or handler.__name__, []).append(handler)
+
+    def remove_listener(self, handler: AsyncHandler, name: str | None = None) -> None:
+        """Remove one exact event listener."""
+        event_name = name or handler.__name__
+        handlers = self._events.get(event_name)
+        if handlers is None or handler not in handlers:
+            raise ValueError(f"listener is not registered: {event_name}")
+        handlers.remove(handler)
+        if not handlers:
+            del self._events[event_name]
+
+    @property
+    def extensions(self) -> tuple[Extension, ...]:
+        """Return active extension instances."""
+        return tuple(registration.extension for registration in self._extensions.values())
+
+    async def add_extension(
+        self,
+        extension: Extension,
+        *,
+        module_name: str | None = None,
+    ) -> None:
+        """Atomically initialize and register an extension instance."""
+        name = extension.qualified_name
+        if name in self._extensions:
+            raise ExtensionAlreadyLoaded(name)
+
+        commands: list[Command] = []
+        listeners: list[tuple[str, AsyncHandler]] = []
+        await extension.setup(self)
+        try:
+            for _, member in inspect.getmembers(extension, predicate=callable):
+                bound_handler = cast(AsyncHandler, member)
+                metadata = extension_command(member)
+                if metadata is not None:
+                    self._ensure_async(bound_handler)
+                    command = Command.from_callback(
+                        bound_handler,
+                        name=metadata.name,
+                        aliases=metadata.aliases,
+                        description=metadata.description,
+                        usage=metadata.usage,
+                    )
+                    self.command_registry.add(command)
+                    commands.append(command)
+                event_name = listener_name(member)
+                if event_name is not None:
+                    self.add_listener(bound_handler, event_name)
+                    listeners.append((event_name, bound_handler))
+        except Exception:
+            for command in reversed(commands):
+                self.command_registry.remove(command)
+            for event_name, handler in reversed(listeners):
+                self.remove_listener(handler, event_name)
+            await extension.teardown(self)
+            raise
+
+        self._extensions[name] = ExtensionRegistration(
+            extension=extension,
+            commands=tuple(commands),
+            listeners=tuple(listeners),
+            module_name=module_name,
+        )
+        if module_name is not None:
+            self._extension_modules[module_name] = name
+
+    async def remove_extension(self, name: str) -> Extension:
+        """Unregister an extension and release its resources."""
+        registration = self._extensions.pop(name, None)
+        if registration is None:
+            raise ExtensionNotLoaded(name)
+        for command in registration.commands:
+            self.command_registry.remove(command)
+        for event_name, handler in registration.listeners:
+            self.remove_listener(handler, event_name)
+        if registration.module_name is not None:
+            self._extension_modules.pop(registration.module_name, None)
+        await registration.extension.teardown(self)
+        return registration.extension
+
+    async def load_extension(self, module_name: str) -> Extension:
+        """Import a module whose async setup returns an Extension instance."""
+        if module_name in self._extension_modules:
+            raise ExtensionAlreadyLoaded(module_name)
+        module = importlib.import_module(module_name)
+        extension = await self._setup_extension_module(module)
+        await self.add_extension(extension, module_name=module_name)
+        return extension
+
+    async def unload_extension(self, module_name: str) -> Extension:
+        """Unload an extension previously loaded from a module."""
+        name = self._extension_modules.get(module_name)
+        if name is None:
+            raise ExtensionNotLoaded(module_name)
+        return await self.remove_extension(name)
+
+    async def reload_extension(self, module_name: str) -> Extension:
+        """Reload a module, restoring its previous instance if setup fails."""
+        name = self._extension_modules.get(module_name)
+        if name is None:
+            raise ExtensionNotLoaded(module_name)
+        previous = self._extensions[name]
+        module = importlib.import_module(module_name)
+        await self.remove_extension(name)
+        try:
+            reloaded = importlib.reload(module)
+            extension = await self._setup_extension_module(reloaded)
+            await self.add_extension(extension, module_name=module_name)
+        except Exception:
+            await self.add_extension(previous.extension, module_name=module_name)
+            raise
+        return extension
+
+    async def _setup_extension_module(self, module: ModuleType) -> Extension:
+        setup = getattr(module, "setup", None)
+        if setup is None or not inspect.iscoroutinefunction(setup):
+            raise ExtensionSetupError(
+                f"extension module {module.__name__!r} must define async setup(bot)"
+            )
+        extension = await setup(self)
+        if not isinstance(extension, Extension):
+            raise ExtensionSetupError(
+                f"extension module {module.__name__!r} setup must return Extension"
+            )
+        return extension
 
     async def start(self) -> None:
         """Authenticate and process channel events until stopped or access is lost."""
@@ -251,28 +404,31 @@ class Bot:
         error: Exception,
         context: Context | None,
     ) -> None:
-        handler = self._events.get("on_command_error")
-        if handler is None:
+        handlers = self._events.get("on_command_error")
+        if not handlers:
             await self._dispatch_error(error)
             return
-        await handler(error, context)
+        for handler in tuple(handlers):
+            await handler(error, context)
 
     async def _dispatch(self, event_name: str, *args: Any) -> None:
-        handler = self._events.get(event_name)
-        if handler is None:
+        handlers = self._events.get(event_name)
+        if not handlers:
             return
-        try:
-            await handler(*args)
-        except Exception as exc:
-            if event_name == "on_error":
-                raise
-            await self._dispatch_error(exc)
+        for handler in tuple(handlers):
+            try:
+                await handler(*args)
+            except Exception as exc:
+                if event_name == "on_error":
+                    raise
+                await self._dispatch_error(exc)
 
     async def _dispatch_error(self, error: Exception) -> None:
-        handler = self._events.get("on_error")
-        if handler is None:
+        handlers = self._events.get("on_error")
+        if not handlers:
             raise error
-        await handler(error)
+        for handler in tuple(handlers):
+            await handler(error)
 
     @staticmethod
     def _ensure_async(handler: AsyncHandler) -> None:

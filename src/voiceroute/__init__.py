@@ -30,6 +30,10 @@ from voiceroute.errors import (
     CommandParsingError,
     Conflict,
     CursorStoreError,
+    ExtensionAlreadyLoaded,
+    ExtensionError,
+    ExtensionNotLoaded,
+    ExtensionSetupError,
     Forbidden,
     HTTPError,
     MaxConcurrencyReached,
@@ -58,6 +62,7 @@ from voiceroute.events import (
     MessageUpserted,
     StreamCheckpoint,
 )
+from voiceroute.extensions import Extension, ExtensionCommand, command, listener
 from voiceroute.models import BotIdentity, Channel, Community, Message, MessagePage, User
 from voiceroute.transport import RateLimiter
 
@@ -91,6 +96,12 @@ __all__ = [
     "EventDelivery",
     "EventSource",
     "EventTransport",
+    "Extension",
+    "ExtensionAlreadyLoaded",
+    "ExtensionCommand",
+    "ExtensionError",
+    "ExtensionNotLoaded",
+    "ExtensionSetupError",
     "FileCursorStore",
     "Forbidden",
     "HTTPError",
@@ -119,7 +130,9 @@ __all__ = [
     "VoiceRouteClient",
     "VoiceRouteError",
     "check",
+    "command",
     "cooldown",
+    "listener",
     "max_concurrency",
 ]
 
