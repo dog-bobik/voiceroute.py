@@ -20,4 +20,6 @@
   `PrefixCommandAdapter` с aliases, группами, типизированными аргументами и command
   lifecycle events.
 - Command pipeline с async middleware, checks, cooldowns и concurrency limits.
+- Расширения с декларативными командами/listeners, атомарной регистрацией и module
+  load/unload/reload lifecycle.
 

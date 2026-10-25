@@ -25,7 +25,7 @@
 
 ## 0.4 — расширяемый фреймворк
 
-- extensions;
+- extensions — реализованы instance и module lifecycle;
 - middleware и checks — реализовано process-local ядро;
 - cooldowns и concurrency limits — реализовано process-local ядро;
 - фоновые задачи;
