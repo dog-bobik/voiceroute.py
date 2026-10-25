@@ -35,11 +35,12 @@ class Context:
                 )
             ),
         )
-        self._reply_index += 1
-        return await self._messages.send(
+        message = await self._messages.send(
             self.message.community_id,
             self.message.channel_id,
             body,
             reply_to_seq=self.message.seq,
             client_message_id=operation_id,
         )
+        self._reply_index += 1
+        return message
