@@ -13,7 +13,7 @@ from voiceroute.errors import (
     ValidationError,
     VoiceRouteError,
 )
-from voiceroute.models import BotIdentity, Channel, Community, User
+from voiceroute.models import BotIdentity, Channel, Community, Message, MessagePage, User
 
 __all__ = [
     "BadRequest",
@@ -23,6 +23,8 @@ __all__ = [
     "Conflict",
     "Forbidden",
     "HTTPError",
+    "Message",
+    "MessagePage",
     "NotFound",
     "RateLimited",
     "ServiceUnavailable",
