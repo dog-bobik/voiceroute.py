@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import asyncio
 import inspect
-import shlex
 from collections.abc import Awaitable, Callable, Sequence
 from typing import Any, TypeVar
 
 from voiceroute.client import VoiceRouteClient
-from voiceroute.commands.context import Context
-from voiceroute.errors import NoChannelsAvailable
+from voiceroute.commands import Command, CommandRegistry, Context, PrefixCommandAdapter
+from voiceroute.errors import CommandError, CommandNotFound, NoChannelsAvailable
 from voiceroute.events import (
     AccessLost,
     CursorStore,
@@ -43,8 +42,7 @@ class Bot:
         event_transport: EventTransport | None = None,
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
-        if not prefixes or any(not prefix for prefix in prefixes):
-            raise ValueError("command_prefix must contain non-empty strings")
+        self.command_adapter = PrefixCommandAdapter(prefixes)
         if channel_id is not None and community_id is None:
             raise ValueError("community_id is required when channel_id is provided")
         if not 1 <= max_event_streams <= 32:
@@ -52,7 +50,7 @@ class Bot:
         self.client = VoiceRouteClient(token=token, base_url=base_url)
         self.community_id = community_id
         self.channel_id = channel_id
-        self.command_prefixes = tuple(dict.fromkeys(sorted(prefixes, key=len, reverse=True)))
+        self.command_prefixes = self.command_adapter.prefixes
         self.max_event_streams = max_event_streams
         self.initial_after_seq = initial_after_seq
         self.cursor_store = cursor_store or MemoryCursorStore()
@@ -64,24 +62,43 @@ class Bot:
         )
         self.user: BotIdentity | None = None
         self.listening_channels: tuple[ChannelTarget, ...] = ()
-        self._commands: dict[str, AsyncHandler] = {}
+        self.command_registry = CommandRegistry()
         self._events: dict[str, AsyncHandler] = {}
         self._closed = False
 
-    def command(self, name: str | None = None) -> Callable[[HandlerT], HandlerT]:
-        """Register an async prefix-command handler."""
+    def command(
+        self,
+        name: str | None = None,
+        *,
+        aliases: Sequence[str] = (),
+        description: str | None = None,
+        usage: str | None = None,
+    ) -> Callable[[HandlerT], HandlerT]:
+        """Register an async command with transport-independent metadata."""
 
         def decorator(handler: HandlerT) -> HandlerT:
-            command_name = (name or handler.__name__).casefold()
-            if not command_name or any(character.isspace() for character in command_name):
-                raise ValueError("command name must be one non-empty word")
             self._ensure_async(handler)
-            if command_name in self._commands:
-                raise ValueError(f"command is already registered: {command_name}")
-            self._commands[command_name] = handler
+            self.command_registry.add(
+                Command.from_callback(
+                    handler,
+                    name=name,
+                    aliases=aliases,
+                    description=description,
+                    usage=usage,
+                )
+            )
             return handler
 
         return decorator
+
+    @property
+    def commands(self) -> tuple[Command, ...]:
+        """Return commands in registration order without aliases."""
+        return self.command_registry.commands
+
+    def get_command(self, name: str) -> Command | None:
+        """Find a command by canonical name or alias."""
+        return self.command_registry.get(name)
 
     def event(self, handler: HandlerT) -> HandlerT:
         """Register an async handler named on_ready, on_message, on_access_lost, or on_error."""
@@ -123,32 +140,30 @@ class Bot:
         await self._dispatch("on_message", message)
         if not self._can_invoke_command(message):
             return
-        prefix = self._matching_prefix(message.body)
-        if prefix is None:
-            return
-
         try:
-            parts = shlex.split(message.body[len(prefix) :])
-        except ValueError as exc:
-            await self._dispatch_error(exc)
+            parsed = self.command_adapter.parse(message.body, self.command_registry)
+        except CommandNotFound:
             return
-        if not parts:
+        except CommandError as exc:
+            await self._dispatch_command_error(exc, None)
             return
-
-        command_name = parts[0].casefold()
-        handler = self._commands.get(command_name)
-        if handler is None:
+        if parsed is None:
             return
+        command, invocation = parsed
         context = Context(
             message=message,
-            command=command_name,
-            args=tuple(parts[1:]),
+            command=command.name,
+            args=invocation.arguments,
             _messages=self.client.messages,
+            invoked_with=invocation.invoked_with,
+            prefix=invocation.prefix,
         )
         try:
-            await handler(context)
+            await self._dispatch("on_command", context)
+            await command.invoke(context, invocation.arguments)
+            await self._dispatch("on_command_complete", context)
         except Exception as exc:
-            await self._dispatch_error(exc)
+            await self._dispatch_command_error(exc, context)
 
     async def _consume_channel(self, target: ChannelTarget) -> None:
         stream_key = self.event_transport.stream_key(target)
@@ -216,7 +231,18 @@ class Bot:
         return self._matching_prefix(message.body) is not None
 
     def _matching_prefix(self, body: str) -> str | None:
-        return next((prefix for prefix in self.command_prefixes if body.startswith(prefix)), None)
+        return self.command_adapter.matching_prefix(body)
+
+    async def _dispatch_command_error(
+        self,
+        error: Exception,
+        context: Context | None,
+    ) -> None:
+        handler = self._events.get("on_command_error")
+        if handler is None:
+            await self._dispatch_error(error)
+            return
+        await handler(error, context)
 
     async def _dispatch(self, event_name: str, *args: Any) -> None:
         handler = self._events.get(event_name)

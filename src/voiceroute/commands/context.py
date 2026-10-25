@@ -19,6 +19,8 @@ class Context:
     command: str
     args: tuple[str, ...]
     _messages: MessagesAPI = field(repr=False)
+    invoked_with: str | None = None
+    prefix: str | None = None
     _reply_index: int = field(default=0, init=False, repr=False)
 
     async def reply(self, body: str) -> Message:
