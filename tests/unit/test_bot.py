@@ -229,11 +229,15 @@ async def test_history_catch_up_reads_every_page() -> None:
     )
     runtime._handle_message = AsyncMock()  # type: ignore[method-assign]
 
-    final_seq = await runtime._catch_up_history(target, runtime._stream_key(target), "0")
+    async def empty_stream(*args, **kwargs):
+        if False:
+            yield None
+
+    runtime.client.events.listen_messages = empty_stream  # type: ignore[method-assign]
+    await runtime._consume_channel(target)
     checkpoint = await store.load(runtime._stream_key(target))
     await runtime.close()
 
-    assert final_seq == "205"
     assert checkpoint is not None and checkpoint.message_seq == "205"
     assert [
         call.kwargs["after_seq"] for call in runtime.client.messages.history.await_args_list

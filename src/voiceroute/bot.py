@@ -6,7 +6,6 @@ import asyncio
 import inspect
 import shlex
 from collections.abc import Awaitable, Callable, Sequence
-from dataclasses import dataclass
 from typing import Any, TypeVar
 
 from voiceroute.client import VoiceRouteClient
@@ -15,22 +14,16 @@ from voiceroute.errors import NoChannelsAvailable
 from voiceroute.events import (
     AccessLost,
     CursorStore,
+    EventTransport,
+    LegacySSETransport,
     MemoryCursorStore,
     MessageUpserted,
-    StreamCheckpoint,
 )
+from voiceroute.events.transport import ChannelTarget
 from voiceroute.models import BotIdentity, Channel, Message
 
 AsyncHandler = Callable[..., Awaitable[None]]
 HandlerT = TypeVar("HandlerT", bound=AsyncHandler)
-
-
-@dataclass(frozen=True, slots=True)
-class ChannelTarget:
-    """A community channel selected for event consumption."""
-
-    community_id: str
-    channel_id: str
 
 
 class Bot:
@@ -47,6 +40,7 @@ class Bot:
         max_event_streams: int = 32,
         initial_after_seq: str | None = "0",
         cursor_store: CursorStore | None = None,
+        event_transport: EventTransport | None = None,
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
         if not prefixes or any(not prefix for prefix in prefixes):
@@ -63,6 +57,11 @@ class Bot:
         self.initial_after_seq = initial_after_seq
         self.cursor_store = cursor_store or MemoryCursorStore()
         self.base_url = base_url.rstrip("/")
+        self.event_transport = event_transport or LegacySSETransport(
+            self.client.events,
+            self.client.messages,
+            base_url=self.base_url,
+        )
         self.user: BotIdentity | None = None
         self.listening_channels: tuple[ChannelTarget, ...] = ()
         self._commands: dict[str, AsyncHandler] = {}
@@ -152,68 +151,26 @@ class Bot:
             await self._dispatch_error(exc)
 
     async def _consume_channel(self, target: ChannelTarget) -> None:
-        stream_key = self._stream_key(target)
+        stream_key = self.event_transport.stream_key(target)
         checkpoint = await self.cursor_store.load(stream_key)
-        change_cursor = checkpoint.change_cursor if checkpoint is not None else None
-        after_seq = checkpoint.message_seq if checkpoint is not None else self.initial_after_seq
-        if change_cursor is None:
-            after_seq = await self._catch_up_history(target, stream_key, after_seq)
-
-        async for event in self.client.events.listen_messages(
-            target.community_id,
-            target.channel_id,
-            after_seq=after_seq,
-            cursor=change_cursor,
+        async for delivery in self.event_transport.listen(
+            target,
+            checkpoint=checkpoint,
+            initial_after_seq=self.initial_after_seq,
         ):
             if self._closed:
                 return
+            event = delivery.event
             if isinstance(event, AccessLost):
                 await self._dispatch("on_access_lost", event, target)
-                await self._save_checkpoint(stream_key, event.cursor, after_seq)
+                await self.cursor_store.save(stream_key, delivery.checkpoint)
                 return
             await self._handle_message(event)
-            after_seq = event.message.seq
-            await self._save_checkpoint(stream_key, event.cursor, after_seq)
-
-    async def _catch_up_history(
-        self,
-        target: ChannelTarget,
-        stream_key: str,
-        after_seq: str | None,
-    ) -> str | None:
-        if after_seq is None:
-            return None
-
-        current_seq = after_seq
-        while True:
-            page = await self.client.messages.history(
-                target.community_id,
-                target.channel_id,
-                limit=100,
-                after_seq=current_seq,
-            )
-            if not page.items:
-                return current_seq
-            for message in page.items:
-                await self._handle_message(MessageUpserted(message=message, cursor=None))
-                current_seq = message.seq
-                await self._save_checkpoint(stream_key, None, current_seq)
-            if len(page.items) < 100:
-                return current_seq
-
-    async def _save_checkpoint(
-        self,
-        stream_key: str,
-        change_cursor: str | None,
-        message_seq: str | None,
-    ) -> None:
-        await self.cursor_store.save(
-            stream_key,
-            StreamCheckpoint(change_cursor=change_cursor, message_seq=message_seq),
-        )
+            await self.cursor_store.save(stream_key, delivery.checkpoint)
 
     def _stream_key(self, target: ChannelTarget) -> str:
-        return f"{self.base_url}|messages|{target.community_id}|{target.channel_id}"
+        """Return the event transport checkpoint key for compatibility."""
+        return self.event_transport.stream_key(target)
 
     async def _discover_channels(self) -> list[ChannelTarget]:
         if self.community_id is not None and self.channel_id is not None:
