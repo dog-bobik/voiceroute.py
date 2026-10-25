@@ -6,15 +6,25 @@ import asyncio
 import inspect
 import shlex
 from collections.abc import Awaitable, Callable
+from dataclasses import dataclass
 from typing import Any, TypeVar
 
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands.context import Context
+from voiceroute.errors import NoChannelsAvailable
 from voiceroute.events import AccessLost, MessageUpserted
-from voiceroute.models import BotIdentity, Message
+from voiceroute.models import BotIdentity, Channel, Message
 
 AsyncHandler = Callable[..., Awaitable[None]]
 HandlerT = TypeVar("HandlerT", bound=AsyncHandler)
+
+
+@dataclass(frozen=True, slots=True)
+class ChannelTarget:
+    """A community channel selected for event consumption."""
+
+    community_id: str
+    channel_id: str
 
 
 class Bot:
@@ -24,18 +34,25 @@ class Bot:
         self,
         *,
         token: str,
-        community_id: str,
-        channel_id: str,
+        community_id: str | None = None,
+        channel_id: str | None = None,
         command_prefix: str = "!",
         base_url: str = "https://voiceroute.cc",
+        max_event_streams: int = 32,
     ) -> None:
         if not command_prefix:
             raise ValueError("command_prefix cannot be empty")
+        if channel_id is not None and community_id is None:
+            raise ValueError("community_id is required when channel_id is provided")
+        if not 1 <= max_event_streams <= 32:
+            raise ValueError("max_event_streams must be between 1 and 32")
         self.client = VoiceRouteClient(token=token, base_url=base_url)
         self.community_id = community_id
         self.channel_id = channel_id
         self.command_prefix = command_prefix
+        self.max_event_streams = max_event_streams
         self.user: BotIdentity | None = None
+        self.listening_channels: tuple[ChannelTarget, ...] = ()
         self._commands: dict[str, AsyncHandler] = {}
         self._events: dict[str, AsyncHandler] = {}
         self._closed = False
@@ -64,19 +81,16 @@ class Bot:
     async def start(self) -> None:
         """Authenticate and process channel events until stopped or access is lost."""
         self.user = await self.client.bots.get_current()
+        self.listening_channels = tuple(await self._discover_channels())
         await self._dispatch("on_ready")
 
         try:
-            async for event in self.client.events.listen_messages(
-                self.community_id,
-                self.channel_id,
-            ):
-                if self._closed:
-                    break
-                if isinstance(event, AccessLost):
-                    await self._dispatch("on_access_lost", event)
-                    break
-                await self._handle_message(event)
+            async with asyncio.TaskGroup() as tasks:
+                for target in self.listening_channels:
+                    tasks.create_task(
+                        self._consume_channel(target),
+                        name=f"voiceroute:{target.community_id}:{target.channel_id}",
+                    )
         finally:
             await self.close()
 
@@ -118,6 +132,52 @@ class Bot:
             await handler(context)
         except Exception as exc:
             await self._dispatch_error(exc)
+
+    async def _consume_channel(self, target: ChannelTarget) -> None:
+        async for event in self.client.events.listen_messages(
+            target.community_id,
+            target.channel_id,
+        ):
+            if self._closed:
+                return
+            if isinstance(event, AccessLost):
+                await self._dispatch("on_access_lost", event, target)
+                return
+            await self._handle_message(event)
+
+    async def _discover_channels(self) -> list[ChannelTarget]:
+        if self.community_id is not None and self.channel_id is not None:
+            return [ChannelTarget(self.community_id, self.channel_id)]
+
+        if self.community_id is not None:
+            community_ids = [self.community_id]
+        else:
+            community_ids = [community.id for community in await self.client.communities.list()]
+
+        targets: list[ChannelTarget] = []
+        for community_id in community_ids:
+            channels = await self.client.communities.list_channels(community_id)
+            targets.extend(
+                ChannelTarget(community_id, channel.id)
+                for channel in channels
+                if self._is_text_channel(channel)
+            )
+
+        if not targets:
+            raise NoChannelsAvailable(
+                "the bot is not installed in a community with an accessible text channel"
+            )
+        if len(targets) > self.max_event_streams:
+            raise NoChannelsAvailable(
+                f"discovered {len(targets)} text channels, but max_event_streams is "
+                f"{self.max_event_streams}; provide community_id/channel_id or narrow "
+                "the installation"
+            )
+        return targets
+
+    @staticmethod
+    def _is_text_channel(channel: Channel) -> bool:
+        return channel.type.casefold() == "text"
 
     def _can_invoke_command(self, message: Message) -> bool:
         if message.deleted or message.edited_at is not None or message.webhook:

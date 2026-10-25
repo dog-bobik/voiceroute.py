@@ -74,5 +74,9 @@ class SSEError(VoiceRouteError):
     """An SSE stream returned malformed or unsupported data."""
 
 
+class NoChannelsAvailable(VoiceRouteError):
+    """The bot cannot discover any accessible text channels."""
+
+
 class ClientClosedError(VoiceRouteError):
     """An operation was attempted after closing the client."""

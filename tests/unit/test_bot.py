@@ -2,9 +2,9 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from voiceroute import Bot, Context
+from voiceroute import Bot, Context, NoChannelsAvailable
 from voiceroute.events import MessageUpserted
-from voiceroute.models import Message, User
+from voiceroute.models import Channel, Community, Message, User
 
 
 def incoming_message(body: str, *, bot: bool = False, edited: bool = False) -> Message:
@@ -71,4 +71,47 @@ async def test_duplicate_command_registration_is_rejected() -> None:
         async def second(context: Context) -> None:
             pass
 
+    await runtime.close()
+
+
+async def test_discovers_text_channels_across_communities() -> None:
+    runtime = Bot(token="vrb_secret")
+    runtime.client.communities.list = AsyncMock(
+        return_value=[Community("first", "First"), Community("second", "Second")]
+    )
+    runtime.client.communities.list_channels = AsyncMock(
+        side_effect=[
+            [Channel("text-1", "general", "text"), Channel("voice-1", "Voice", "voice")],
+            [Channel("text-2", "chat", "TEXT")],
+        ]
+    )
+
+    targets = await runtime._discover_channels()
+    await runtime.close()
+
+    assert [(target.community_id, target.channel_id) for target in targets] == [
+        ("first", "text-1"),
+        ("second", "text-2"),
+    ]
+
+
+async def test_explicit_channel_skips_discovery() -> None:
+    runtime = Bot(
+        token="vrb_secret",
+        community_id="community-id",
+        channel_id="channel-id",
+    )
+
+    targets = await runtime._discover_channels()
+    await runtime.close()
+
+    assert targets[0].channel_id == "channel-id"
+
+
+async def test_empty_discovery_has_actionable_error() -> None:
+    runtime = Bot(token="vrb_secret")
+    runtime.client.communities.list = AsyncMock(return_value=[])
+
+    with pytest.raises(NoChannelsAvailable, match="not installed"):
+        await runtime._discover_channels()
     await runtime.close()

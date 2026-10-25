@@ -35,8 +35,6 @@ from voiceroute import Bot, Context
 
 bot = Bot(
     token=os.environ["VOICEROUTE_BOT_TOKEN"],
-    community_id=os.environ["VOICEROUTE_COMMUNITY_ID"],
-    channel_id=os.environ["VOICEROUTE_CHANNEL_ID"],
 )
 
 
@@ -50,6 +48,9 @@ bot.run()
 
 Ответ использует стабильный UUID, производный от исходного сообщения. Повторная
 доставка SSE-события поэтому не создаст дубликат ответа.
+
+По умолчанию бот обнаруживает все доступные ему сообщества и текстовые каналы.
+Для ограничения одним каналом можно явно передать `community_id` и `channel_id`.
 
 ## Состояние реализации
 
