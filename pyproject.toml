@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "voiceroute.py"
+version = "0.1.0.dev0"
+description = "Async Python SDK and bot framework for the VoiceRoute HTTP and SSE APIs."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "dog-bobik" }]
+keywords = ["voiceroute", "bot", "sdk", "asyncio", "sse"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Framework :: AsyncIO",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = ["httpx>=0.27,<1"]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.13",
+  "pytest>=8.3",
+  "pytest-asyncio>=0.24",
+  "pytest-cov>=6",
+  "respx>=0.22",
+  "ruff>=0.8",
+]
+docs = ["mkdocs-material>=9.5", "mkdocstrings[python]>=0.27"]
+
+[project.urls]
+Homepage = "https://github.com/dog-bobik/voiceroute.py"
+Documentation = "https://github.com/dog-bobik/voiceroute.py#readme"
+Issues = "https://github.com/dog-bobik/voiceroute.py/issues"
+Repository = "https://github.com/dog-bobik/voiceroute.py.git"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/voiceroute"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = ["integration: requires a live VoiceRoute environment"]
+
+[tool.coverage.run]
+branch = true
+source = ["voiceroute"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["voiceroute"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "RUF"]
+
