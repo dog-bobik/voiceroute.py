@@ -29,7 +29,7 @@
 - middleware и checks — реализовано process-local ядро;
 - cooldowns и concurrency limits — реализовано process-local ядро;
 - фоновые задачи;
-- дополнительные адаптеры хранения курсоров для SQLite и Redis;
+- дополнительные адаптеры хранения курсоров для SQLite и Redis — реализованы;
 - supervised runtime lifecycle и graceful shutdown — реализовано;
 
 ## 1.0 — стабильный API
