@@ -96,7 +96,10 @@ class Bot:
 
     def run(self) -> None:
         """Run the bot in a new asyncio event loop."""
-        asyncio.run(self.start())
+        try:
+            asyncio.run(self.start())
+        except KeyboardInterrupt:
+            pass
 
     async def close(self) -> None:
         """Stop the runtime and release its HTTP connections."""

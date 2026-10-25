@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -115,3 +115,14 @@ async def test_empty_discovery_has_actionable_error() -> None:
     with pytest.raises(NoChannelsAvailable, match="not installed"):
         await runtime._discover_channels()
     await runtime.close()
+
+
+def test_run_treats_keyboard_interrupt_as_graceful_shutdown() -> None:
+    runtime = Bot(token="vrb_secret")
+
+    def interrupt(coroutine: object) -> None:
+        coroutine.close()  # type: ignore[attr-defined]
+        raise KeyboardInterrupt
+
+    with patch("voiceroute.bot.asyncio.run", side_effect=interrupt):
+        runtime.run()
