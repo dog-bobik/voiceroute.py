@@ -4,8 +4,14 @@ import httpx
 import pytest
 import respx
 
-from voiceroute.errors import ClientClosedError, RateLimited, TransportError, Unauthorized
-from voiceroute.transport import HTTPTransport
+from voiceroute.errors import (
+    ClientClosedError,
+    RateLimited,
+    ResourceVersionConflict,
+    TransportError,
+    Unauthorized,
+)
+from voiceroute.transport import HTTPTransport, RateLimitMetadata
 
 
 @respx.mock
@@ -133,3 +139,75 @@ async def test_transport_omits_none_query_parameters() -> None:
     await transport.close()
 
     assert str(route.calls[0].request.url) == "https://voiceroute.cc/api/communities?limit=50"
+
+
+@respx.mock
+async def test_transport_parses_v1_error_envelope() -> None:
+    respx.patch("https://voiceroute.cc/api/v1/resource").mock(
+        return_value=httpx.Response(
+            409,
+            headers={"X-Request-ID": "header-request"},
+            json={
+                "error": {
+                    "code": "RESOURCE_VERSION_CONFLICT",
+                    "message": "Refresh before saving",
+                    "requestId": "body-request",
+                    "retryable": False,
+                    "details": {"currentETag": '"platform-2"'},
+                    "fieldErrors": [{"field": "name", "code": "INVALID"}],
+                }
+            },
+        )
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+
+    with pytest.raises(ResourceVersionConflict) as captured:
+        await transport.request(
+            "PATCH",
+            "/api/v1/resource",
+            json={"name": "new"},
+            if_match='"platform-1"',
+            idempotency_key="018f47a0-d4c0-7c73-a7cc-123456789abc",
+        )
+    await transport.close()
+
+    assert captured.value.code == "RESOURCE_VERSION_CONFLICT"
+    assert captured.value.request_id == "body-request"
+    assert captured.value.details == {"currentETag": '"platform-2"'}
+    assert captured.value.field_errors[0].field == "name"
+
+
+@respx.mock
+async def test_transport_exposes_v1_response_metadata() -> None:
+    route = respx.patch("https://voiceroute.cc/api/v1/resource").mock(
+        return_value=httpx.Response(
+            200,
+            headers={
+                "X-Request-ID": "request-id",
+                "X-VoiceRoute-API-Version": "1",
+                "ETag": '"resource-2"',
+                "X-RateLimit-Limit": "50",
+                "X-RateLimit-Remaining": "49",
+                "X-RateLimit-Reset-After": "0.5",
+                "X-RateLimit-Bucket": "bot-global",
+                "X-RateLimit-Scope": "application",
+            },
+            json={"version": "2"},
+        )
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+
+    result = await transport.request_with_response(
+        "PATCH",
+        "/api/v1/resource",
+        json={"name": "new"},
+        if_match='"resource-1"',
+        idempotency_key="018f47a0-d4c0-7c73-a7cc-123456789abc",
+    )
+    await transport.close()
+
+    assert route.calls.last.request.headers["If-Match"] == '"resource-1"'
+    assert route.calls.last.request.headers["Idempotency-Key"].startswith("018f47a0")
+    assert result.etag == '"resource-2"'
+    assert result.api_version == "1"
+    assert result.rate_limit == RateLimitMetadata(50, 49, 0.5, "bot-global", "application")
