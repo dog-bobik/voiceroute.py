@@ -8,6 +8,13 @@ from voiceroute.models.application_command import (
     CommandOption,
     CommandOptionType,
 )
+from voiceroute.models.audit import (
+    AuditActionOption,
+    AuditActor,
+    AuditEntry,
+    AuditPage,
+    AuditTarget,
+)
 from voiceroute.models.automod import AutoModConfig
 from voiceroute.models.bot import BotIdentity
 from voiceroute.models.community import Channel, Community
@@ -33,6 +40,11 @@ __all__ = [
     "ALL_PERMISSIONS",
     "ApplicationCommand",
     "ApplicationSummary",
+    "AuditActionOption",
+    "AuditActor",
+    "AuditEntry",
+    "AuditPage",
+    "AuditTarget",
     "AutoModConfig",
     "Ban",
     "BotIdentity",
