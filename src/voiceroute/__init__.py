@@ -154,6 +154,7 @@ from voiceroute.models import (
     User,
 )
 from voiceroute.runtime import RuntimeState
+from voiceroute.state import CacheChange, CachedEntity, CachePolicy, StateCache
 from voiceroute.transport import RateLimiter
 
 __all__ = [
@@ -182,6 +183,9 @@ __all__ = [
     "BotEvent",
     "BotIdentity",
     "BucketType",
+    "CacheChange",
+    "CachePolicy",
+    "CachedEntity",
     "Channel",
     "ChannelPermissionSnapshot",
     "Check",
@@ -287,6 +291,7 @@ __all__ = [
     "SSEError",
     "ServiceUnavailable",
     "ShardManager",
+    "StateCache",
     "Status",
     "StreamCheckpoint",
     "TooManyArguments",

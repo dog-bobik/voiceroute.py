@@ -57,10 +57,14 @@ from voiceroute.models import (
     BotIdentity,
     Channel,
     CommandOption,
+    Community,
+    Member,
     Message,
     PlatformEvent,
+    Role,
 )
 from voiceroute.runtime import RuntimeState
+from voiceroute.state import CachedEntity, CachePolicy, StateCache
 
 AsyncHandler = Callable[..., Awaitable[None]]
 HandlerT = TypeVar("HandlerT", bound=AsyncHandler)
@@ -96,6 +100,8 @@ class Bot:
         intents: Intents | None = None,
         gateway_store: GatewayCheckpointStore | None = None,
         gateway_client: GatewayClient | None = None,
+        cache: StateCache | None = None,
+        cache_policy: CachePolicy | None = None,
         sync_application_commands: bool = False,
         interaction_deduplication_size: int = 1024,
         max_consumer_backoff: float = 30.0,
@@ -110,6 +116,8 @@ class Bot:
             raise ValueError("max_consumer_backoff must be positive")
         if interaction_deduplication_size <= 0:
             raise ValueError("interaction_deduplication_size must be positive")
+        if cache is not None and cache_policy is not None:
+            raise ValueError("cache and cache_policy cannot be provided together")
         self.client = VoiceRouteClient(token=token, base_url=base_url)
         self.community_id = community_id
         self.channel_id = channel_id
@@ -137,6 +145,7 @@ class Bot:
         self.intents = intents or Intents.default()
         self.gateway_store = gateway_store
         self.gateway = gateway_client
+        self.cache = cache or StateCache(cache_policy or CachePolicy())
         self.interaction_event_transport = interaction_event_transport or InteractionSSETransport(
             self.client.events,
             base_url=self.base_url,
@@ -149,7 +158,11 @@ class Bot:
         self.application_command_registry = ApplicationCommandRegistry()
         self.command_pipeline = CommandPipeline()
         self._events: dict[str, list[AsyncHandler]] = {}
-        self.dispatcher = EventDispatcher(error_handler=self._handle_dispatch_error)
+        self.dispatcher = EventDispatcher(
+            before_dispatch=self.cache.apply,
+            dispatch_failed=self.cache.rollback,
+            error_handler=self._handle_dispatch_error,
+        )
         self.dispatcher.add_listener(self._handle_platform_event)
         self._extensions: dict[str, ExtensionRegistration] = {}
         self._extension_modules: dict[str, str] = {}
@@ -481,6 +494,86 @@ class Bot:
         """Wait for one matching Gateway event without a permanent listener."""
         return await self.dispatcher.wait_for(event, check=check, timeout=timeout)
 
+    def get_community(self, community_id: str) -> CachedEntity | None:
+        return self.cache.get_community(community_id)
+
+    def get_channel(self, channel_id: str) -> CachedEntity | None:
+        return self.cache.get_channel(channel_id)
+
+    def get_role(self, role_id: str) -> CachedEntity | None:
+        return self.cache.get_role(role_id)
+
+    def get_member(self, community_id: str, user_id: str | int) -> CachedEntity | None:
+        return self.cache.get_member(community_id, user_id)
+
+    def get_thread(self, thread_id: str) -> CachedEntity | None:
+        return self.cache.get_thread(thread_id)
+
+    def get_message(
+        self, community_id: str, channel_id: str, message_id_or_seq: str
+    ) -> CachedEntity | None:
+        return self.cache.get_message(community_id, channel_id, message_id_or_seq)
+
+    async def fetch_community(self, community_id: str) -> Community:
+        community = await self.client.communities.get(community_id)
+        self.cache.store(
+            "community",
+            community.id,
+            {"id": community.id, "name": community.name},
+            partial=False,
+        )
+        return community
+
+    async def fetch_channel(self, community_id: str, channel_id: str) -> Channel | None:
+        channels = await self.client.communities.list_channels(community_id)
+        channel = next((item for item in channels if item.id == channel_id), None)
+        if channel is not None:
+            self.cache.store(
+                "channel",
+                channel.id,
+                {
+                    "id": channel.id,
+                    "communityId": community_id,
+                    "name": channel.name,
+                    "kind": channel.kind,
+                },
+                partial=False,
+            )
+        return channel
+
+    async def fetch_member(self, community_id: str, user_id: int) -> Member | None:
+        member = await self.client.members.get(community_id, user_id)
+        if member is not None:
+            self.cache.store(
+                "member",
+                f"{community_id}:{member.id}",
+                {
+                    "communityId": community_id,
+                    "userId": str(member.id),
+                    "displayName": member.display_name,
+                    "roleIds": member.role_ids,
+                },
+                partial=False,
+            )
+        return member
+
+    async def fetch_role(self, community_id: str, role_id: str) -> Role | None:
+        roles = await self.client.roles.list(community_id)
+        role = next((item for item in roles if item.id == role_id), None)
+        if role is not None:
+            self.cache.store(
+                "role",
+                role.id,
+                {
+                    "id": role.id,
+                    "communityId": community_id,
+                    "name": role.name,
+                    "position": role.position,
+                },
+                partial=False,
+            )
+        return role
+
     def is_ready(self) -> bool:
         """Return whether the runtime is currently accepting events."""
         return self.state is RuntimeState.RUNNING and self._ready.is_set()
@@ -701,6 +794,7 @@ class Bot:
     async def _start_gateway(self) -> None:
         if self.gateway is None:
             self.gateway = self.client.gateway(intents=self.intents, store=self.gateway_store)
+        self.gateway.on_session_invalidated = self._reconcile_state
 
         async def dispatch(event: PlatformEvent) -> None:
             await self.dispatcher.dispatch(event)
@@ -713,6 +807,8 @@ class Bot:
             ready.cancel()
             await task
         await ready
+        if self.cache.policy.reconcile_on_ready:
+            await self.cache.reconcile(self.client)
         await self._dispatch("on_connect")
         self.state = RuntimeState.RUNNING
         self._ready.set()
@@ -722,8 +818,34 @@ class Bot:
     async def _handle_platform_event(self, event: PlatformEvent) -> None:
         await self._dispatch("on_raw_event", event)
         await self._dispatch(f"on_{event.name.casefold()}", event)
+        change = self.cache.change_for(event)
+        if change is not None:
+            await self._dispatch_cache_change(event.name, change.before, change.after)
         if not event.is_known:
             await self._dispatch("on_unknown_event", event)
+
+    async def _dispatch_cache_change(
+        self,
+        event_name: str,
+        before: CachedEntity | None,
+        after: CachedEntity | None,
+    ) -> None:
+        if event_name == "MEMBER_JOINED" and after is not None:
+            await self._dispatch("on_member_join", after)
+        elif event_name == "MEMBER_LEFT" and before is not None:
+            await self._dispatch("on_member_remove", before)
+        elif event_name.endswith("_CREATED") and after is not None:
+            kind = event_name.removesuffix("_CREATED").casefold()
+            await self._dispatch(f"on_{kind}_create", after)
+        elif event_name.endswith("_UPDATED") and after is not None:
+            kind = event_name.removesuffix("_UPDATED").casefold()
+            await self._dispatch(f"on_{kind}_update", before, after)
+        elif event_name.endswith("_DELETED") and before is not None:
+            kind = event_name.removesuffix("_DELETED").casefold()
+            await self._dispatch(f"on_{kind}_delete", before)
+
+    async def _reconcile_state(self) -> None:
+        await self.cache.reconcile(self.client)
 
     async def _handle_dispatch_error(self, error: Exception, event: PlatformEvent) -> None:
         handlers = self._events.get("on_event_error")

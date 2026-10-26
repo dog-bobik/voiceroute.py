@@ -32,6 +32,7 @@ class EventDispatcher:
         deduplication_size: int = 10_000,
         before_dispatch: DispatchHook | None = None,
         after_dispatch: DispatchHook | None = None,
+        dispatch_failed: DispatchHook | None = None,
         error_handler: DispatchErrorHandler | None = None,
     ) -> None:
         if deduplication_size <= 0:
@@ -43,6 +44,7 @@ class EventDispatcher:
         self._deduplication_size = deduplication_size
         self.before_dispatch = before_dispatch
         self.after_dispatch = after_dispatch
+        self.dispatch_failed = dispatch_failed
         self.error_handler = error_handler
 
     @staticmethod
@@ -69,19 +71,26 @@ class EventDispatcher:
         """Return false for a duplicate delivery, otherwise run listeners serially."""
         if event.delivery_id is not None and event.delivery_id in self._delivery_ids:
             return False
-        if self.before_dispatch is not None:
-            await self.before_dispatch(event)
-        self._resolve_waiters(event)
-        listeners = tuple(self._listeners.get(event.name, ())) + tuple(self._listeners.get("*", ()))
-        for listener in listeners:
-            try:
-                await listener(event)
-            except Exception as exc:
-                if self.error_handler is None:
-                    raise
-                await self.error_handler(exc, event)
-        if self.after_dispatch is not None:
-            await self.after_dispatch(event)
+        try:
+            if self.before_dispatch is not None:
+                await self.before_dispatch(event)
+            self._resolve_waiters(event)
+            listeners = tuple(self._listeners.get(event.name, ())) + tuple(
+                self._listeners.get("*", ())
+            )
+            for listener in listeners:
+                try:
+                    await listener(event)
+                except Exception as exc:
+                    if self.error_handler is None:
+                        raise
+                    await self.error_handler(exc, event)
+            if self.after_dispatch is not None:
+                await self.after_dispatch(event)
+        except BaseException:
+            if self.dispatch_failed is not None:
+                await self.dispatch_failed(event)
+            raise
         self._remember(event.delivery_id)
         return True
 
