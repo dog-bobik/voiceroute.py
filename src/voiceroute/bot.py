@@ -355,6 +355,13 @@ class Bot:
             if self.sync_application_commands_on_start:
                 await self.sync_application_commands()
             self.listening_channels = tuple(await self._discover_channels())
+            required_streams = len(self.listening_channels) + int(self._needs_interaction_stream())
+            if required_streams > self.max_event_streams:
+                raise NoChannelsAvailable(
+                    f"runtime requires {required_streams} event streams, but max_event_streams is "
+                    f"{self.max_event_streams}; reserve one stream for native interactions or "
+                    "narrow the channel selection"
+                )
             await self._dispatch("on_connect")
             self.state = RuntimeState.RUNNING
             self._ready.set()
