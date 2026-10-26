@@ -10,6 +10,7 @@ from voiceroute.api import (
     InteractionsAPI,
     MembersAPI,
     MessagesAPI,
+    ModerationAPI,
     RolesAPI,
 )
 from voiceroute.config import ClientConfig
@@ -42,6 +43,7 @@ class VoiceRouteClient:
         self.events = EventsAPI(self._transport)
         self.interactions = InteractionsAPI(self._transport)
         self.messages = MessagesAPI(self._transport)
+        self.moderation = ModerationAPI(self._transport)
         self.members = MembersAPI(self._transport)
         self.roles = RolesAPI(self._transport)
 
