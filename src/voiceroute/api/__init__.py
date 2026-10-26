@@ -1,6 +1,7 @@
 """Domain-specific VoiceRoute API clients."""
 
 from voiceroute.api.application_commands import ApplicationCommandsAPI
+from voiceroute.api.audit import AuditAPI
 from voiceroute.api.automod import AutoModAPI
 from voiceroute.api.bots import BotsAPI
 from voiceroute.api.communities import CommunitiesAPI
@@ -13,6 +14,7 @@ from voiceroute.api.roles import RolesAPI
 
 __all__ = [
     "ApplicationCommandsAPI",
+    "AuditAPI",
     "AutoModAPI",
     "BotsAPI",
     "CommunitiesAPI",
