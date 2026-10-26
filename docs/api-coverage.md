@@ -16,6 +16,8 @@ bot-compatible ресурсы [VoiceRoute](https://voiceroute.cc) предста
 | Сообщества | список, одно сообщество | да | базовый |
 | Каналы | список доступных каналов | да | базовый |
 | События | channel SSE, catch-up, checkpoint | да | готово |
+| Application commands | registry, typed options | да | готово |
+| Interactions | bot SSE, public/ephemeral response | да | базовый |
 | Сообщения | история, отправка, edit, delete | да | готово |
 | Контент сообщений | pins, reactions, search | да | готово |
 | Вложения | — | — | следующий домен |
