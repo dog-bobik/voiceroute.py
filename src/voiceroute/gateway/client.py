@@ -15,7 +15,14 @@ from websockets.asyncio.client import connect
 from websockets.exceptions import ConnectionClosed
 
 from voiceroute.api import PlatformAPI
-from voiceroute.errors import GatewayClosed, GatewayError, GatewayProtocolError
+from voiceroute.errors import (
+    GatewayClosed,
+    GatewayError,
+    GatewayProtocolError,
+    PrivilegedIntentRequired,
+)
+from voiceroute.gateway.intents import Intents
+from voiceroute.gateway.presence import Activity, Presence, Status
 from voiceroute.gateway.store import (
     GatewayCheckpoint,
     GatewayCheckpointStore,
@@ -52,7 +59,7 @@ class GatewayClient:
         token: str,
         platform_api: PlatformAPI,
         base_url: str,
-        intents: Sequence[str] = (),
+        intents: Intents | Sequence[str] = (),
         shard: tuple[int, int] = (0, 1),
         store: GatewayCheckpointStore | None = None,
         connector: GatewayConnector = _default_connector,
@@ -61,12 +68,13 @@ class GatewayClient:
         shard_id, shard_count = shard
         if shard_count not in {1, 2, 4, 8, 16} or not 0 <= shard_id < shard_count:
             raise ValueError("invalid Gateway shard")
-        if len(set(intents)) != len(intents):
+        intent_values = intents.values if isinstance(intents, Intents) else tuple(intents)
+        if len(set(intent_values)) != len(intent_values):
             raise ValueError("Gateway intents must be unique")
         self._token = token
         self._platform = platform_api
         self._base_url = base_url
-        self.intents = tuple(intents)
+        self.intents = tuple(intent_values)
         self.shard = shard
         self._store = store or MemoryGatewayCheckpointStore()
         self._connector = connector
@@ -76,10 +84,12 @@ class GatewayClient:
         self._stopping = False
         self._last_sequence = "0"
         self._heartbeat_acknowledged = True
+        self._identified = asyncio.Event()
 
     async def run_once(self, handler: GatewayHandler) -> None:
         """Run one connection until it closes, committing only handled events."""
         discovery = await self._platform.gateway()
+        await self._validate_intents()
         if discovery.recommended_shards > self.shard[1]:
             raise GatewayError("VoiceRoute requires more Gateway shards")
         checkpoint = await self._valid_checkpoint()
@@ -104,6 +114,7 @@ class GatewayClient:
             if not isinstance(interval_ms, int) or not 100 <= interval_ms <= 120_000:
                 raise GatewayProtocolError("invalid heartbeat interval")
             await self._send(self._resume(checkpoint) if checkpoint else self._identify())
+            self._identified.set()
             heartbeat = asyncio.create_task(self._heartbeat_loop(interval_ms / 1000))
 
             async for message in iterator:
@@ -166,6 +177,62 @@ class GatewayClient:
         self._stopping = True
         if self._socket is not None:
             await self._socket.close(1000, "Client stopped")
+
+    async def wait_until_identified(self) -> None:
+        await self._identified.wait()
+
+    async def change_presence(
+        self,
+        *,
+        status: Status,
+        activities: Sequence[Activity] = (),
+        since: str | None = None,
+    ) -> None:
+        presence = Presence(status=status, activities=tuple(activities), since=since)
+        await self._send({"op": 3, "data": presence.to_dict()})
+
+    async def request_members(
+        self,
+        community_id: str,
+        *,
+        nonce: str,
+        cursor: str | None = None,
+        limit: int = 100,
+    ) -> None:
+        if not 1 <= len(nonce) <= 64 or not nonce.replace("_", "").replace("-", "").isalnum():
+            raise ValueError("nonce must contain 1 to 64 URL-safe characters")
+        if not 1 <= limit <= 100:
+            raise ValueError("member request limit must be between 1 and 100")
+        data: dict[str, Any] = {"communityId": community_id, "nonce": nonce, "limit": limit}
+        if cursor is not None:
+            data["cursor"] = cursor
+        await self._send({"op": 8, "data": data})
+
+    async def update_subscriptions(self, subscription_ids: Sequence[str]) -> None:
+        values = tuple(subscription_ids)
+        if len(values) > 10 or len(values) != len(set(values)):
+            raise ValueError("subscriptions must be unique and contain at most ten IDs")
+        await self._send({"op": 12, "data": {"subscriptionIds": list(values)}})
+
+    async def _validate_intents(self) -> None:
+        if not self.intents:
+            return
+        capabilities = await self._platform.capabilities()
+        unknown = tuple(intent for intent in self.intents if intent not in capabilities.intents)
+        if unknown:
+            names = ", ".join(unknown)
+            raise GatewayError(f"VoiceRoute does not advertise Gateway intents: {names}")
+        privileged = tuple(
+            intent for intent in self.intents if capabilities.intents[intent].privileged
+        )
+        if not privileged:
+            return
+        application = await self._platform.current_application()
+        missing = tuple(
+            intent for intent in privileged if intent not in application.approved_intents
+        )
+        if missing:
+            raise PrivilegedIntentRequired(missing)
 
     async def _valid_checkpoint(self) -> GatewayCheckpoint | None:
         checkpoint = await self._store.load(*self.shard)

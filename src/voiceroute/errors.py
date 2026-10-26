@@ -78,6 +78,14 @@ class GatewayProtocolError(GatewayError):
     """The Gateway sent a malformed or unsupported required frame."""
 
 
+class PrivilegedIntentRequired(GatewayError):
+    """A requested privileged intent has not been approved for the application."""
+
+    def __init__(self, intents: tuple[str, ...]) -> None:
+        self.intents = intents
+        super().__init__(f"privileged Gateway intents require approval: {', '.join(intents)}")
+
+
 class ValidationError(HTTPError):
     """The request was rejected by a content validation rule."""
 
