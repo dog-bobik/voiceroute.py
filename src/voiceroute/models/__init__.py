@@ -13,9 +13,11 @@ from voiceroute.models.community import Channel, Community
 from voiceroute.models.interaction import Interaction, InteractionCommand, InteractionResponse
 from voiceroute.models.member import Member, MemberPresence, MemberRole, PresenceStatus
 from voiceroute.models.message import Message, MessagePage
+from voiceroute.models.permissions import ALL_PERMISSIONS, Permission, Permissions
 from voiceroute.models.user import User
 
 __all__ = [
+    "ALL_PERMISSIONS",
     "ApplicationCommand",
     "ApplicationSummary",
     "BotIdentity",
@@ -33,6 +35,8 @@ __all__ = [
     "MemberRole",
     "Message",
     "MessagePage",
+    "Permission",
+    "Permissions",
     "PresenceStatus",
     "User",
 ]

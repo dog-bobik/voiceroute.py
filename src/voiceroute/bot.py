@@ -509,6 +509,7 @@ class Bot:
             args=invocation.arguments,
             _messages=self.client.messages,
             _members=self.client.members,
+            _communities=self.client.communities,
             invoked_with=invocation.invoked_with,
             prefix=invocation.prefix,
         )

@@ -21,8 +21,11 @@ from voiceroute.commands import (
     NextMiddleware,
     PrefixCommandAdapter,
     application_command,
+    bot_has_permissions,
     check,
     cooldown,
+    has_permissions,
+    is_owner,
     max_concurrency,
 )
 from voiceroute.errors import (
@@ -77,6 +80,7 @@ from voiceroute.events import (
 )
 from voiceroute.extensions import Extension, ExtensionCommand, command, listener
 from voiceroute.models import (
+    ALL_PERMISSIONS,
     ApplicationCommand,
     ApplicationSummary,
     BotIdentity,
@@ -94,6 +98,8 @@ from voiceroute.models import (
     MemberRole,
     Message,
     MessagePage,
+    Permission,
+    Permissions,
     PresenceStatus,
     User,
 )
@@ -101,6 +107,7 @@ from voiceroute.runtime import RuntimeState
 from voiceroute.transport import RateLimiter
 
 __all__ = [
+    "ALL_PERMISSIONS",
     "AccessLost",
     "ApplicationCommand",
     "ApplicationCommandHandler",
@@ -172,6 +179,8 @@ __all__ = [
     "NextMiddleware",
     "NoChannelsAvailable",
     "NotFound",
+    "Permission",
+    "Permissions",
     "PrefixCommandAdapter",
     "PresenceStatus",
     "RateLimited",
@@ -190,9 +199,12 @@ __all__ = [
     "VoiceRouteClient",
     "VoiceRouteError",
     "application_command",
+    "bot_has_permissions",
     "check",
     "command",
     "cooldown",
+    "has_permissions",
+    "is_owner",
     "listener",
     "max_concurrency",
 ]
