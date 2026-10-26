@@ -8,6 +8,15 @@ class VoiceRouteError(Exception):
     """Base exception raised by the library."""
 
 
+@dataclass(frozen=True, slots=True)
+class FieldError:
+    """One machine-readable validation failure returned by Bot Platform v1."""
+
+    field: str
+    code: str
+    message: str | None = None
+
+
 @dataclass(eq=False)
 class HTTPError(VoiceRouteError):
     """An unsuccessful response from VoiceRoute."""
@@ -16,6 +25,9 @@ class HTTPError(VoiceRouteError):
     message: str
     details: dict[str, Any] | None = None
     request_id: str | None = None
+    code: str | None = None
+    retryable: bool = False
+    field_errors: tuple[FieldError, ...] = ()
 
     def __str__(self) -> str:
         return f"VoiceRoute API returned {self.status_code}: {self.message}"
@@ -41,6 +53,14 @@ class Conflict(HTTPError):
     """The operation conflicts with the current resource state."""
 
 
+class ResourceVersionConflict(Conflict):
+    """A conditional v1 mutation used a stale resource version."""
+
+
+class FeatureUnavailable(VoiceRouteError):
+    """The connected deployment does not expose a requested capability."""
+
+
 class ValidationError(HTTPError):
     """The request was rejected by a content validation rule."""
 
@@ -57,8 +77,12 @@ class RateLimited(HTTPError):
         details: dict[str, Any] | None = None,
         request_id: str | None = None,
         retry_after: float | None = None,
+        *,
+        code: str | None = None,
+        retryable: bool = True,
+        field_errors: tuple[FieldError, ...] = (),
     ) -> None:
-        super().__init__(status_code, message, details, request_id)
+        super().__init__(status_code, message, details, request_id, code, retryable, field_errors)
         self.retry_after = retry_after
 
 

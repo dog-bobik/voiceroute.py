@@ -1,9 +1,10 @@
-"""Asynchronous HTTP transport."""
+"""Asynchronous HTTP transport for legacy and Bot Platform v1 APIs."""
 
 import asyncio
 import random
 from collections.abc import AsyncIterator, Mapping
 from contextlib import asynccontextmanager
+from dataclasses import dataclass
 from typing import Any
 
 import httpx
@@ -12,10 +13,12 @@ from voiceroute.errors import (
     BadRequest,
     ClientClosedError,
     Conflict,
+    FieldError,
     Forbidden,
     HTTPError,
     NotFound,
     RateLimited,
+    ResourceVersionConflict,
     ServiceUnavailable,
     TransportError,
     Unauthorized,
@@ -36,8 +39,31 @@ _ERRORS: dict[int, type[HTTPError]] = {
 }
 
 
+@dataclass(frozen=True, slots=True)
+class RateLimitMetadata:
+    """Rate-limit metadata attached to a VoiceRoute response."""
+
+    limit: int | None = None
+    remaining: int | None = None
+    reset_after: float | None = None
+    bucket: str | None = None
+    scope: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class HTTPResult:
+    """JSON payload together with Bot Platform v1 response metadata."""
+
+    payload: dict[str, Any] | None
+    status_code: int
+    request_id: str | None
+    api_version: str | None
+    etag: str | None
+    rate_limit: RateLimitMetadata
+
+
 class HTTPTransport:
-    """Small HTTP layer shared by all resource APIs."""
+    """Small HTTP layer shared by legacy and v1 resource APIs."""
 
     def __init__(
         self,
@@ -59,6 +85,7 @@ class HTTPTransport:
         self._rate_limiter = rate_limiter or RateLimiter()
         self._max_attempts = max_attempts
         self._closed = False
+        self.last_rate_limit = RateLimitMetadata()
 
     async def request(
         self,
@@ -68,13 +95,51 @@ class HTTPTransport:
         params: Mapping[str, str | int | None] | None = None,
         json: Any = None,
         retryable: bool | None = None,
+        idempotency_key: str | None = None,
+        if_match: str | None = None,
+        headers: Mapping[str, str] | None = None,
     ) -> dict[str, Any] | None:
+        """Return JSON while preserving the original public transport contract."""
+        result = await self.request_with_response(
+            method,
+            path,
+            params=params,
+            json=json,
+            retryable=retryable,
+            idempotency_key=idempotency_key,
+            if_match=if_match,
+            headers=headers,
+        )
+        return result.payload
+
+    async def request_with_response(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Mapping[str, str | int | None] | None = None,
+        json: Any = None,
+        retryable: bool | None = None,
+        idempotency_key: str | None = None,
+        if_match: str | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> HTTPResult:
+        """Return JSON and version, request, ETag, and rate-limit metadata."""
         if self._closed:
             raise ClientClosedError("the VoiceRoute client is closed")
 
+        method = method.upper()
         can_retry = (
-            retryable if retryable is not None else method.upper() in {"GET", "HEAD", "OPTIONS"}
+            retryable
+            if retryable is not None
+            else method in {"GET", "HEAD", "OPTIONS"} or idempotency_key is not None
         )
+        request_headers = dict(headers or {})
+        if idempotency_key is not None:
+            request_headers["Idempotency-Key"] = idempotency_key
+        if if_match is not None:
+            request_headers["If-Match"] = if_match
+
         response: httpx.Response | None = None
         for attempt in range(1, self._max_attempts + 1):
             await self._rate_limiter.acquire()
@@ -84,6 +149,7 @@ class HTTPTransport:
                     path,
                     params=self._clean_params(params),
                     json=json,
+                    headers=request_headers or None,
                 )
             except httpx.HTTPError as exc:
                 if can_retry and attempt < self._max_attempts:
@@ -91,7 +157,7 @@ class HTTPTransport:
                     continue
                 raise TransportError("VoiceRoute request failed") from exc
 
-            if response.status_code == 429 and attempt < self._max_attempts:
+            if response.status_code == 429 and can_retry and attempt < self._max_attempts:
                 await self._sleep_for_rate_limit(response, attempt)
                 continue
             if response.status_code == 503 and can_retry and attempt < self._max_attempts:
@@ -102,10 +168,11 @@ class HTTPTransport:
         if response is None:
             raise TransportError("VoiceRoute request produced no response")
 
+        self.last_rate_limit = self._rate_limit_metadata(response)
         if response.is_error:
             self._raise_for_response(response)
         if response.status_code == 204:
-            return None
+            return self._result(response, None)
 
         try:
             payload = response.json()
@@ -113,9 +180,10 @@ class HTTPTransport:
             raise TransportError("VoiceRoute returned invalid JSON") from exc
         if not isinstance(payload, dict):
             raise TransportError("VoiceRoute returned a non-object JSON response")
-        return payload
+        return self._result(response, payload)
 
     async def close(self) -> None:
+        """Close the underlying HTTP client once."""
         if not self._closed:
             self._closed = True
             await self._client.aclose()
@@ -128,17 +196,14 @@ class HTTPTransport:
         params: Mapping[str, str | int | None] | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> AsyncIterator[httpx.Response]:
-        """Open an authenticated streaming response."""
+        """Open an authenticated legacy streaming response."""
         if self._closed:
             raise ClientClosedError("the VoiceRoute client is closed")
 
         await self._rate_limiter.acquire()
         try:
             async with self._client.stream(
-                "GET",
-                path,
-                params=self._clean_params(params),
-                headers=headers,
+                "GET", path, params=self._clean_params(params), headers=headers
             ) as response:
                 if response.is_error:
                     await response.aread()
@@ -153,25 +218,73 @@ class HTTPTransport:
             body = response.json()
         except ValueError:
             body = {}
-        details = body if isinstance(body, dict) else None
-        message = str(details.get("error", "Unknown API error")) if details else "Unknown API error"
-        request_id = response.headers.get("X-Request-ID")
-        error_type = _ERRORS.get(response.status_code, HTTPError)
+        envelope = body if isinstance(body, dict) else {}
+        raw_error = envelope.get("error")
+        if isinstance(raw_error, dict):
+            message = str(raw_error.get("message", "Unknown API error"))
+            code = _optional_string(raw_error.get("code"))
+            request_id = _optional_string(raw_error.get("requestId")) or response.headers.get(
+                "X-Request-ID"
+            )
+            details = raw_error.get("details")
+            if not isinstance(details, dict):
+                details = None
+            retryable = bool(raw_error.get("retryable", False))
+            field_errors = _field_errors(raw_error.get("fieldErrors"))
+        else:
+            details = envelope or None
+            message = str(raw_error) if raw_error is not None else "Unknown API error"
+            code = None
+            request_id = response.headers.get("X-Request-ID")
+            retryable = response.status_code in {429, 503}
+            field_errors = ()
+        error_type = (
+            ResourceVersionConflict
+            if code == "RESOURCE_VERSION_CONFLICT"
+            else _ERRORS.get(response.status_code, HTTPError)
+        )
 
         if error_type is RateLimited:
-            raw_retry_after = response.headers.get("Retry-After")
-            try:
-                retry_after = float(raw_retry_after) if raw_retry_after is not None else None
-            except ValueError:
-                retry_after = None
             raise RateLimited(
                 response.status_code,
                 message,
                 details,
                 request_id,
-                retry_after,
+                HTTPTransport._parse_retry_after(response),
+                code=code,
+                retryable=retryable,
+                field_errors=field_errors,
             )
-        raise error_type(response.status_code, message, details, request_id)
+        raise error_type(
+            response.status_code,
+            message,
+            details,
+            request_id,
+            code,
+            retryable,
+            field_errors,
+        )
+
+    @staticmethod
+    def _result(response: httpx.Response, payload: dict[str, Any] | None) -> HTTPResult:
+        return HTTPResult(
+            payload=payload,
+            status_code=response.status_code,
+            request_id=response.headers.get("X-Request-ID"),
+            api_version=response.headers.get("X-VoiceRoute-API-Version"),
+            etag=response.headers.get("ETag"),
+            rate_limit=HTTPTransport._rate_limit_metadata(response),
+        )
+
+    @staticmethod
+    def _rate_limit_metadata(response: httpx.Response) -> RateLimitMetadata:
+        return RateLimitMetadata(
+            limit=_optional_int(response.headers.get("X-RateLimit-Limit")),
+            remaining=_optional_int(response.headers.get("X-RateLimit-Remaining")),
+            reset_after=_optional_float(response.headers.get("X-RateLimit-Reset-After")),
+            bucket=response.headers.get("X-RateLimit-Bucket"),
+            scope=response.headers.get("X-RateLimit-Scope"),
+        )
 
     @staticmethod
     def _clean_params(
@@ -195,10 +308,39 @@ class HTTPTransport:
 
     @staticmethod
     def _parse_retry_after(response: httpx.Response) -> float | None:
-        raw_value = response.headers.get("Retry-After")
-        if raw_value is None:
-            return None
-        try:
-            return max(0.0, float(raw_value))
-        except ValueError:
-            return None
+        return _optional_float(response.headers.get("Retry-After"))
+
+
+def _optional_string(value: object) -> str | None:
+    return None if value is None else str(value)
+
+
+def _optional_int(value: str | None) -> int | None:
+    try:
+        return int(value) if value is not None else None
+    except ValueError:
+        return None
+
+
+def _optional_float(value: str | None) -> float | None:
+    try:
+        return max(0.0, float(value)) if value is not None else None
+    except ValueError:
+        return None
+
+
+def _field_errors(value: object) -> tuple[FieldError, ...]:
+    if not isinstance(value, list):
+        return ()
+    result: list[FieldError] = []
+    for item in value:
+        if not isinstance(item, dict) or "field" not in item or "code" not in item:
+            continue
+        result.append(
+            FieldError(
+                field=str(item["field"]),
+                code=str(item["code"]),
+                message=_optional_string(item.get("message")),
+            )
+        )
+    return tuple(result)
