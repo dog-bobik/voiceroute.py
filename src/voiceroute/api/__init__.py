@@ -7,6 +7,7 @@ from voiceroute.api.events import EventsAPI
 from voiceroute.api.interactions import InteractionsAPI
 from voiceroute.api.members import MembersAPI
 from voiceroute.api.messages import MessagesAPI
+from voiceroute.api.roles import RolesAPI
 
 __all__ = [
     "ApplicationCommandsAPI",
@@ -16,4 +17,5 @@ __all__ = [
     "InteractionsAPI",
     "MembersAPI",
     "MessagesAPI",
+    "RolesAPI",
 ]

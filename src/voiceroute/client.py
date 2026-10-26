@@ -10,6 +10,7 @@ from voiceroute.api import (
     InteractionsAPI,
     MembersAPI,
     MessagesAPI,
+    RolesAPI,
 )
 from voiceroute.config import ClientConfig
 from voiceroute.transport import HTTPTransport, RateLimiter
@@ -42,6 +43,7 @@ class VoiceRouteClient:
         self.interactions = InteractionsAPI(self._transport)
         self.messages = MessagesAPI(self._transport)
         self.members = MembersAPI(self._transport)
+        self.roles = RolesAPI(self._transport)
 
     async def close(self) -> None:
         """Close network resources owned by this client."""
