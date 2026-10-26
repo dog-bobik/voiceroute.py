@@ -86,6 +86,7 @@ class GatewayClient:
         self._heartbeat_acknowledged = True
         self._identified = asyncio.Event()
         self._ready = asyncio.Event()
+        self.on_session_invalidated: Callable[[], Awaitable[None]] | None = None
 
     async def run_once(self, handler: GatewayHandler) -> None:
         """Run one connection until it closes, committing only handled events."""
@@ -151,6 +152,8 @@ class GatewayClient:
         except ConnectionClosed as exc:
             if exc.code in _CLEAR_SESSION_CLOSE_CODES:
                 await self._store.clear(*self.shard)
+                if self.on_session_invalidated is not None:
+                    await self.on_session_invalidated()
             if exc.code in _TERMINAL_CLOSE_CODES:
                 raise GatewayClosed(exc.code, exc.reason) from exc
         finally:
