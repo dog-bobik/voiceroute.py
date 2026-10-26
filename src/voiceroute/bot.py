@@ -445,6 +445,8 @@ class Bot:
                 await self._dispatch("on_access_lost", event, target)
                 await self.cursor_store.save(stream_key, delivery.checkpoint)
                 return
+            if not isinstance(event, MessageUpserted):
+                continue
             await self._handle_message(event)
             await self.cursor_store.save(stream_key, delivery.checkpoint)
 

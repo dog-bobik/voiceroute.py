@@ -131,6 +131,8 @@ class LegacySSETransport:
                     source=EventSource.LEGACY_SSE,
                 )
                 return
+            if not isinstance(event, MessageUpserted):
+                continue
 
             message_seq = event.message.seq
             yield EventDelivery(
