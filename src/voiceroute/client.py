@@ -17,6 +17,7 @@ from voiceroute.api import (
     RolesAPI,
 )
 from voiceroute.config import APIVersion, ClientConfig
+from voiceroute.gateway import GatewayCheckpointStore, GatewayClient
 from voiceroute.transport import HTTPTransport, RateLimiter
 
 
@@ -37,6 +38,8 @@ class VoiceRouteClient:
             base_url=base_url, timeout=timeout, api_version=APIVersion(api_version)
         )
         self.api_version = config.api_version
+        self._token = token
+        self._base_url = config.base_url
         self._transport = HTTPTransport(
             token=token,
             base_url=config.base_url,
@@ -63,6 +66,23 @@ class VoiceRouteClient:
             return self.api_version
         capabilities = await self.platform.capabilities()
         return APIVersion.V1 if capabilities.api_version == "1" else APIVersion.LEGACY
+
+    def gateway(
+        self,
+        *,
+        intents: tuple[str, ...] = (),
+        shard: tuple[int, int] = (0, 1),
+        store: GatewayCheckpointStore | None = None,
+    ) -> GatewayClient:
+        """Create a v1 Gateway session sharing this client's discovery API."""
+        return GatewayClient(
+            token=self._token,
+            platform_api=self.platform,
+            base_url=self._base_url,
+            intents=intents,
+            shard=shard,
+            store=store,
+        )
 
     async def close(self) -> None:
         """Close network resources owned by this client."""

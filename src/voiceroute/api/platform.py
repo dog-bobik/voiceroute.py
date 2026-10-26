@@ -5,7 +5,7 @@ import time
 from collections.abc import Callable
 
 from voiceroute.errors import FeatureUnavailable
-from voiceroute.models import CurrentApplication, PlatformCapabilities
+from voiceroute.models import CurrentApplication, GatewayDiscovery, PlatformCapabilities
 from voiceroute.transport import HTTPTransport
 
 
@@ -54,6 +54,13 @@ class PlatformAPI:
         if payload is None:
             raise RuntimeError("VoiceRoute returned no current application")
         return CurrentApplication.from_dict(payload)
+
+    async def gateway(self) -> GatewayDiscovery:
+        await self.require("gateway")
+        payload = await self._transport.request("GET", "/api/v1/gateway")
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no Gateway discovery document")
+        return GatewayDiscovery.from_dict(payload)
 
     def invalidate_capabilities(self) -> None:
         self._expires_at = 0.0
