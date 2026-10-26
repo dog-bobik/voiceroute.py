@@ -8,6 +8,7 @@ from voiceroute.events.cursors import (
     SQLiteCursorStore,
     StreamCheckpoint,
 )
+from voiceroute.events.dispatcher import EventDispatcher
 from voiceroute.events.models import AccessLost, BotEvent, InteractionCreated, MessageUpserted
 from voiceroute.events.sse import SSEDecoder, SSEEvent
 from voiceroute.events.transport import (
@@ -27,6 +28,7 @@ __all__ = [
     "ChannelTarget",
     "CursorStore",
     "EventDelivery",
+    "EventDispatcher",
     "EventSource",
     "EventTransport",
     "FileCursorStore",
