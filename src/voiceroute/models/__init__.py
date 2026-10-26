@@ -18,6 +18,7 @@ from voiceroute.models.audit import (
 from voiceroute.models.automod import AutoModConfig
 from voiceroute.models.bot import BotIdentity
 from voiceroute.models.community import Channel, Community
+from voiceroute.models.generated_events import PlatformEventType
 from voiceroute.models.interaction import Interaction, InteractionCommand, InteractionResponse
 from voiceroute.models.member import Member, MemberPresence, MemberRole, PresenceStatus
 from voiceroute.models.message import Message, MessagePage
@@ -36,6 +37,7 @@ from voiceroute.models.platform import (
     PlatformBotIdentity,
     PlatformCapabilities,
 )
+from voiceroute.models.platform_event import PlatformEvent
 from voiceroute.models.role import (
     ChannelPermissionSnapshot,
     PermissionOverride,
@@ -84,6 +86,8 @@ __all__ = [
     "Permissions",
     "PlatformBotIdentity",
     "PlatformCapabilities",
+    "PlatformEvent",
+    "PlatformEventType",
     "PresenceStatus",
     "Role",
     "User",
