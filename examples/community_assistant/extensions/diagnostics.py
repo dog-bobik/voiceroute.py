@@ -28,7 +28,7 @@ class Diagnostics(Extension):
     @command(name="health", description="Показать состояние runtime и checkpoints.")
     @cooldown(2, 10.0)
     async def health(self, context: Context) -> None:
-        connected = self.bot.is_ready() and bool(self.bot.listening_channels)
+        connected = self.bot.is_ready()
         store = self.bot.cursor_store
         store_name = store.__class__.__name__
         store_status = "доступно"
@@ -39,6 +39,7 @@ class Diagnostics(Extension):
             "Состояние Community Assistant:\n"
             f"• runtime: {self.bot.state.value}\n"
             f"• подключение: {'активно' if connected else 'не готово'}\n"
+            f"• transport: {'Gateway' if self.bot.gateway is not None else 'legacy SSE'}\n"
             f"• каналов: {len(self.bot.listening_channels)}\n"
             f"• checkpoints: {store_name} ({store_status})"
         )

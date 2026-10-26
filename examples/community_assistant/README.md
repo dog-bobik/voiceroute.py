@@ -1,9 +1,10 @@
 # Community Assistant Bot
 
 Демонстрационный бот показывает основные возможности `voiceroute.py`: extensions,
-prefix- и нативные slash-команды, interactions, ephemeral-ответы, members, permissions,
-content API, SSE-переподключение, дедупликацию и хранение checkpoints в SQLite. Пример
-не является частью публичного API библиотеки.
+prefix- и нативные slash-команды, Gateway events, intents, presence, локальный cache,
+interactions, permissions, content API и восстановление checkpoints. Legacy SSE остаётся
+включённым только для старых команд, которым нужна полная модель сообщения. Пример не
+является частью публичного API библиотеки.
 
 ## Установка
 
@@ -26,12 +27,19 @@ VOICEROUTE_COMMUNITY_ID=
 VOICEROUTE_CHANNEL_ID=
 VOICEROUTE_COMMAND_PREFIX=/
 VOICEROUTE_SYNC_APPLICATION_COMMANDS=true
+VOICEROUTE_PRIVILEGED_INTENTS=false
+VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 ```
 
 Обязателен только `VOICEROUTE_BOT_TOKEN`. Если ID не заданы, бот обнаружит все
 доступные ему сообщества и текстовые каналы. `VOICEROUTE_CHANNEL_ID` можно указывать
 только вместе с `VOICEROUTE_COMMUNITY_ID`. Путь SQLite при необходимости меняется
 через `VOICEROUTE_CURSOR_PATH`.
+
+По умолчанию пример запрашивает только непривилегированные intents. Чтобы получать
+`MEMBER_JOINED`, presence и message content, сначала подтвердите эти intents в настройках
+приложения, затем установите `VOICEROUTE_PRIVILEGED_INTENTS=true`. Без approval SDK
+завершит запуск понятной ошибкой, а не будет молча терять события.
 
 При `VOICEROUTE_SYNC_APPLICATION_COMMANDS=true` бот во время запуска полностью заменяет
 удалённый реестр slash-команд четырьмя определениями из примера. Установите `false`, если
@@ -89,7 +97,7 @@ FAQ редактируется в `data/faq.json` без изменения Pyth
 - Один процесс может слушать не более 32 автоматически найденных каналов. Для
   больших установок задайте community/channel ID или разделите нагрузку.
 
-Runtime игнорирует события вебхуков и сообщения ботов, независимо восстанавливает
-channel SSE и global interaction SSE и сохраняет отдельный курсор каждого потока после
-успешной обработки. Идемпотентный UUID prefix-ответа и interaction UUID не позволяют
-повторной доставке создать второй ответ.
+Runtime использует Gateway для lifecycle-событий, presence и cache. Prefix-команды и
+текущие slash interactions временно сохраняют совместимые SSE-потоки до их полной
+миграции на v1. Gateway checkpoint продвигается только после успешного handler, а cache
+откатывается при ошибке, поэтому Resume безопасно повторит необработанное событие.

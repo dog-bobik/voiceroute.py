@@ -10,7 +10,8 @@
 ## Цели проекта
 
 - типизированный асинхронный клиент HTTP API;
-- надёжная обработка SSE с восстановлением курсора;
+- Gateway WebSocket с heartbeat, Resume, intents и sharding;
+- совместимый SSE fallback с восстановлением курсора;
 - идемпотентная отправка сообщений;
 - удобная событийная модель и команды в стиле современных bot-фреймворков;
 - расширяемая архитектура без смешивания bot token и пользовательской сессии;
@@ -36,11 +37,12 @@ python -m pip install -e '.[dev]'
 ```python
 import os
 
-from voiceroute import Bot, Context, FileCursorStore
+from voiceroute import Bot, Context, FileCursorStore, Intents
 
 bot = Bot(
     token=os.environ["VOICEROUTE_BOT_TOKEN"],
     cursor_store=FileCursorStore(".voiceroute/cursors.json"),
+    intents=Intents.default(),
 )
 
 
@@ -53,7 +55,8 @@ bot.run()
 ```
 
 Ответ использует стабильный UUID, производный от исходного сообщения. Повторная
-доставка SSE-события поэтому не создаст дубликат ответа.
+доставка события поэтому не создаст дубликат ответа. При доступном Bot Platform v1
+runtime автоматически использует Gateway, сохраняя SSE для старых обработчиков команд.
 
 По умолчанию команды принимают оба привычных префикса: `/ping` и `!ping`.
 Собственный префикс задаётся через `Bot(..., command_prefix="?")`.
@@ -96,6 +99,9 @@ Redis. Подробнее: [события и восстановление](docs
 | Сообщения | История, отправка и изменение готовы |
 | Реакции, закрепления и поиск | Основа готова |
 | SSE и восстановление курсора | Основа готова |
+| Gateway, Resume, intents и shards | Основа готова |
+| Event dispatcher и `wait_for` | Основа готова |
+| Локальный state cache | Communities, channels, roles, members, threads |
 | Prefix-команды | Основа готова |
 | Middleware | Основа готова |
 | Треды и вложения | Запланировано |

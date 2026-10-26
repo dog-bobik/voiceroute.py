@@ -18,7 +18,9 @@ class CommunityAssistantConfig:
     channel_id: str | None = None
     command_prefix: str = "/"
     cursor_path: Path = Path(".voiceroute/community-assistant.sqlite3")
+    gateway_path: Path = Path(".voiceroute/community-assistant-gateway.json")
     sync_application_commands: bool = True
+    privileged_intents: bool = False
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> CommunityAssistantConfig:
@@ -48,9 +50,16 @@ class CommunityAssistantConfig:
                     ".voiceroute/community-assistant.sqlite3",
                 )
             ),
+            gateway_path=Path(
+                values.get(
+                    "VOICEROUTE_GATEWAY_PATH",
+                    ".voiceroute/community-assistant-gateway.json",
+                )
+            ),
             sync_application_commands=_boolean(
                 values.get("VOICEROUTE_SYNC_APPLICATION_COMMANDS", "true")
             ),
+            privileged_intents=_boolean(values.get("VOICEROUTE_PRIVILEGED_INTENTS", "false")),
         )
 
 
