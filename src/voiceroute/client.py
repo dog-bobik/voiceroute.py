@@ -13,9 +13,10 @@ from voiceroute.api import (
     MembersAPI,
     MessagesAPI,
     ModerationAPI,
+    PlatformAPI,
     RolesAPI,
 )
-from voiceroute.config import ClientConfig
+from voiceroute.config import APIVersion, ClientConfig
 from voiceroute.transport import HTTPTransport, RateLimiter
 
 
@@ -30,8 +31,12 @@ class VoiceRouteClient:
         timeout: float = 30.0,
         rate_limiter: RateLimiter | None = None,
         max_attempts: int = 3,
+        api_version: APIVersion | str = APIVersion.AUTO,
     ) -> None:
-        config = ClientConfig(base_url=base_url, timeout=timeout)
+        config = ClientConfig(
+            base_url=base_url, timeout=timeout, api_version=APIVersion(api_version)
+        )
+        self.api_version = config.api_version
         self._transport = HTTPTransport(
             token=token,
             base_url=config.base_url,
@@ -48,8 +53,16 @@ class VoiceRouteClient:
         self.interactions = InteractionsAPI(self._transport)
         self.messages = MessagesAPI(self._transport)
         self.moderation = ModerationAPI(self._transport)
+        self.platform = PlatformAPI(self._transport)
         self.members = MembersAPI(self._transport)
         self.roles = RolesAPI(self._transport)
+
+    async def resolve_api_version(self) -> APIVersion:
+        """Resolve auto mode without changing existing resource routing."""
+        if self.api_version is not APIVersion.AUTO:
+            return self.api_version
+        capabilities = await self.platform.capabilities()
+        return APIVersion.V1 if capabilities.api_version == "1" else APIVersion.LEGACY
 
     async def close(self) -> None:
         """Close network resources owned by this client."""
