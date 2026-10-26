@@ -1,4 +1,5 @@
 import asyncio
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -11,11 +12,16 @@ from voiceroute import (
     CommandPipeline,
     Context,
     MaxConcurrencyReached,
+    Permission,
+    Permissions,
+    bot_has_permissions,
     check,
     cooldown,
+    has_permissions,
+    is_owner,
     max_concurrency,
 )
-from voiceroute.models import Message, User
+from voiceroute.models import Channel, Message, User
 
 
 def context(*, user_id: int = 7, channel_id: str = "channel") -> Context:
@@ -111,6 +117,55 @@ async def test_sync_and_async_checks_run_before_command() -> None:
 
     assert failure.value.check == "denied"
     assert called is False
+
+
+async def test_bot_permission_check_uses_effective_channel_permissions() -> None:
+    communities = AsyncMock()
+    communities.list_channels.return_value = [
+        Channel(
+            "channel",
+            "general",
+            "text",
+            community_id="community",
+            permissions=Permissions([Permission.MANAGE_MESSAGES]),
+        )
+    ]
+    ctx = context()
+    ctx._communities = communities
+    callback = AsyncMock()
+    decorated = bot_has_permissions(Permission.MANAGE_MESSAGES)(callback)
+
+    await CommandPipeline().invoke(Command.from_callback(decorated), ctx, ())
+
+    callback.assert_awaited_once()
+
+
+async def test_member_permission_check_fails_closed_without_exact_permissions() -> None:
+    members = AsyncMock()
+    members.get.return_value = SimpleNamespace(permissions=None)
+    ctx = context()
+    ctx._members = members
+    callback = AsyncMock()
+    decorated = has_permissions(Permission.BAN_MEMBERS)(callback)
+
+    with pytest.raises(CheckFailure) as failure:
+        await CommandPipeline().invoke(Command.from_callback(decorated), ctx, ())
+
+    assert failure.value.check == "has_permissions"
+    callback.assert_not_awaited()
+
+
+async def test_owner_check_uses_current_member_snapshot() -> None:
+    members = AsyncMock()
+    members.get.return_value = SimpleNamespace(role="owner")
+    ctx = context()
+    ctx._members = members
+    callback = AsyncMock()
+    decorated = is_owner()(callback)
+
+    await CommandPipeline().invoke(Command.from_callback(decorated), ctx, ())
+
+    callback.assert_awaited_once()
 
 
 async def test_cooldown_is_partitioned_by_bucket() -> None:

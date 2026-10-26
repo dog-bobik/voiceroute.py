@@ -13,6 +13,7 @@ from typing import Protocol, TypeVar, cast
 
 from voiceroute.commands.context import Context
 from voiceroute.errors import CheckFailure, CommandOnCooldown, MaxConcurrencyReached
+from voiceroute.models import Permission
 
 Check = Callable[[Context], bool | Awaitable[bool]]
 NextMiddleware = Callable[[], Awaitable[None]]
@@ -194,6 +195,51 @@ def check(predicate: Check) -> Callable[[CallbackT], CallbackT]:
         return callback
 
     return decorator
+
+
+def bot_has_permissions(*permissions: Permission | str) -> Callable[[CallbackT], CallbackT]:
+    """Require exact effective channel permissions for the current bot."""
+    required = tuple(Permission(permission) for permission in permissions)
+    if not required:
+        raise ValueError("at least one bot permission is required")
+
+    async def predicate(context: Context) -> bool:
+        effective = await context.fetch_bot_permissions()
+        return effective is not None and effective.has_all(required)
+
+    predicate.__name__ = "bot_has_permissions"
+    return check(predicate)
+
+
+def has_permissions(*permissions: Permission | str) -> Callable[[CallbackT], CallbackT]:
+    """Require exact effective permissions for the invoking prefix-command user.
+
+    The current server member snapshot may omit this field. In that case the check
+    fails closed instead of inferring access from a legacy role name.
+    """
+    required = tuple(Permission(permission) for permission in permissions)
+    if not required:
+        raise ValueError("at least one member permission is required")
+
+    async def predicate(context: Context) -> bool:
+        effective = await context.fetch_author_permissions()
+        return effective is not None and effective.has_all(required)
+
+    predicate.__name__ = "has_permissions"
+    return check(predicate)
+
+
+def is_owner() -> Callable[[CallbackT], CallbackT]:
+    """Require the invoking user to be the current community owner."""
+
+    async def predicate(context: Context) -> bool:
+        if context.message.author is None:
+            return False
+        member = await context.fetch_member(context.message.author.id)
+        return member is not None and member.role == "owner"
+
+    predicate.__name__ = "is_owner"
+    return check(predicate)
 
 
 def cooldown(

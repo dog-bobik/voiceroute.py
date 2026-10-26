@@ -1,4 +1,4 @@
-from voiceroute.models import Channel, Community
+from voiceroute.models import Channel, Community, Permission
 
 
 def test_community_preserves_unknown_fields() -> None:
@@ -23,12 +23,14 @@ def test_channel_accepts_parent_community_context() -> None:
             "type": "text",
             "categoryId": None,
             "position": 3,
+            "permissions": ["viewChannel", "sendMessages"],
         },
         community_id="community-id",
     )
 
     assert channel.community_id == "community-id"
     assert channel.position == 3
+    assert channel.permissions.has(Permission.SEND_MESSAGES)
 
 
 def test_channel_uses_production_kind_field() -> None:

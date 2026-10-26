@@ -23,7 +23,8 @@ bot-compatible ресурсы [VoiceRoute](https://voiceroute.cc) предста
 | Вложения | — | — | следующий домен |
 | Треды и форумы | — | — | следующий домен |
 | Участники | список, channel visibility, lookup, presence | да | готово |
-| Роли и permissions | snapshot в Member | частично | следующий домен |
+| Permissions | полный реестр, effective bot set, checks | да | готово |
+| Роли | snapshot в Member, без управления | частично | следующий домен |
 | Баны, timeout, AutoMod, audit | — | — | запланировано |
 | Categories и управление channels | — | — | запланировано |
 | Expressions, sounds, soundboard | — | — | запланировано |

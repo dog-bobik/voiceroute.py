@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any, Self
 
+from voiceroute.models.permissions import Permissions
 from voiceroute.models.user import User
 
 
@@ -66,6 +67,7 @@ class Member:
     can_timeout: bool
     highest_role_position: int
     presence: MemberPresence | None = None
+    permissions: Permissions | None = None
 
     @property
     def id(self) -> int:
@@ -95,6 +97,11 @@ class Member:
             highest_role_position=int(data.get("highestRolePosition", 0)),
             presence=(
                 MemberPresence.from_dict(raw_presence) if isinstance(raw_presence, dict) else None
+            ),
+            permissions=(
+                Permissions(str(value) for value in data["permissions"])
+                if isinstance(data.get("permissions"), list)
+                else None
             ),
         )
 

@@ -5,10 +5,11 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 
+from voiceroute.api.communities import CommunitiesAPI
 from voiceroute.api.members import MembersAPI
 from voiceroute.api.messages import MessagesAPI
 from voiceroute.errors import Conflict
-from voiceroute.models import Member, Message
+from voiceroute.models import Member, Message, Permissions
 
 _REPLY_NAMESPACE = uuid.UUID("88769cac-916c-4a4a-a370-a1f971729e7b")
 
@@ -22,6 +23,7 @@ class Context:
     args: tuple[str, ...]
     _messages: MessagesAPI = field(repr=False)
     _members: MembersAPI | None = field(default=None, repr=False)
+    _communities: CommunitiesAPI | None = field(default=None, repr=False)
     invoked_with: str | None = None
     prefix: str | None = None
     _reply_index: int = field(default=0, init=False, repr=False)
@@ -60,6 +62,21 @@ class Context:
             user_id,
             channel_id=self.message.channel_id,
         )
+
+    async def fetch_bot_permissions(self) -> Permissions | None:
+        """Fetch the bot's effective permissions in the invoking channel."""
+        if self._communities is None:
+            return None
+        channels = await self._communities.list_channels(self.message.community_id)
+        channel = next((item for item in channels if item.id == self.message.channel_id), None)
+        return channel.permissions if channel is not None else None
+
+    async def fetch_author_permissions(self) -> Permissions | None:
+        """Return exact effective permissions when supplied by the server."""
+        if self.message.author is None:
+            return None
+        member = await self.fetch_member(self.message.author.id)
+        return member.permissions if member is not None else None
 
     async def reply(self, body: str) -> Message:
         """Reply idempotently to the invoking message."""
