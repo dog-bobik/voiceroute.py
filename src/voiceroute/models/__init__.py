@@ -32,6 +32,8 @@ from voiceroute.models.permissions import ALL_PERMISSIONS, Permission, Permissio
 from voiceroute.models.platform import (
     CurrentApplication,
     GatewayCapabilities,
+    GatewayDiscovery,
+    GatewaySessionStartLimit,
     IntentCapability,
     LegacyCapabilities,
     PlatformBotIdentity,
@@ -67,6 +69,8 @@ __all__ = [
     "Community",
     "CurrentApplication",
     "GatewayCapabilities",
+    "GatewayDiscovery",
+    "GatewaySessionStartLimit",
     "IntentCapability",
     "Interaction",
     "InteractionCommand",

@@ -155,3 +155,34 @@ class CurrentApplication:
             requested_intents=tuple(str(item) for item in data.get("requestedIntents", ())),
             approved_intents=tuple(str(item) for item in data.get("approvedIntents", ())),
         )
+
+
+@dataclass(frozen=True, slots=True)
+class GatewaySessionStartLimit:
+    total: int
+    remaining: int
+    reset_after_ms: int
+    max_concurrency: int
+
+
+@dataclass(frozen=True, slots=True)
+class GatewayDiscovery:
+    url: str
+    recommended_shards: int
+    session_start_limit: GatewaySessionStartLimit
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        limit = data.get("sessionStartLimit")
+        if not isinstance(limit, dict):
+            raise ValueError("gateway discovery is missing sessionStartLimit")
+        return cls(
+            url=str(data["url"]),
+            recommended_shards=int(data["recommendedShards"]),
+            session_start_limit=GatewaySessionStartLimit(
+                total=int(limit["total"]),
+                remaining=int(limit["remaining"]),
+                reset_after_ms=int(limit["resetAfterMs"]),
+                max_concurrency=int(limit["maxConcurrency"]),
+            ),
+        )

@@ -61,6 +61,23 @@ class FeatureUnavailable(VoiceRouteError):
     """The connected deployment does not expose a requested capability."""
 
 
+class GatewayError(VoiceRouteError):
+    """The Gateway connection or protocol failed."""
+
+
+class GatewayClosed(GatewayError):
+    """The Gateway closed with a terminal protocol code."""
+
+    def __init__(self, code: int, reason: str = "") -> None:
+        self.code = code
+        self.reason = reason
+        super().__init__(f"Gateway closed with code {code}: {reason}")
+
+
+class GatewayProtocolError(GatewayError):
+    """The Gateway sent a malformed or unsupported required frame."""
+
+
 class ValidationError(HTTPError):
     """The request was rejected by a content validation rule."""
 
