@@ -10,7 +10,7 @@ from collections import deque
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
 from types import ModuleType
-from typing import Any, TypeVar, cast
+from typing import Any, Literal, TypeVar, cast
 
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands import (
@@ -34,10 +34,12 @@ from voiceroute.errors import (
     ExtensionNotLoaded,
     ExtensionSetupError,
     NoChannelsAvailable,
+    NotFound,
 )
 from voiceroute.events import (
     AccessLost,
     CursorStore,
+    EventDispatcher,
     EventTransport,
     InteractionCreated,
     InteractionEventTransport,
@@ -49,7 +51,15 @@ from voiceroute.events import (
 )
 from voiceroute.events.transport import ChannelTarget
 from voiceroute.extensions import Extension, extension_command, listener_name
-from voiceroute.models import ApplicationCommand, BotIdentity, Channel, CommandOption, Message
+from voiceroute.gateway import GatewayCheckpointStore, GatewayClient, Intents
+from voiceroute.models import (
+    ApplicationCommand,
+    BotIdentity,
+    Channel,
+    CommandOption,
+    Message,
+    PlatformEvent,
+)
 from voiceroute.runtime import RuntimeState
 
 AsyncHandler = Callable[..., Awaitable[None]]
@@ -81,8 +91,11 @@ class Bot:
         max_event_streams: int = 32,
         initial_after_seq: str | None = "0",
         cursor_store: CursorStore | None = None,
-        event_transport: EventTransport | None = None,
+        event_transport: EventTransport | Literal["auto", "gateway", "sse"] | None = None,
         interaction_event_transport: InteractionEventTransport | None = None,
+        intents: Intents | None = None,
+        gateway_store: GatewayCheckpointStore | None = None,
+        gateway_client: GatewayClient | None = None,
         sync_application_commands: bool = False,
         interaction_deduplication_size: int = 1024,
         max_consumer_backoff: float = 30.0,
@@ -106,11 +119,24 @@ class Bot:
         self.initial_after_seq = initial_after_seq
         self.cursor_store = cursor_store or MemoryCursorStore()
         self.base_url = base_url.rstrip("/")
-        self.event_transport = event_transport or LegacySSETransport(
-            self.client.events,
-            self.client.messages,
-            base_url=self.base_url,
-        )
+        self._event_transport_mode: str
+        self.event_transport: EventTransport
+        if isinstance(event_transport, str):
+            self._event_transport_mode = event_transport
+            self.event_transport = LegacySSETransport(
+                self.client.events, self.client.messages, base_url=self.base_url
+            )
+        elif event_transport is None:
+            self._event_transport_mode = "auto"
+            self.event_transport = LegacySSETransport(
+                self.client.events, self.client.messages, base_url=self.base_url
+            )
+        else:
+            self._event_transport_mode = "custom"
+            self.event_transport = event_transport
+        self.intents = intents or Intents.default()
+        self.gateway_store = gateway_store
+        self.gateway = gateway_client
         self.interaction_event_transport = interaction_event_transport or InteractionSSETransport(
             self.client.events,
             base_url=self.base_url,
@@ -123,6 +149,8 @@ class Bot:
         self.application_command_registry = ApplicationCommandRegistry()
         self.command_pipeline = CommandPipeline()
         self._events: dict[str, list[AsyncHandler]] = {}
+        self.dispatcher = EventDispatcher(error_handler=self._handle_dispatch_error)
+        self.dispatcher.add_listener(self._handle_platform_event)
         self._extensions: dict[str, ExtensionRegistration] = {}
         self._extension_modules: dict[str, str] = {}
         self._consumer_tasks: set[asyncio.Task[None]] = set()
@@ -354,6 +382,9 @@ class Bot:
             self.user = await self.client.bots.get_current()
             if self.sync_application_commands_on_start:
                 await self.sync_application_commands()
+            if await self._should_use_gateway():
+                await self._start_gateway()
+                return
             self.listening_channels = tuple(await self._discover_channels())
             required_streams = len(self.listening_channels) + int(self._needs_interaction_stream())
             if required_streams > self.max_event_streams:
@@ -406,6 +437,8 @@ class Bot:
 
             current = asyncio.current_task()
             tasks = tuple(task for task in self._consumer_tasks if task is not current)
+            if self.gateway is not None:
+                await self.gateway.close()
             for task in tasks:
                 task.cancel()
             if tasks:
@@ -437,6 +470,16 @@ class Bot:
         if self.state is RuntimeState.CLOSED:
             raise BotClosed("bot was closed before becoming ready")
         await self._ready.wait()
+
+    async def wait_for(
+        self,
+        event: str,
+        *,
+        check: Callable[[PlatformEvent], bool] | None = None,
+        timeout: float | None = None,  # noqa: ASYNC109 - mirrors asyncio/discord.py wait_for
+    ) -> PlatformEvent:
+        """Wait for one matching Gateway event without a permanent listener."""
+        return await self.dispatcher.wait_for(event, check=check, timeout=timeout)
 
     def is_ready(self) -> bool:
         """Return whether the runtime is currently accepting events."""
@@ -643,6 +686,52 @@ class Bot:
 
     def _matching_prefix(self, body: str) -> str | None:
         return self.command_adapter.matching_prefix(body)
+
+    async def _should_use_gateway(self) -> bool:
+        if self._event_transport_mode in {"sse", "custom"}:
+            return False
+        if self._event_transport_mode == "gateway" or self.gateway is not None:
+            return True
+        try:
+            capabilities = await self.client.platform.capabilities()
+        except NotFound:
+            return False
+        return capabilities.supports("gateway")
+
+    async def _start_gateway(self) -> None:
+        if self.gateway is None:
+            self.gateway = self.client.gateway(intents=self.intents, store=self.gateway_store)
+
+        async def dispatch(event: PlatformEvent) -> None:
+            await self.dispatcher.dispatch(event)
+
+        task = asyncio.create_task(self.gateway.run(dispatch), name="voiceroute:gateway")
+        self._consumer_tasks = {task}
+        ready = asyncio.create_task(self.gateway.wait_until_ready())
+        done, _ = await asyncio.wait({task, ready}, return_when=asyncio.FIRST_COMPLETED)
+        if task in done:
+            ready.cancel()
+            await task
+        await ready
+        await self._dispatch("on_connect")
+        self.state = RuntimeState.RUNNING
+        self._ready.set()
+        await self._dispatch("on_ready")
+        await task
+
+    async def _handle_platform_event(self, event: PlatformEvent) -> None:
+        await self._dispatch("on_raw_event", event)
+        await self._dispatch(f"on_{event.name.casefold()}", event)
+        if not event.is_known:
+            await self._dispatch("on_unknown_event", event)
+
+    async def _handle_dispatch_error(self, error: Exception, event: PlatformEvent) -> None:
+        handlers = self._events.get("on_event_error")
+        if not handlers:
+            await self._dispatch_error(error)
+            return
+        for handler in tuple(handlers):
+            await handler(error, event)
 
     def _needs_interaction_stream(self) -> bool:
         return bool(

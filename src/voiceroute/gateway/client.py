@@ -85,6 +85,7 @@ class GatewayClient:
         self._last_sequence = "0"
         self._heartbeat_acknowledged = True
         self._identified = asyncio.Event()
+        self._ready = asyncio.Event()
 
     async def run_once(self, handler: GatewayHandler) -> None:
         """Run one connection until it closes, committing only handled events."""
@@ -133,6 +134,7 @@ class GatewayClient:
                 if event.name in {"READY", "RESUMED"}:
                     checkpoint = self._checkpoint_from_ready(event, checkpoint)
                     await self._store.save(checkpoint)
+                    self._ready.set()
                     continue
                 if checkpoint is None:
                     raise GatewayProtocolError("dispatch received before READY")
@@ -180,6 +182,9 @@ class GatewayClient:
 
     async def wait_until_identified(self) -> None:
         await self._identified.wait()
+
+    async def wait_until_ready(self) -> None:
+        await self._ready.wait()
 
     async def change_presence(
         self,
