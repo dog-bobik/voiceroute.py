@@ -131,3 +131,56 @@ async def test_unresolved_conflict_advances_error_reply_index() -> None:
     first_id = messages.send.await_args_list[0].kwargs["client_message_id"]
     error_id = messages.send.await_args_list[1].kwargs["client_message_id"]
     assert error_id != first_id
+
+
+async def test_fetch_replied_message_uses_reply_sequence() -> None:
+    messages = AsyncMock()
+    target = Message(
+        seq="41",
+        community_id="community-id",
+        channel_id="channel-id",
+        body="Important",
+        author=None,
+    )
+    messages.history.return_value = MessagePage((target,))
+    incoming = Message(
+        seq="42",
+        community_id="community-id",
+        channel_id="channel-id",
+        body="/pin",
+        author=None,
+        reply_to_seq="41",
+    )
+    context = Context(incoming, "pin", (), messages)
+
+    replied = await context.fetch_replied_message()
+
+    assert context.replied_message_seq == "41"
+    assert replied is target
+    messages.history.assert_awaited_once_with(
+        "community-id",
+        "channel-id",
+        limit=1,
+        after_seq="40",
+    )
+
+
+async def test_fetch_replied_message_without_reply_avoids_request() -> None:
+    messages = AsyncMock()
+    incoming = Message("42", "community-id", "channel-id", "/pin", None)
+    context = Context(incoming, "pin", (), messages)
+
+    assert await context.fetch_replied_message() is None
+    messages.history.assert_not_awaited()
+
+
+async def test_fetch_message_rejects_invalid_sequence() -> None:
+    context = Context(
+        Message("42", "community-id", "channel-id", "/pin", None),
+        "pin",
+        (),
+        AsyncMock(),
+    )
+
+    with pytest.raises(ValueError, match="positive integer"):
+        await context.fetch_message("not-a-sequence")

@@ -24,6 +24,29 @@ class Context:
     prefix: str | None = None
     _reply_index: int = field(default=0, init=False, repr=False)
 
+    @property
+    def replied_message_seq(self) -> str | None:
+        """Return the sequence of the message replied to by this command."""
+        return self.message.reply_to_seq
+
+    async def fetch_message(self, message_seq: str) -> Message | None:
+        """Fetch one visible channel message by its sequence number."""
+        if not message_seq.isdigit() or int(message_seq) <= 0:
+            raise ValueError("message_seq must be a positive integer string")
+        page = await self._messages.history(
+            self.message.community_id,
+            self.message.channel_id,
+            limit=1,
+            after_seq=str(int(message_seq) - 1),
+        )
+        return next((item for item in page.items if item.seq == message_seq), None)
+
+    async def fetch_replied_message(self) -> Message | None:
+        """Fetch the message targeted by the reply that invoked this command."""
+        if self.replied_message_seq is None:
+            return None
+        return await self.fetch_message(self.replied_message_seq)
+
     async def reply(self, body: str) -> Message:
         """Reply idempotently to the invoking message."""
         operation_id = uuid.uuid5(
