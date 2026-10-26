@@ -1,6 +1,7 @@
 import hashlib
 import json
 from collections.abc import AsyncIterator
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -17,6 +18,17 @@ class FakePlatformAPI:
             recommended_shards=1,
             session_start_limit=GatewaySessionStartLimit(1000, 999, 0, 1),
         )
+
+    async def capabilities(self) -> Any:
+        return SimpleNamespace(
+            intents={
+                "messages": SimpleNamespace(privileged=False),
+                "members": SimpleNamespace(privileged=True),
+            }
+        )
+
+    async def current_application(self) -> Any:
+        return SimpleNamespace(approved_intents=("members",))
 
 
 class FakeSocket:

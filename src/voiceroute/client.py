@@ -17,7 +17,7 @@ from voiceroute.api import (
     RolesAPI,
 )
 from voiceroute.config import APIVersion, ClientConfig
-from voiceroute.gateway import GatewayCheckpointStore, GatewayClient
+from voiceroute.gateway import GatewayCheckpointStore, GatewayClient, Intents, ShardManager
 from voiceroute.transport import HTTPTransport, RateLimiter
 
 
@@ -70,7 +70,7 @@ class VoiceRouteClient:
     def gateway(
         self,
         *,
-        intents: tuple[str, ...] = (),
+        intents: Intents | tuple[str, ...] = (),
         shard: tuple[int, int] = (0, 1),
         store: GatewayCheckpointStore | None = None,
     ) -> GatewayClient:
@@ -83,6 +83,23 @@ class VoiceRouteClient:
             shard=shard,
             store=store,
         )
+
+    def shards(
+        self,
+        shard_count: int,
+        *,
+        intents: Intents | tuple[str, ...] = (),
+        shard_ids: tuple[int, ...] | None = None,
+        store: GatewayCheckpointStore | None = None,
+        identify_interval: float = 5.0,
+    ) -> ShardManager:
+        """Create all shards or a process-local subset for one application."""
+        selected = shard_ids if shard_ids is not None else tuple(range(shard_count))
+        clients = tuple(
+            self.gateway(intents=intents, shard=(shard_id, shard_count), store=store)
+            for shard_id in selected
+        )
+        return ShardManager(clients, identify_interval=identify_interval)
 
     async def close(self) -> None:
         """Close network resources owned by this client."""
