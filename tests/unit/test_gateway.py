@@ -160,6 +160,7 @@ async def test_gateway_resumes_matching_checkpoint() -> None:
 
     assert socket.sent[0]["op"] == 6
     assert socket.sent[0]["data"]["sequence"] == "9007199254740993"
+    assert client._last_sequence == "9007199254740993"
 
 
 async def _socket(socket: FakeSocket) -> FakeSocket:

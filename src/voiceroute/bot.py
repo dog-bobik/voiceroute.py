@@ -809,11 +809,36 @@ class Bot:
         await ready
         if self.cache.policy.reconcile_on_ready:
             await self.cache.reconcile(self.client)
+        if self._needs_legacy_message_streams():
+            self.listening_channels = tuple(await self._discover_channels())
+            required_streams = len(self.listening_channels) + int(self._needs_interaction_stream())
+            if required_streams > self.max_event_streams:
+                raise NoChannelsAvailable(
+                    f"compatibility runtime requires {required_streams} SSE streams, but "
+                    f"max_event_streams is {self.max_event_streams}"
+                )
+            self._consumer_tasks.update(
+                asyncio.create_task(
+                    self._supervise_channel(target),
+                    name=f"voiceroute:legacy:{target.community_id}:{target.channel_id}",
+                )
+                for target in self.listening_channels
+            )
+        if self._needs_interaction_stream():
+            self._consumer_tasks.add(
+                asyncio.create_task(
+                    self._supervise_interactions(),
+                    name="voiceroute:legacy-interactions",
+                )
+            )
         await self._dispatch("on_connect")
         self.state = RuntimeState.RUNNING
         self._ready.set()
         await self._dispatch("on_ready")
         await task
+
+    def _needs_legacy_message_streams(self) -> bool:
+        return bool(self.command_registry.commands or self._events.get("on_message"))
 
     async def _handle_platform_event(self, event: PlatformEvent) -> None:
         await self._dispatch("on_raw_event", event)
