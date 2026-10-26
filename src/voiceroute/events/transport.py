@@ -8,7 +8,7 @@ from enum import StrEnum
 from typing import Protocol
 
 from voiceroute.events.cursors import StreamCheckpoint
-from voiceroute.events.models import AccessLost, BotEvent, MessageUpserted
+from voiceroute.events.models import AccessLost, BotEvent, InteractionCreated, MessageUpserted
 from voiceroute.models import MessagePage
 
 
@@ -41,6 +41,18 @@ class MessageHistoryAPI(Protocol):
     ) -> MessagePage: ...
 
 
+class InteractionEventStreamAPI(Protocol):
+    """Minimal event API required by the interaction transport."""
+
+    def listen_interactions(
+        self,
+        *,
+        cursor: str | None = "0",
+        reconnect: bool = True,
+        max_backoff: float = 30.0,
+    ) -> AsyncIterator[BotEvent]: ...
+
+
 @dataclass(frozen=True, slots=True)
 class ChannelTarget:
     """A community channel selected for event consumption."""
@@ -49,11 +61,17 @@ class ChannelTarget:
     channel_id: str
 
 
+@dataclass(frozen=True, slots=True)
+class InteractionTarget:
+    """The current application's global interaction stream."""
+
+
 class EventSource(StrEnum):
     """Network source from which a normalized event was delivered."""
 
     HISTORY = "history"
     LEGACY_SSE = "legacy_sse"
+    INTERACTION_SSE = "interaction_sse"
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,6 +99,20 @@ class EventTransport(Protocol):
     ) -> AsyncIterator[EventDelivery]:
         """Yield normalized events beginning at a persisted checkpoint."""
         ...
+
+
+class InteractionEventTransport(Protocol):
+    """Produce normalized events for the current application's global stream."""
+
+    def stream_key(self, target: InteractionTarget) -> str: ...
+
+    def listen(
+        self,
+        target: InteractionTarget,
+        *,
+        checkpoint: StreamCheckpoint | None,
+        initial_after_seq: str | None,
+    ) -> AsyncIterator[EventDelivery]: ...
 
 
 class LegacySSETransport:
@@ -171,4 +203,35 @@ class LegacySSETransport:
                     source=EventSource.HISTORY,
                 )
             if len(page.items) < 100:
+                return
+
+
+class InteractionSSETransport:
+    """Adapt the current bot interaction SSE to normalized deliveries."""
+
+    def __init__(self, events: InteractionEventStreamAPI, *, base_url: str) -> None:
+        self._events = events
+        self._base_url = base_url.rstrip("/")
+
+    def stream_key(self, target: InteractionTarget) -> str:
+        return f"{self._base_url}|interactions"
+
+    async def listen(
+        self,
+        target: InteractionTarget,
+        *,
+        checkpoint: StreamCheckpoint | None,
+        initial_after_seq: str | None,
+    ) -> AsyncIterator[EventDelivery]:
+        del target, initial_after_seq
+        cursor = checkpoint.change_cursor if checkpoint is not None else "0"
+        async for event in self._events.listen_interactions(cursor=cursor):
+            if not isinstance(event, (InteractionCreated, AccessLost)):
+                continue
+            yield EventDelivery(
+                event=event,
+                checkpoint=StreamCheckpoint(change_cursor=event.cursor),
+                source=EventSource.INTERACTION_SSE,
+            )
+            if isinstance(event, AccessLost):
                 return

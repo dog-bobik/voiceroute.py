@@ -15,6 +15,9 @@ from voiceroute.events.transport import (
     EventDelivery,
     EventSource,
     EventTransport,
+    InteractionEventTransport,
+    InteractionSSETransport,
+    InteractionTarget,
     LegacySSETransport,
 )
 
@@ -28,6 +31,9 @@ __all__ = [
     "EventTransport",
     "FileCursorStore",
     "InteractionCreated",
+    "InteractionEventTransport",
+    "InteractionSSETransport",
+    "InteractionTarget",
     "LegacySSETransport",
     "MemoryCursorStore",
     "MessageUpserted",
