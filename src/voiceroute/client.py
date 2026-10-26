@@ -4,6 +4,7 @@ from types import TracebackType
 
 from voiceroute.api import (
     ApplicationCommandsAPI,
+    AutoModAPI,
     BotsAPI,
     CommunitiesAPI,
     EventsAPI,
@@ -38,6 +39,7 @@ class VoiceRouteClient:
             max_attempts=max_attempts,
         )
         self.application_commands = ApplicationCommandsAPI(self._transport)
+        self.automod = AutoModAPI(self._transport)
         self.bots = BotsAPI(self._transport)
         self.communities = CommunitiesAPI(self._transport)
         self.events = EventsAPI(self._transport)

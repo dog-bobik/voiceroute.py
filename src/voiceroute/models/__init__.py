@@ -8,6 +8,7 @@ from voiceroute.models.application_command import (
     CommandOption,
     CommandOptionType,
 )
+from voiceroute.models.automod import AutoModConfig
 from voiceroute.models.bot import BotIdentity
 from voiceroute.models.community import Channel, Community
 from voiceroute.models.interaction import Interaction, InteractionCommand, InteractionResponse
@@ -32,6 +33,7 @@ __all__ = [
     "ALL_PERMISSIONS",
     "ApplicationCommand",
     "ApplicationSummary",
+    "AutoModConfig",
     "Ban",
     "BotIdentity",
     "Channel",
