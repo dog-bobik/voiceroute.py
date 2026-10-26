@@ -6,6 +6,7 @@ import asyncio
 import importlib
 import inspect
 import logging
+from collections import deque
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
 from types import ModuleType
@@ -13,12 +14,16 @@ from typing import Any, TypeVar, cast
 
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands import (
+    ApplicationCommandRegistry,
     Command,
     CommandPipeline,
     CommandRegistry,
     Context,
+    InteractionCallback,
+    InteractionContext,
     Middleware,
     PrefixCommandAdapter,
+    application_command,
 )
 from voiceroute.errors import (
     BotAlreadyRunning,
@@ -34,13 +39,17 @@ from voiceroute.events import (
     AccessLost,
     CursorStore,
     EventTransport,
+    InteractionCreated,
+    InteractionEventTransport,
+    InteractionSSETransport,
+    InteractionTarget,
     LegacySSETransport,
     MemoryCursorStore,
     MessageUpserted,
 )
 from voiceroute.events.transport import ChannelTarget
 from voiceroute.extensions import Extension, extension_command, listener_name
-from voiceroute.models import BotIdentity, Channel, Message
+from voiceroute.models import ApplicationCommand, BotIdentity, Channel, CommandOption, Message
 from voiceroute.runtime import RuntimeState
 
 AsyncHandler = Callable[..., Awaitable[None]]
@@ -73,6 +82,9 @@ class Bot:
         initial_after_seq: str | None = "0",
         cursor_store: CursorStore | None = None,
         event_transport: EventTransport | None = None,
+        interaction_event_transport: InteractionEventTransport | None = None,
+        sync_application_commands: bool = False,
+        interaction_deduplication_size: int = 1024,
         max_consumer_backoff: float = 30.0,
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
@@ -83,6 +95,8 @@ class Bot:
             raise ValueError("max_event_streams must be between 1 and 32")
         if max_consumer_backoff <= 0:
             raise ValueError("max_consumer_backoff must be positive")
+        if interaction_deduplication_size <= 0:
+            raise ValueError("interaction_deduplication_size must be positive")
         self.client = VoiceRouteClient(token=token, base_url=base_url)
         self.community_id = community_id
         self.channel_id = channel_id
@@ -97,14 +111,23 @@ class Bot:
             self.client.messages,
             base_url=self.base_url,
         )
+        self.interaction_event_transport = interaction_event_transport or InteractionSSETransport(
+            self.client.events,
+            base_url=self.base_url,
+        )
+        self.sync_application_commands_on_start = sync_application_commands
+        self.interaction_deduplication_size = interaction_deduplication_size
         self.user: BotIdentity | None = None
         self.listening_channels: tuple[ChannelTarget, ...] = ()
         self.command_registry = CommandRegistry()
+        self.application_command_registry = ApplicationCommandRegistry()
         self.command_pipeline = CommandPipeline()
         self._events: dict[str, list[AsyncHandler]] = {}
         self._extensions: dict[str, ExtensionRegistration] = {}
         self._extension_modules: dict[str, str] = {}
         self._consumer_tasks: set[asyncio.Task[None]] = set()
+        self._processed_interaction_ids: set[str] = set()
+        self._processed_interaction_order: deque[str] = deque()
         self._ready = asyncio.Event()
         self._stop_lock = asyncio.Lock()
         self.state = RuntimeState.CREATED
@@ -134,6 +157,40 @@ class Bot:
             return handler
 
         return decorator
+
+    def slash_command(
+        self,
+        name: str,
+        *,
+        description: str,
+        options: Sequence[CommandOption] = (),
+        default_member_permissions: Sequence[str] = (),
+    ) -> Callable[[InteractionCallback], InteractionCallback]:
+        """Register a native application-command callback."""
+
+        def decorator(handler: InteractionCallback) -> InteractionCallback:
+            self._ensure_async(handler)
+            self.application_command_registry.add(
+                application_command(
+                    name=name,
+                    description=description,
+                    callback=handler,
+                    options=options,
+                    default_member_permissions=default_member_permissions,
+                )
+            )
+            return handler
+
+        return decorator
+
+    async def sync_application_commands(self) -> list[ApplicationCommand]:
+        """Replace the remote registry with all locally declared slash commands."""
+        if self.user is None:
+            raise RuntimeError("bot identity is unavailable before start")
+        return await self.client.application_commands.replace(
+            self.user.application_id,
+            self.application_command_registry.definitions,
+        )
 
     @property
     def commands(self) -> tuple[Command, ...]:
@@ -295,6 +352,8 @@ class Bot:
         try:
             await self.setup_hook()
             self.user = await self.client.bots.get_current()
+            if self.sync_application_commands_on_start:
+                await self.sync_application_commands()
             self.listening_channels = tuple(await self._discover_channels())
             await self._dispatch("on_connect")
             self.state = RuntimeState.RUNNING
@@ -308,6 +367,13 @@ class Bot:
                 )
                 for target in self.listening_channels
             }
+            if self._needs_interaction_stream():
+                self._consumer_tasks.add(
+                    asyncio.create_task(
+                        self._supervise_interactions(),
+                        name="voiceroute:interactions",
+                    )
+                )
             await asyncio.gather(*self._consumer_tasks, return_exceptions=True)
         finally:
             await self.stop()
@@ -400,6 +466,28 @@ class Bot:
                 await self._dispatch("on_resumed", target)
                 backoff = min(backoff * 2, self.max_consumer_backoff)
 
+    async def _supervise_interactions(self) -> None:
+        backoff = 1.0
+        target = InteractionTarget()
+        while not self._closed:
+            try:
+                await self._consume_interactions(target)
+                return
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:
+                if self._closed:
+                    return
+                logger.exception("interaction consumer failed")
+                await self._dispatch("on_disconnect", target, exc)
+                delay = backoff
+                await self._dispatch("on_reconnect", target, delay)
+                await asyncio.sleep(delay)
+                if self._closed:
+                    return
+                await self._dispatch("on_resumed", target)
+                backoff = min(backoff * 2, self.max_consumer_backoff)
+
     async def _handle_message(self, event: MessageUpserted) -> None:
         message = event.message
         await self._dispatch("on_message", message)
@@ -450,6 +538,49 @@ class Bot:
             await self._handle_message(event)
             await self.cursor_store.save(stream_key, delivery.checkpoint)
 
+    async def _consume_interactions(self, target: InteractionTarget) -> None:
+        stream_key = self.interaction_event_transport.stream_key(target)
+        checkpoint = await self.cursor_store.load(stream_key)
+        async for delivery in self.interaction_event_transport.listen(
+            target,
+            checkpoint=checkpoint,
+            initial_after_seq=None,
+        ):
+            if self._closed:
+                return
+            event = delivery.event
+            if isinstance(event, AccessLost):
+                await self._dispatch("on_access_lost", event, target)
+                await self.cursor_store.save(stream_key, delivery.checkpoint)
+                return
+            if not isinstance(event, InteractionCreated):
+                continue
+            await self._handle_interaction(event)
+            await self.cursor_store.save(stream_key, delivery.checkpoint)
+
+    async def _handle_interaction(self, event: InteractionCreated) -> None:
+        interaction_id = event.interaction.id
+        if interaction_id in self._processed_interaction_ids:
+            return
+        context = InteractionContext(event.interaction, self.client.interactions)
+        await self._dispatch("on_interaction", context)
+        command = self.application_command_registry.get(event.interaction.command.name)
+        if command is None:
+            self._remember_interaction(interaction_id)
+            return
+        try:
+            await self._dispatch("on_application_command", context)
+            await command.callback(context)
+            await self._dispatch("on_application_command_complete", context)
+            self._remember_interaction(interaction_id)
+        except Exception as exc:
+            handlers = self._events.get("on_application_command_error")
+            if not handlers:
+                await self._dispatch_error(exc)
+                return
+            for handler in tuple(handlers):
+                await handler(exc, context)
+
     def _stream_key(self, target: ChannelTarget) -> str:
         """Return the event transport checkpoint key for compatibility."""
         return self.event_transport.stream_key(target)
@@ -499,6 +630,22 @@ class Bot:
 
     def _matching_prefix(self, body: str) -> str | None:
         return self.command_adapter.matching_prefix(body)
+
+    def _needs_interaction_stream(self) -> bool:
+        return bool(
+            self.application_command_registry.commands
+            or self._events.get("on_interaction")
+            or self._events.get("on_application_command")
+        )
+
+    def _remember_interaction(self, interaction_id: str) -> None:
+        if interaction_id in self._processed_interaction_ids:
+            return
+        self._processed_interaction_ids.add(interaction_id)
+        self._processed_interaction_order.append(interaction_id)
+        if len(self._processed_interaction_order) > self.interaction_deduplication_size:
+            expired = self._processed_interaction_order.popleft()
+            self._processed_interaction_ids.remove(expired)
 
     async def _dispatch_command_error(
         self,

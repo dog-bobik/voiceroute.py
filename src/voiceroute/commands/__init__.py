@@ -7,6 +7,13 @@ from voiceroute.commands.core import (
     CommandParameter,
     CommandRegistry,
 )
+from voiceroute.commands.interactions import (
+    ApplicationCommandHandler,
+    ApplicationCommandRegistry,
+    InteractionCallback,
+    InteractionContext,
+    application_command,
+)
 from voiceroute.commands.pipeline import (
     BucketType,
     Check,
@@ -22,6 +29,8 @@ from voiceroute.commands.pipeline import (
 from voiceroute.commands.prefix import PrefixCommandAdapter
 
 __all__ = [
+    "ApplicationCommandHandler",
+    "ApplicationCommandRegistry",
     "BucketType",
     "Check",
     "Command",
@@ -32,9 +41,12 @@ __all__ = [
     "ConcurrencyLimit",
     "Context",
     "Cooldown",
+    "InteractionCallback",
+    "InteractionContext",
     "Middleware",
     "NextMiddleware",
     "PrefixCommandAdapter",
+    "application_command",
     "check",
     "cooldown",
     "max_concurrency",
