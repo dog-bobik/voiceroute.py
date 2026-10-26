@@ -31,3 +31,5 @@ Legacy `on_message(Message)` продолжает принимать полну�
 Gateway-события сообщений пока приходят отдельно как `on_message_created(PlatformEvent)`:
 их payload является сигналом изменения, а полная объектная модель будет получаться через
 cache/reconciliation и новые message endpoints без подмены старого контракта.
+SSE-потоки сообщений и interactions запускаются параллельно только когда бот действительно
+зарегистрировал старые prefix- или application-command handlers.

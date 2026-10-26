@@ -88,3 +88,14 @@ async def test_bot_exposes_known_and_unknown_gateway_events() -> None:
 
     assert [item.name for item in known] == ["MEMBER_JOINED"]
     assert [item.name for item in unknown] == ["BRAND_NEW_EVENT"]
+
+
+def test_gateway_keeps_legacy_message_stream_only_when_needed() -> None:
+    bot = Bot(token="vrb_test", event_transport="gateway")
+    assert bot._needs_legacy_message_streams() is False
+
+    @bot.command()
+    async def ping(ctx: object) -> None:
+        return None
+
+    assert bot._needs_legacy_message_streams() is True

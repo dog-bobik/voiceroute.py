@@ -95,6 +95,7 @@ class GatewayClient:
         if discovery.recommended_shards > self.shard[1]:
             raise GatewayError("VoiceRoute requires more Gateway shards")
         checkpoint = await self._valid_checkpoint()
+        self._last_sequence = checkpoint.sequence if checkpoint is not None else "0"
         url = (
             checkpoint.resume_gateway_url
             if checkpoint and checkpoint.resume_gateway_url
@@ -103,6 +104,7 @@ class GatewayClient:
         self._validate_gateway_url(url)
         socket = await self._connector(url)
         self._socket = socket
+        self._heartbeat_acknowledged = True
         heartbeat: asyncio.Task[None] | None = None
         try:
             iterator = aiter(socket)
