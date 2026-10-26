@@ -24,6 +24,12 @@
 - баны и таймауты;
 - AutoMod и журнал аудита.
 
+## 0.2.1 — нативные команды
+
+- реестр application commands и типизированные options — реализовано;
+- bot interaction SSE и публичные/ephemeral ответы — реализовано;
+- высокоуровневая диспетчеризация interactions — следующий этап.
+
 ## 0.4 — расширяемый фреймворк
 
 - extensions — реализованы instance и module lifecycle;

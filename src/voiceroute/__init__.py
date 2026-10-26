@@ -59,6 +59,7 @@ from voiceroute.events import (
     EventSource,
     EventTransport,
     FileCursorStore,
+    InteractionCreated,
     LegacySSETransport,
     MemoryCursorStore,
     MessageUpserted,
@@ -67,12 +68,30 @@ from voiceroute.events import (
     StreamCheckpoint,
 )
 from voiceroute.extensions import Extension, ExtensionCommand, command, listener
-from voiceroute.models import BotIdentity, Channel, Community, Message, MessagePage, User
+from voiceroute.models import (
+    ApplicationCommand,
+    ApplicationSummary,
+    BotIdentity,
+    Channel,
+    CommandChoice,
+    CommandDefinition,
+    CommandOption,
+    CommandOptionType,
+    Community,
+    Interaction,
+    InteractionCommand,
+    InteractionResponse,
+    Message,
+    MessagePage,
+    User,
+)
 from voiceroute.runtime import RuntimeState
 from voiceroute.transport import RateLimiter
 
 __all__ = [
     "AccessLost",
+    "ApplicationCommand",
+    "ApplicationSummary",
     "BadArgument",
     "BadRequest",
     "Bot",
@@ -85,10 +104,14 @@ __all__ = [
     "Check",
     "CheckFailure",
     "Command",
+    "CommandChoice",
+    "CommandDefinition",
     "CommandError",
     "CommandInvocation",
     "CommandNotFound",
     "CommandOnCooldown",
+    "CommandOption",
+    "CommandOptionType",
     "CommandParameter",
     "CommandParsingError",
     "CommandPipeline",
@@ -112,6 +135,10 @@ __all__ = [
     "FileCursorStore",
     "Forbidden",
     "HTTPError",
+    "Interaction",
+    "InteractionCommand",
+    "InteractionCreated",
+    "InteractionResponse",
     "LegacySSETransport",
     "MaxConcurrencyReached",
     "MemoryCursorStore",

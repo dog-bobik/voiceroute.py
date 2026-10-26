@@ -1,8 +1,33 @@
 """Public VoiceRoute data models."""
 
+from voiceroute.models.application_command import (
+    ApplicationCommand,
+    ApplicationSummary,
+    CommandChoice,
+    CommandDefinition,
+    CommandOption,
+    CommandOptionType,
+)
 from voiceroute.models.bot import BotIdentity
 from voiceroute.models.community import Channel, Community
+from voiceroute.models.interaction import Interaction, InteractionCommand, InteractionResponse
 from voiceroute.models.message import Message, MessagePage
 from voiceroute.models.user import User
 
-__all__ = ["BotIdentity", "Channel", "Community", "Message", "MessagePage", "User"]
+__all__ = [
+    "ApplicationCommand",
+    "ApplicationSummary",
+    "BotIdentity",
+    "Channel",
+    "CommandChoice",
+    "CommandDefinition",
+    "CommandOption",
+    "CommandOptionType",
+    "Community",
+    "Interaction",
+    "InteractionCommand",
+    "InteractionResponse",
+    "Message",
+    "MessagePage",
+    "User",
+]

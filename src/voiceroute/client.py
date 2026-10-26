@@ -2,7 +2,14 @@
 
 from types import TracebackType
 
-from voiceroute.api import BotsAPI, CommunitiesAPI, EventsAPI, MessagesAPI
+from voiceroute.api import (
+    ApplicationCommandsAPI,
+    BotsAPI,
+    CommunitiesAPI,
+    EventsAPI,
+    InteractionsAPI,
+    MessagesAPI,
+)
 from voiceroute.config import ClientConfig
 from voiceroute.transport import HTTPTransport, RateLimiter
 
@@ -27,9 +34,11 @@ class VoiceRouteClient:
             rate_limiter=rate_limiter,
             max_attempts=max_attempts,
         )
+        self.application_commands = ApplicationCommandsAPI(self._transport)
         self.bots = BotsAPI(self._transport)
         self.communities = CommunitiesAPI(self._transport)
         self.events = EventsAPI(self._transport)
+        self.interactions = InteractionsAPI(self._transport)
         self.messages = MessagesAPI(self._transport)
 
     async def close(self) -> None:

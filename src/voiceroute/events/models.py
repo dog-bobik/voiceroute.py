@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from voiceroute.models import Message
+from voiceroute.models import Interaction, Message
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,4 +21,12 @@ class AccessLost:
     reason: str | None = None
 
 
-BotEvent = MessageUpserted | AccessLost
+@dataclass(frozen=True, slots=True)
+class InteractionCreated:
+    """A native application-command invocation ready for a response."""
+
+    interaction: Interaction
+    cursor: str | None
+
+
+BotEvent = MessageUpserted | InteractionCreated | AccessLost

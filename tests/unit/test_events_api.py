@@ -5,7 +5,7 @@ import pytest
 
 from voiceroute.api.events import EventsAPI
 from voiceroute.errors import RateLimited, SSEError
-from voiceroute.events import AccessLost, MessageUpserted
+from voiceroute.events import AccessLost, InteractionCreated, MessageUpserted
 
 
 def test_decode_message_upsert() -> None:
@@ -58,3 +58,18 @@ async def test_event_stream_reconnects_after_rate_limit() -> None:
     assert received == [AccessLost(cursor=None, reason="permissions")]
     assert transport.calls == 2
     sleep.assert_awaited_once_with(2.0)
+
+
+def test_decode_interaction_event() -> None:
+    event = EventsAPI._decode(
+        "interaction",
+        '{"id":"i","applicationId":"a","communityId":"c","channelId":"ch",'
+        '"user":{"id":1,"username":"alice","displayName":"Alice"},'
+        '"command":{"id":"cmd","name":"ping","version":1},'
+        '"options":{},"createdAt":"now","expiresAt":"later"}',
+        "12",
+    )
+
+    assert isinstance(event, InteractionCreated)
+    assert event.interaction.command.name == "ping"
+    assert event.cursor == "12"
