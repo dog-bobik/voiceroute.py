@@ -10,6 +10,7 @@ from voiceroute.api.interactions import InteractionsAPI
 from voiceroute.api.members import MembersAPI
 from voiceroute.api.messages import MessagesAPI
 from voiceroute.api.moderation import ModerationAPI
+from voiceroute.api.platform import PlatformAPI
 from voiceroute.api.roles import RolesAPI
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "MembersAPI",
     "MessagesAPI",
     "ModerationAPI",
+    "PlatformAPI",
     "RolesAPI",
 ]

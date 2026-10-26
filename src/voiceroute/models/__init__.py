@@ -28,6 +28,14 @@ from voiceroute.models.moderation import (
     ModerationSnapshot,
 )
 from voiceroute.models.permissions import ALL_PERMISSIONS, Permission, Permissions
+from voiceroute.models.platform import (
+    CurrentApplication,
+    GatewayCapabilities,
+    IntentCapability,
+    LegacyCapabilities,
+    PlatformBotIdentity,
+    PlatformCapabilities,
+)
 from voiceroute.models.role import (
     ChannelPermissionSnapshot,
     PermissionOverride,
@@ -55,9 +63,13 @@ __all__ = [
     "CommandOption",
     "CommandOptionType",
     "Community",
+    "CurrentApplication",
+    "GatewayCapabilities",
+    "IntentCapability",
     "Interaction",
     "InteractionCommand",
     "InteractionResponse",
+    "LegacyCapabilities",
     "Member",
     "MemberPresence",
     "MemberRole",
@@ -70,6 +82,8 @@ __all__ = [
     "PermissionOverride",
     "PermissionTargetType",
     "Permissions",
+    "PlatformBotIdentity",
+    "PlatformCapabilities",
     "PresenceStatus",
     "Role",
     "User",
