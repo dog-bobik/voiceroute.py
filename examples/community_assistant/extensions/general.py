@@ -4,7 +4,15 @@ from __future__ import annotations
 
 import time
 
-from voiceroute import Bot, Context, Extension, command, cooldown
+from voiceroute import (
+    Bot,
+    Context,
+    Extension,
+    Permission,
+    bot_has_permissions,
+    command,
+    cooldown,
+)
 
 
 class General(Extension):
@@ -47,7 +55,18 @@ class General(Extension):
     async def about(self, context: Context) -> None:
         await context.reply(
             "Community Assistant — демонстрационный бот для voiceroute.py. "
-            "Он показывает команды, extensions, SSE, SQLite checkpoints и content API."
+            "Он показывает prefix- и slash-команды, interactions, members, permissions, "
+            "extensions, SSE, SQLite checkpoints и content API."
+        )
+
+    @command(name="permissions", description="Показать права бота в текущем канале.")
+    @bot_has_permissions(Permission.VIEW_CHANNEL)
+    @cooldown(2, 10.0)
+    async def permissions(self, context: Context) -> None:
+        effective = await context.fetch_bot_permissions()
+        values = effective.to_values() if effective is not None else ()
+        await context.reply(
+            "Права бота в текущем канале:\n" + (", ".join(values) if values else "нет прав")
         )
 
 

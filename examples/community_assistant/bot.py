@@ -7,6 +7,7 @@ import logging
 from dotenv import load_dotenv
 
 from examples.community_assistant.config import CommunityAssistantConfig
+from examples.community_assistant.extensions.native import register_native_commands
 from voiceroute import Bot, SQLiteCursorStore
 
 EXTENSIONS = (
@@ -21,6 +22,7 @@ class CommunityAssistantBot(Bot):
     async def setup_hook(self) -> None:
         for extension in EXTENSIONS:
             await self.load_extension(extension)
+        register_native_commands(self)
 
 
 def create_bot(config: CommunityAssistantConfig) -> CommunityAssistantBot:
@@ -31,6 +33,7 @@ def create_bot(config: CommunityAssistantConfig) -> CommunityAssistantBot:
         channel_id=config.channel_id,
         command_prefix=config.command_prefix,
         cursor_store=SQLiteCursorStore(config.cursor_path),
+        sync_application_commands=config.sync_application_commands,
     )
 
 

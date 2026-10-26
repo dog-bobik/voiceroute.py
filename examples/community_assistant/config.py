@@ -18,6 +18,7 @@ class CommunityAssistantConfig:
     channel_id: str | None = None
     command_prefix: str = "/"
     cursor_path: Path = Path(".voiceroute/community-assistant.sqlite3")
+    sync_application_commands: bool = True
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> CommunityAssistantConfig:
@@ -47,6 +48,9 @@ class CommunityAssistantConfig:
                     ".voiceroute/community-assistant.sqlite3",
                 )
             ),
+            sync_application_commands=_boolean(
+                values.get("VOICEROUTE_SYNC_APPLICATION_COMMANDS", "true")
+            ),
         )
 
 
@@ -55,3 +59,12 @@ def _optional(value: str | None) -> str | None:
         return None
     stripped = value.strip()
     return stripped or None
+
+
+def _boolean(value: str) -> bool:
+    normalized = value.strip().casefold()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError("VOICEROUTE_SYNC_APPLICATION_COMMANDS must be true or false")

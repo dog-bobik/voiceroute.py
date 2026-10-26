@@ -17,8 +17,18 @@ from examples.community_assistant.extensions.messages import (
     has_message_target,
     target_sequence,
 )
+from examples.community_assistant.extensions.native import register_native_commands
 
-from voiceroute import Bot, Context, Forbidden, Message, NotFound, RateLimited, User
+from voiceroute import (
+    Bot,
+    Context,
+    Forbidden,
+    Message,
+    NotFound,
+    Permission,
+    RateLimited,
+    User,
+)
 
 
 class FakeMessages:
@@ -95,6 +105,7 @@ def test_config_reads_optional_values_and_requires_token() -> None:
     assert config.community_id is None
     assert config.channel_id is None
     assert config.command_prefix == "/"
+    assert config.sync_application_commands is True
 
     with pytest.raises(ValueError, match="VOICEROUTE_BOT_TOKEN"):
         CommunityAssistantConfig.from_env({})
@@ -102,6 +113,25 @@ def test_config_reads_optional_values_and_requires_token() -> None:
         CommunityAssistantConfig.from_env(
             {"VOICEROUTE_BOT_TOKEN": "token", "VOICEROUTE_CHANNEL_ID": "channel"}
         )
+    with pytest.raises(ValueError, match="must be true or false"):
+        CommunityAssistantConfig.from_env(
+            {
+                "VOICEROUTE_BOT_TOKEN": "token",
+                "VOICEROUTE_SYNC_APPLICATION_COMMANDS": "sometimes",
+            }
+        )
+
+
+def test_native_commands_cover_interactions_members_and_permissions() -> None:
+    bot = Bot(token="vrb_test")
+    register_native_commands(bot)
+
+    commands = {
+        item.definition.name: item.definition for item in bot.application_command_registry.commands
+    }
+    assert set(commands) == {"ping", "search", "whoami", "capabilities"}
+    assert commands["search"].options[0].type.value == "string"
+    assert commands["capabilities"].default_member_permissions == (Permission.MANAGE_MESSAGES,)
 
 
 def test_faq_repository_loads_json_and_rejects_duplicate_slugs(tmp_path: Path) -> None:
