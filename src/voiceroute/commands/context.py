@@ -5,9 +5,10 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 
+from voiceroute.api.members import MembersAPI
 from voiceroute.api.messages import MessagesAPI
 from voiceroute.errors import Conflict
-from voiceroute.models import Message
+from voiceroute.models import Member, Message
 
 _REPLY_NAMESPACE = uuid.UUID("88769cac-916c-4a4a-a370-a1f971729e7b")
 
@@ -20,6 +21,7 @@ class Context:
     command: str
     args: tuple[str, ...]
     _messages: MessagesAPI = field(repr=False)
+    _members: MembersAPI | None = field(default=None, repr=False)
     invoked_with: str | None = None
     prefix: str | None = None
     _reply_index: int = field(default=0, init=False, repr=False)
@@ -46,6 +48,18 @@ class Context:
         if self.replied_message_seq is None:
             return None
         return await self.fetch_message(self.replied_message_seq)
+
+    async def fetch_member(self, user_id: int) -> Member | None:
+        """Fetch an active community member visible in this channel."""
+        if user_id <= 0:
+            raise ValueError("user_id must be positive")
+        if self._members is None:
+            raise RuntimeError("member API is unavailable in this context")
+        return await self._members.get(
+            self.message.community_id,
+            user_id,
+            channel_id=self.message.channel_id,
+        )
 
     async def reply(self, body: str) -> Message:
         """Reply idempotently to the invoking message."""

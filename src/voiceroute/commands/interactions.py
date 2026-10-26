@@ -5,12 +5,13 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
 
-from voiceroute.api import InteractionsAPI
+from voiceroute.api import InteractionsAPI, MembersAPI
 from voiceroute.models import (
     CommandDefinition,
     CommandOption,
     Interaction,
     InteractionResponse,
+    Member,
 )
 
 InteractionCallback = Callable[["InteractionContext"], Awaitable[None]]
@@ -22,6 +23,7 @@ class InteractionContext:
 
     interaction: Interaction
     _interactions: InteractionsAPI
+    _members: MembersAPI | None = None
 
     @property
     def options(self) -> dict[str, object]:
@@ -46,6 +48,19 @@ class InteractionContext:
             body,
             ephemeral=ephemeral,
         )
+
+    async def fetch_member(self, user_id: int | None = None) -> Member:
+        """Fetch the invoking member or another active member in this channel."""
+        if self._members is None:
+            raise RuntimeError("member API is unavailable in this context")
+        member = await self._members.get(
+            self.community_id,
+            self.user_id if user_id is None else user_id,
+            channel_id=self.channel_id,
+        )
+        if member is None:
+            raise LookupError("community member is no longer available")
+        return member
 
 
 @dataclass(frozen=True, slots=True)

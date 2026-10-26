@@ -184,3 +184,23 @@ async def test_fetch_message_rejects_invalid_sequence() -> None:
 
     with pytest.raises(ValueError, match="positive integer"):
         await context.fetch_message("not-a-sequence")
+
+
+async def test_fetch_member_uses_invoking_channel_visibility() -> None:
+    messages = AsyncMock()
+    members = AsyncMock()
+    members.get.return_value = None
+    context = Context(
+        Message("42", "community-id", "channel-id", "/whois 42", None),
+        "whois",
+        ("42",),
+        messages,
+        members,
+    )
+
+    assert await context.fetch_member(42) is None
+    members.get.assert_awaited_once_with(
+        "community-id",
+        42,
+        channel_id="channel-id",
+    )

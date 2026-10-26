@@ -508,6 +508,7 @@ class Bot:
             command=command.name,
             args=invocation.arguments,
             _messages=self.client.messages,
+            _members=self.client.members,
             invoked_with=invocation.invoked_with,
             prefix=invocation.prefix,
         )
@@ -562,7 +563,11 @@ class Bot:
         interaction_id = event.interaction.id
         if interaction_id in self._processed_interaction_ids:
             return
-        context = InteractionContext(event.interaction, self.client.interactions)
+        context = InteractionContext(
+            event.interaction,
+            self.client.interactions,
+            self.client.members,
+        )
         await self._dispatch("on_interaction", context)
         command = self.application_command_registry.get(event.interaction.command.name)
         if command is None:

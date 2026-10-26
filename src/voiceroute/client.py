@@ -8,6 +8,7 @@ from voiceroute.api import (
     CommunitiesAPI,
     EventsAPI,
     InteractionsAPI,
+    MembersAPI,
     MessagesAPI,
 )
 from voiceroute.config import ClientConfig
@@ -40,6 +41,7 @@ class VoiceRouteClient:
         self.events = EventsAPI(self._transport)
         self.interactions = InteractionsAPI(self._transport)
         self.messages = MessagesAPI(self._transport)
+        self.members = MembersAPI(self._transport)
 
     async def close(self) -> None:
         """Close network resources owned by this client."""
