@@ -43,9 +43,13 @@ python -m examples.community_assistant.bot
 - `/help [команда]`, `/ping`, `/about`, `/health`;
 - `/faq`, `/faq <тема>`, `/faq search <запрос>`;
 - `/search <запрос>`, `/pins`;
-- `/pin <seq>`, `/unpin <seq>`;
-- `/react <seq> <emoji>`, `/unreact <seq> <emoji>`;
-- `/delete <seq>` — только для сообщения, принадлежащего текущему боту.
+- `/pin [seq]`, `/unpin [seq]`;
+- `/react [seq] <emoji>`, `/unreact [seq] <emoji>`;
+- `/delete [seq]` — только для сообщения, принадлежащего текущему боту.
+
+Для управляющих команд `seq` можно не указывать: ответьте командой на нужное сообщение.
+Например, reply с текстом `/pin` закрепит исходное сообщение, а reply с `/react 👍`
+добавит к нему реакцию. Явный `seq` остаётся доступен для автоматизации.
 
 FAQ редактируется в `data/faq.json` без изменения Python-кода.
 

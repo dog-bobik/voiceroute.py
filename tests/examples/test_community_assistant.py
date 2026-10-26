@@ -11,9 +11,11 @@ from examples.community_assistant.extensions.diagnostics import Diagnostics
 from examples.community_assistant.extensions.general import General
 from examples.community_assistant.extensions.knowledge import FAQRepository, Knowledge
 from examples.community_assistant.extensions.messages import (
+    Messages,
     bot_owned_target,
     format_messages,
-    valid_sequence,
+    has_message_target,
+    target_sequence,
 )
 
 from voiceroute import Bot, Context, Forbidden, Message, NotFound, RateLimited, User
@@ -23,6 +25,7 @@ class FakeMessages:
     def __init__(self, history: tuple[Message, ...] = ()) -> None:
         self.sent: list[tuple[str, UUID]] = []
         self.history_items = history
+        self.actions: list[tuple[str, str, object]] = []
 
     async def send(
         self,
@@ -39,12 +42,27 @@ class FakeMessages:
     async def history(self, *_args: Any, **_kwargs: Any) -> Any:
         return type("Page", (), {"items": self.history_items})()
 
+    async def set_pin(self, _community: str, _channel: str, seq: str, *, pinned=True) -> None:
+        self.actions.append(("pin", seq, pinned))
+
+    async def set_reaction(
+        self,
+        _community: str,
+        _channel: str,
+        seq: str,
+        emoji: str,
+        *,
+        active: bool,
+    ) -> None:
+        self.actions.append(("reaction", seq, (emoji, active)))
+
 
 def make_message(
     *,
     body: str = "/ping",
     seq: str = "10",
     author: User | None = None,
+    reply_to_seq: str | None = None,
 ) -> Message:
     return Message(
         seq=seq,
@@ -52,12 +70,18 @@ def make_message(
         channel_id="channel",
         body=body,
         author=author or User(1, "member", "Member"),
+        reply_to_seq=reply_to_seq,
     )
 
 
-def make_context(messages: FakeMessages, *args: str, command: str = "test") -> Context:
+def make_context(
+    messages: FakeMessages,
+    *args: str,
+    command: str = "test",
+    reply_to_seq: str | None = None,
+) -> Context:
     return Context(
-        message=make_message(),
+        message=make_message(reply_to_seq=reply_to_seq),
         command=command,
         args=args,
         _messages=messages,  # type: ignore[arg-type]
@@ -140,15 +164,33 @@ def test_search_formatting_is_bounded_and_readable() -> None:
 
 
 @pytest.mark.asyncio
-async def test_management_checks_require_sequence_and_bot_message() -> None:
+async def test_management_checks_accept_explicit_sequence_or_reply() -> None:
     bot_message = make_message(seq="42", author=User(2, "bot", "Bot", bot=True))
     messages = FakeMessages((bot_message,))
     valid = make_context(messages, "42")
     invalid = make_context(messages, "abc")
-    assert valid_sequence(valid)
-    assert not valid_sequence(invalid)
+    replied = make_context(messages, reply_to_seq="42")
+    assert has_message_target(valid)
+    assert not has_message_target(invalid)
+    assert has_message_target(replied)
+    assert target_sequence(replied) == "42"
     assert await bot_owned_target(valid)
+    assert await bot_owned_target(replied)
     assert not await bot_owned_target(invalid)
+
+
+@pytest.mark.asyncio
+async def test_message_actions_target_replied_message_without_manual_sequence() -> None:
+    bot = Bot(token="vrb_test")
+    messages = FakeMessages((make_message(seq="42"),))
+    bot.client.messages = messages  # type: ignore[assignment]
+    extension = Messages(bot)
+
+    await extension.pin(make_context(messages, command="pin", reply_to_seq="42"))
+    await extension.react(make_context(messages, "👍", command="react", reply_to_seq="42"))
+
+    assert messages.actions == [("pin", "42", True), ("reaction", "42", ("👍", True))]
+    await bot.close()
 
 
 @pytest.mark.asyncio

@@ -10,19 +10,28 @@ MESSAGE_LIMIT = 4000
 RESULT_LIMIT = 10
 
 
-def valid_sequence(context: Context) -> bool:
-    return bool(context.args and context.args[0].isdigit())
+def target_sequence(context: Context) -> str | None:
+    """Resolve an explicit sequence first, then fall back to the replied message."""
+    if context.args:
+        return context.args[0] if context.args[0].isdigit() else None
+    return context.replied_message_seq
+
+
+def has_message_target(context: Context) -> bool:
+    return target_sequence(context) is not None
+
+
+def has_reaction_target(context: Context) -> bool:
+    return bool(
+        context.args and (context.args[0].isdigit() or context.replied_message_seq is not None)
+    )
 
 
 async def bot_owned_target(context: Context) -> bool:
-    if not valid_sequence(context):
+    sequence = target_sequence(context)
+    if sequence is None:
         return False
-    page = await context._messages.history(
-        context.message.community_id,
-        context.message.channel_id,
-        limit=100,
-    )
-    target = next((item for item in page.items if item.seq == context.args[0]), None)
+    target = await context.fetch_message(sequence)
     return bool(target is not None and target.author is not None and target.author.bot)
 
 
@@ -82,44 +91,62 @@ class Messages(Extension):
         )
         await context.reply(format_messages("Закреплённые сообщения:", page.items))
 
-    @command(name="pin", description="Закрепить сообщение.", usage="<seq>")
-    @check(valid_sequence)
+    @command(name="pin", description="Закрепить сообщение.", usage="[seq] или reply")
+    @check(has_message_target)
     @cooldown(2, 10.0)
-    async def pin(self, context: Context, seq: str) -> None:
+    async def pin(self, context: Context, seq: str | None = None) -> None:
+        target = target_sequence(context)
+        if target is None:
+            return
         await self._run_action(
             context,
             self.bot.client.messages.set_pin(
-                context.message.community_id, context.message.channel_id, seq
+                context.message.community_id, context.message.channel_id, target
             ),
-            f"Сообщение #{seq} закреплено.",
+            f"Сообщение #{target} закреплено.",
         )
 
-    @command(name="unpin", description="Снять закрепление.", usage="<seq>")
-    @check(valid_sequence)
+    @command(name="unpin", description="Снять закрепление.", usage="[seq] или reply")
+    @check(has_message_target)
     @cooldown(2, 10.0)
-    async def unpin(self, context: Context, seq: str) -> None:
+    async def unpin(self, context: Context, seq: str | None = None) -> None:
+        target = target_sequence(context)
+        if target is None:
+            return
         await self._run_action(
             context,
             self.bot.client.messages.set_pin(
                 context.message.community_id,
                 context.message.channel_id,
-                seq,
+                target,
                 pinned=False,
             ),
-            f"Сообщение #{seq} откреплено.",
+            f"Сообщение #{target} откреплено.",
         )
 
-    @command(name="react", description="Добавить реакцию.", usage="<seq> <emoji>")
-    @check(valid_sequence)
+    @command(name="react", description="Добавить реакцию.", usage="[seq] <emoji> или reply")
+    @check(has_reaction_target)
     @cooldown(4, 10.0)
-    async def react(self, context: Context, seq: str, emoji: str) -> None:
-        await self._set_reaction(context, seq, emoji, active=True)
+    async def react(self, context: Context) -> None:
+        await self._reaction_from_context(context, active=True)
 
-    @command(name="unreact", description="Удалить реакцию.", usage="<seq> <emoji>")
-    @check(valid_sequence)
+    @command(name="unreact", description="Удалить реакцию.", usage="[seq] <emoji> или reply")
+    @check(has_reaction_target)
     @cooldown(4, 10.0)
-    async def unreact(self, context: Context, seq: str, emoji: str) -> None:
-        await self._set_reaction(context, seq, emoji, active=False)
+    async def unreact(self, context: Context) -> None:
+        await self._reaction_from_context(context, active=False)
+
+    async def _reaction_from_context(self, context: Context, *, active: bool) -> None:
+        explicit_sequence = bool(context.args and context.args[0].isdigit())
+        sequence = context.args[0] if explicit_sequence else context.replied_message_seq
+        emoji_index = 1 if explicit_sequence else 0
+        if sequence is None or len(context.args) != emoji_index + 1:
+            await context.reply(
+                "Ответьте командой на сообщение и укажите emoji либо используйте "
+                f"/{context.command} <seq> <emoji>."
+            )
+            return
+        await self._set_reaction(context, sequence, context.args[emoji_index], active=active)
 
     async def _set_reaction(self, context: Context, seq: str, emoji: str, *, active: bool) -> None:
         await self._run_action(
@@ -134,16 +161,14 @@ class Messages(Extension):
             f"Реакция {emoji} {'добавлена' if active else 'удалена'} для #{seq}.",
         )
 
-    @command(name="delete", description="Удалить сообщение бота.", usage="<seq>")
+    @command(name="delete", description="Удалить сообщение бота.", usage="[seq] или reply")
     @check(bot_owned_target)
     @cooldown(1, 10.0)
-    async def delete(self, context: Context, seq: str) -> None:
-        page = await self.bot.client.messages.history(
-            context.message.community_id,
-            context.message.channel_id,
-            limit=100,
-        )
-        target = next((item for item in page.items if item.seq == seq), None)
+    async def delete(self, context: Context, seq: str | None = None) -> None:
+        sequence = target_sequence(context)
+        if sequence is None:
+            return
+        target = await context.fetch_message(sequence)
         own_user = self.bot.user.user if self.bot.user is not None else None
         if target is None or target.author is None or own_user is None:
             await context.reply("Нельзя подтвердить, что это сообщение принадлежит текущему боту.")
@@ -154,9 +179,9 @@ class Messages(Extension):
         await self._run_action(
             context,
             self.bot.client.messages.delete(
-                context.message.community_id, context.message.channel_id, seq
+                context.message.community_id, context.message.channel_id, sequence
             ),
-            f"Сообщение бота #{seq} удалено.",
+            f"Сообщение бота #{sequence} удалено.",
         )
 
 
