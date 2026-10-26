@@ -9,6 +9,7 @@ from voiceroute import (
     BotAlreadyRunning,
     BotClosed,
     BotIdentity,
+    Forbidden,
     RuntimeState,
     User,
 )
@@ -162,6 +163,23 @@ async def test_consumer_cancellation_is_not_retried() -> None:
 
     with pytest.raises(asyncio.CancelledError):
         await bot._supervise_channel(ChannelTarget("community", "channel"))
+    await bot.close()
+
+
+async def test_forbidden_consumer_is_reported_without_retry() -> None:
+    bot = Bot(token="vrb_secret")
+    error = Forbidden(403, "privileged intent required")
+    bot._consume_channel = AsyncMock(side_effect=error)  # type: ignore[method-assign]
+    target = ChannelTarget("community", "channel")
+    unavailable = AsyncMock()
+    bot.add_listener(unavailable, "on_stream_unavailable")
+
+    with patch("voiceroute.bot.asyncio.sleep", new=AsyncMock()) as sleep:
+        await bot._supervise_channel(target)
+
+    unavailable.assert_awaited_once_with(target, error)
+    sleep.assert_not_awaited()
+    assert bot._consume_channel.await_count == 1
     await bot.close()
 
 

@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 
 from voiceroute import Activity, Game, Intent, Intents, Presence, Status
-from voiceroute.errors import PrivilegedIntentRequired
+from voiceroute.errors import IntentNotEnabled, PrivilegedIntentRequired
 from voiceroute.gateway import GatewayClient
 from voiceroute.models import GatewayDiscovery, GatewaySessionStartLimit
 
@@ -40,7 +40,7 @@ class PrivilegedPlatform:
         return SimpleNamespace(intents={"members": SimpleNamespace(privileged=True)})
 
     async def current_application(self) -> Any:
-        return SimpleNamespace(approved_intents=())
+        return SimpleNamespace(requested_intents=("members",), approved_intents=())
 
 
 async def test_gateway_rejects_unapproved_privileged_intent() -> None:
@@ -57,3 +57,25 @@ async def test_gateway_rejects_unapproved_privileged_intent() -> None:
     with pytest.raises(PrivilegedIntentRequired) as captured:
         await client.run_once(ignore)
     assert captured.value.intents == ("members",)
+
+
+async def test_gateway_rejects_intent_not_enabled_for_application() -> None:
+    platform = PrivilegedPlatform()
+    platform.current_application = lambda: _application(())  # type: ignore[method-assign]
+    client = GatewayClient(
+        token="vrb_test",
+        platform_api=platform,  # type: ignore[arg-type]
+        base_url="https://voiceroute.cc",
+        intents=Intents(members=True),
+    )
+
+    async def ignore(event: Any) -> None:
+        return None
+
+    with pytest.raises(IntentNotEnabled) as captured:
+        await client.run_once(ignore)
+    assert captured.value.intents == ("members",)
+
+
+async def _application(requested: tuple[str, ...]) -> Any:
+    return SimpleNamespace(requested_intents=requested, approved_intents=())

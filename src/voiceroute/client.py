@@ -17,7 +17,14 @@ from voiceroute.api import (
     RolesAPI,
 )
 from voiceroute.config import APIVersion, ClientConfig
-from voiceroute.gateway import GatewayCheckpointStore, GatewayClient, Intents, ShardManager
+from voiceroute.gateway import (
+    GatewayCheckpointCoordinator,
+    GatewayCheckpointStore,
+    GatewayClient,
+    GatewayMetricHook,
+    Intents,
+    ShardManager,
+)
 from voiceroute.transport import HTTPTransport, RateLimiter
 
 
@@ -33,6 +40,8 @@ class VoiceRouteClient:
         rate_limiter: RateLimiter | None = None,
         max_attempts: int = 3,
         api_version: APIVersion | str = APIVersion.AUTO,
+        max_http_concurrency: int = 100,
+        max_response_bytes: int = 8 * 1024 * 1024,
     ) -> None:
         config = ClientConfig(
             base_url=base_url, timeout=timeout, api_version=APIVersion(api_version)
@@ -46,6 +55,8 @@ class VoiceRouteClient:
             timeout=config.timeout,
             rate_limiter=rate_limiter,
             max_attempts=max_attempts,
+            max_concurrency=max_http_concurrency,
+            max_response_bytes=max_response_bytes,
         )
         self.application_commands = ApplicationCommandsAPI(self._transport)
         self.automod = AutoModAPI(self._transport)
@@ -73,6 +84,10 @@ class VoiceRouteClient:
         intents: Intents | tuple[str, ...] = (),
         shard: tuple[int, int] = (0, 1),
         store: GatewayCheckpointStore | None = None,
+        coordinator: GatewayCheckpointCoordinator | None = None,
+        dispatch_queue_size: int = 1_000,
+        metric_hook: GatewayMetricHook | None = None,
+        drain_timeout: float = 30.0,
     ) -> GatewayClient:
         """Create a v1 Gateway session sharing this client's discovery API."""
         return GatewayClient(
@@ -82,6 +97,10 @@ class VoiceRouteClient:
             intents=intents,
             shard=shard,
             store=store,
+            coordinator=coordinator,
+            dispatch_queue_size=dispatch_queue_size,
+            metric_hook=metric_hook,
+            drain_timeout=drain_timeout,
         )
 
     def shards(
@@ -92,11 +111,23 @@ class VoiceRouteClient:
         shard_ids: tuple[int, ...] | None = None,
         store: GatewayCheckpointStore | None = None,
         identify_interval: float = 5.0,
+        coordinator: GatewayCheckpointCoordinator | None = None,
+        dispatch_queue_size: int = 1_000,
+        metric_hook: GatewayMetricHook | None = None,
+        drain_timeout: float = 30.0,
     ) -> ShardManager:
         """Create all shards or a process-local subset for one application."""
         selected = shard_ids if shard_ids is not None else tuple(range(shard_count))
         clients = tuple(
-            self.gateway(intents=intents, shard=(shard_id, shard_count), store=store)
+            self.gateway(
+                intents=intents,
+                shard=(shard_id, shard_count),
+                store=store,
+                coordinator=coordinator,
+                dispatch_queue_size=dispatch_queue_size,
+                metric_hook=metric_hook,
+                drain_timeout=drain_timeout,
+            )
             for shard_id in selected
         )
         return ShardManager(clients, identify_interval=identify_interval)

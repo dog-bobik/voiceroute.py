@@ -47,9 +47,18 @@ from voiceroute.models.role import (
     Role,
 )
 from voiceroute.models.user import User
+from voiceroute.models.wire import (
+    UNSET,
+    OpenEnumValue,
+    UnsetType,
+    WireObject,
+    camel_to_snake,
+    is_set,
+)
 
 __all__ = [
     "ALL_PERMISSIONS",
+    "UNSET",
     "ApplicationCommand",
     "ApplicationSummary",
     "AuditActionOption",
@@ -84,6 +93,7 @@ __all__ = [
     "MessagePage",
     "ModerationMember",
     "ModerationSnapshot",
+    "OpenEnumValue",
     "Permission",
     "PermissionOverride",
     "PermissionTargetType",
@@ -94,5 +104,9 @@ __all__ = [
     "PlatformEventType",
     "PresenceStatus",
     "Role",
+    "UnsetType",
     "User",
+    "WireObject",
+    "camel_to_snake",
+    "is_set",
 ]

@@ -41,8 +41,20 @@ class Unauthorized(HTTPError):
     """The bot token is missing, invalid, or revoked."""
 
 
+class AuthenticationRequired(Unauthorized):
+    """The operation requires an authenticated user or application."""
+
+
+class BotAuthenticationRequired(Unauthorized):
+    """The operation specifically requires a bot credential."""
+
+
 class Forbidden(HTTPError):
     """The bot is not allowed to perform the action."""
+
+
+class MissingPermission(Forbidden):
+    """The authenticated principal lacks a required VoiceRoute permission."""
 
 
 class NotFound(HTTPError):
@@ -55,6 +67,26 @@ class Conflict(HTTPError):
 
 class ResourceVersionConflict(Conflict):
     """A conditional v1 mutation used a stale resource version."""
+
+
+class VersionConflict(ResourceVersionConflict):
+    """A conditional mutation used a stale version or ETag."""
+
+
+class IdempotencyConflict(Conflict):
+    """An idempotency key was reused with a different request payload."""
+
+
+class PayloadTooLarge(HTTPError):
+    """The request or response exceeds a platform or client size limit."""
+
+
+class RequestCapacity(HTTPError):
+    """The platform temporarily has no capacity for the request."""
+
+
+class HTTPFeatureUnavailable(HTTPError):
+    """The deployment does not expose a requested HTTP feature."""
 
 
 class FeatureUnavailable(VoiceRouteError):
@@ -84,6 +116,16 @@ class PrivilegedIntentRequired(GatewayError):
     def __init__(self, intents: tuple[str, ...]) -> None:
         self.intents = intents
         super().__init__(f"privileged Gateway intents require approval: {', '.join(intents)}")
+
+
+class IntentNotEnabled(GatewayError):
+    """Requested Gateway intents are not enabled for the application."""
+
+    def __init__(self, intents: tuple[str, ...]) -> None:
+        self.intents = intents
+        super().__init__(
+            "Gateway intents must be enabled in the application settings: " + ", ".join(intents)
+        )
 
 
 class ValidationError(HTTPError):
@@ -117,6 +159,14 @@ class ServiceUnavailable(HTTPError):
 
 class TransportError(VoiceRouteError):
     """The request could not be completed at the network layer."""
+
+
+class ResponseTooLarge(TransportError):
+    """A response exceeded the configured in-memory safety limit."""
+
+
+class UnexpectedRedirect(TransportError):
+    """A credentialed request received a redirect that was not followed."""
 
 
 class SSEError(VoiceRouteError):

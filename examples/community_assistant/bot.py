@@ -33,18 +33,7 @@ class CommunityAssistantBot(Bot):
 
 
 def create_bot(config: CommunityAssistantConfig) -> CommunityAssistantBot:
-    intents = (
-        Intents(
-            communities=True,
-            messages=True,
-            interactions=True,
-            members=True,
-            message_content=True,
-            presence=True,
-        )
-        if config.privileged_intents
-        else Intents.default()
-    )
+    intents = Intents.from_values(config.gateway_intents)
     return CommunityAssistantBot(
         token=config.token,
         base_url=config.base_url,

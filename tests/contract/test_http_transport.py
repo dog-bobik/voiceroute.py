@@ -6,10 +6,13 @@ import respx
 
 from voiceroute.errors import (
     ClientClosedError,
+    IdempotencyConflict,
     RateLimited,
     ResourceVersionConflict,
+    ResponseTooLarge,
     TransportError,
     Unauthorized,
+    UnexpectedRedirect,
 )
 from voiceroute.transport import HTTPTransport, RateLimitMetadata
 
@@ -211,3 +214,87 @@ async def test_transport_exposes_v1_response_metadata() -> None:
     assert result.etag == '"resource-2"'
     assert result.api_version == "1"
     assert result.rate_limit == RateLimitMetadata(50, 49, 0.5, "bot-global", "application")
+
+
+@respx.mock
+async def test_transport_generates_one_idempotency_key_for_all_attempts() -> None:
+    route = respx.post("https://voiceroute.cc/api/v1/action").mock(
+        side_effect=[
+            httpx.Response(503, json={"error": "busy"}),
+            httpx.Response(200, json={"ok": True}),
+        ]
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+
+    with patch("voiceroute.transport.http.asyncio.sleep", new=AsyncMock()):
+        await transport.request(
+            "POST",
+            "/api/v1/action",
+            json={"value": 1},
+            generate_idempotency_key=True,
+            request_id="client-request-id",
+        )
+    await transport.close()
+
+    keys = [call.request.headers["Idempotency-Key"] for call in route.calls]
+    assert len(keys) == 2
+    assert keys[0] == keys[1]
+    assert route.calls[0].request.headers["X-VoiceRoute-API-Version"] == "1"
+    assert route.calls[0].request.headers["X-Request-ID"] == "client-request-id"
+
+
+@respx.mock
+async def test_transport_rejects_redirect_without_forwarding_credentials() -> None:
+    route = respx.get("https://voiceroute.cc/api/v1/resource").mock(
+        return_value=httpx.Response(307, headers={"Location": "https://attacker.example/"})
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+
+    with pytest.raises(UnexpectedRedirect):
+        await transport.request("GET", "/api/v1/resource")
+    await transport.close()
+
+    assert route.call_count == 1
+
+
+@respx.mock
+async def test_transport_limits_response_size() -> None:
+    respx.get("https://voiceroute.cc/api/v1/resource").mock(
+        return_value=httpx.Response(200, content=b'{"value":"too large"}')
+    )
+    transport = HTTPTransport(
+        token="vrb_secret",
+        base_url="https://voiceroute.cc",
+        timeout=1,
+        max_response_bytes=8,
+    )
+
+    with pytest.raises(ResponseTooLarge):
+        await transport.request("GET", "/api/v1/resource")
+    await transport.close()
+
+
+@respx.mock
+async def test_transport_maps_idempotency_conflict() -> None:
+    respx.post("https://voiceroute.cc/api/v1/action").mock(
+        return_value=httpx.Response(
+            409,
+            json={
+                "error": {
+                    "code": "IDEMPOTENCY_CONFLICT",
+                    "message": "key has another payload",
+                    "retryable": False,
+                    "details": {"retryAfterMs": 250},
+                }
+            },
+        )
+    )
+    transport = HTTPTransport(
+        token="vrb_secret", base_url="https://voiceroute.cc", timeout=1, max_attempts=1
+    )
+
+    with pytest.raises(IdempotencyConflict) as captured:
+        await transport.request("POST", "/api/v1/action", idempotency_key="same-key")
+    await transport.close()
+
+    assert captured.value.details == {"retryAfterMs": 250}

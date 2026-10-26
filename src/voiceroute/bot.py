@@ -33,6 +33,7 @@ from voiceroute.errors import (
     ExtensionAlreadyLoaded,
     ExtensionNotLoaded,
     ExtensionSetupError,
+    Forbidden,
     NoChannelsAvailable,
     NotFound,
 )
@@ -142,7 +143,7 @@ class Bot:
         else:
             self._event_transport_mode = "custom"
             self.event_transport = event_transport
-        self.intents = intents or Intents.default()
+        self.intents = Intents.default() if intents is None else intents
         self.gateway_store = gateway_store
         self.gateway = gateway_client
         self.cache = cache or StateCache(cache_policy or CachePolicy())
@@ -590,6 +591,19 @@ class Bot:
                 return
             except asyncio.CancelledError:
                 raise
+            except Forbidden as exc:
+                if self._closed:
+                    return
+                logger.warning(
+                    "channel event stream is unavailable: %s",
+                    exc,
+                    extra={
+                        "community_id": target.community_id,
+                        "channel_id": target.channel_id,
+                    },
+                )
+                await self._dispatch("on_stream_unavailable", target, exc)
+                return
             except Exception as exc:
                 if self._closed:
                     return

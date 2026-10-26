@@ -20,6 +20,18 @@ class GatewayFeatures(Extension):
                 status=Status.ONLINE,
                 activities=(Game("/help"),),
             )
+            logger.info("Gateway ready; bot presence is online")
+
+    @listener("on_connect")
+    async def gateway_connected(self) -> None:
+        logger.info("Community Assistant connected to VoiceRoute Gateway")
+
+    @listener("on_stream_unavailable")
+    async def stream_unavailable(self, *args: object) -> None:
+        logger.warning(
+            "Message stream is unavailable; enable the required privileged intents "
+            "to use prefix commands"
+        )
 
     @listener("on_member_join")
     async def member_joined(self, member: CachedEntity) -> None:

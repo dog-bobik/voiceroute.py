@@ -99,7 +99,7 @@ Redis. Подробнее: [события и восстановление](docs
 | Сообщения | История, отправка и изменение готовы |
 | Реакции, закрепления и поиск | Основа готова |
 | SSE и восстановление курсора | Основа готова |
-| Gateway, Resume, intents и shards | Основа готова |
+| Gateway, Resume, intents и shards | Production runtime готов |
 | Event dispatcher и `wait_for` | Основа готова |
 | Локальный state cache | Communities, channels, roles, members, threads |
 | Prefix-команды | Основа готова |
@@ -111,7 +111,8 @@ Redis. Подробнее: [события и восстановление](docs
 | Журнал аудита | Фильтры и cursor pagination готовы |
 | Голос для сторонних ботов | Не поддерживается API [VoiceRoute](https://voiceroute.cc) |
 
-Подробная последовательность работ находится в [дорожной карте](docs/roadmap.md),
+Подробная последовательность работ находится в
+[полном плане реализации](docs/full-platform-implementation-plan.md),
 текущее покрытие — в [матрице API](docs/api-coverage.md), а принятые границы проекта —
 в [описании архитектуры](docs/architecture.md).
 

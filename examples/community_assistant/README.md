@@ -27,7 +27,7 @@ VOICEROUTE_COMMUNITY_ID=
 VOICEROUTE_CHANNEL_ID=
 VOICEROUTE_COMMAND_PREFIX=/
 VOICEROUTE_SYNC_APPLICATION_COMMANDS=true
-VOICEROUTE_PRIVILEGED_INTENTS=false
+VOICEROUTE_GATEWAY_INTENTS=
 VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 ```
 
@@ -36,10 +36,18 @@ VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 только вместе с `VOICEROUTE_COMMUNITY_ID`. Путь SQLite при необходимости меняется
 через `VOICEROUTE_CURSOR_PATH`.
 
-По умолчанию пример запрашивает только непривилегированные intents. Чтобы получать
-`MEMBER_JOINED`, presence и message content, сначала подтвердите эти intents в настройках
-приложения, затем установите `VOICEROUTE_PRIVILEGED_INTENTS=true`. Без approval SDK
-завершит запуск понятной ошибкой, а не будет молча терять события.
+По умолчанию пример открывает Gateway без domain intents: этого достаточно для статуса
+online, heartbeat и обработки старых команд через совместимый SSE. Чтобы получать domain
+events, сначала включите intents в настройках приложения, а затем перечислите те же
+значения через запятую, например:
+
+```ini
+VOICEROUTE_GATEWAY_INTENTS=communities,messages,interactions
+```
+
+Для `MEMBER_JOINED`, presence других участников и message content также требуется approval
+соответствующих privileged intents. SDK проверяет настройки до подключения и завершает
+запуск понятной ошибкой, а не циклом reconnect с кодом `4014`.
 
 При `VOICEROUTE_SYNC_APPLICATION_COMMANDS=true` бот во время запуска полностью заменяет
 удалённый реестр slash-команд четырьмя определениями из примера. Установите `false`, если

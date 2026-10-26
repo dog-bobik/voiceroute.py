@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import json
 from collections.abc import AsyncIterator
@@ -28,7 +29,9 @@ class FakePlatformAPI:
         )
 
     async def current_application(self) -> Any:
-        return SimpleNamespace(approved_intents=("members",))
+        return SimpleNamespace(
+            requested_intents=("messages", "members"), approved_intents=("members",)
+        )
 
 
 class FakeSocket:
@@ -161,6 +164,39 @@ async def test_gateway_resumes_matching_checkpoint() -> None:
     assert socket.sent[0]["op"] == 6
     assert socket.sent[0]["data"]["sequence"] == "9007199254740993"
     assert client._last_sequence == "9007199254740993"
+
+
+async def test_gateway_control_frames_are_not_blocked_by_slow_handler() -> None:
+    socket = FakeSocket([hello(), ready(), message(), {"op": 11, "data": {"sequence": "2"}}])
+    entered = asyncio.Event()
+    release = asyncio.Event()
+    acknowledged = asyncio.Event()
+
+    async def connector(url: str) -> FakeSocket:
+        return socket
+
+    async def slow_handler(event: PlatformEvent) -> None:
+        entered.set()
+        await release.wait()
+
+    def metric(name: str, values: dict[str, int | float | str]) -> None:
+        if name == "heartbeat_ack":
+            acknowledged.set()
+
+    client = GatewayClient(
+        token="vrb_test",
+        platform_api=FakePlatformAPI(),  # type: ignore[arg-type]
+        base_url="https://voiceroute.cc",
+        connector=connector,
+        metric_hook=metric,
+        dispatch_queue_size=1,
+    )
+    running = asyncio.create_task(client.run_once(slow_handler))
+
+    await asyncio.wait_for(entered.wait(), timeout=1)
+    await asyncio.wait_for(acknowledged.wait(), timeout=1)
+    release.set()
+    await running
 
 
 async def _socket(socket: FakeSocket) -> FakeSocket:

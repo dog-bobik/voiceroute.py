@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from voiceroute import Bot, Context, MemoryCursorStore, NoChannelsAvailable
+from voiceroute import Bot, Context, Intents, MemoryCursorStore, NoChannelsAvailable
 from voiceroute.bot import ChannelTarget
 from voiceroute.events import MessageUpserted
 from voiceroute.models import Channel, Community, Message, MessagePage, User
@@ -18,6 +18,12 @@ def incoming_message(body: str, *, bot: bool = False, edited: bool = False) -> M
         author=User(7, "member", "Member", bot=bot),
         edited_at="2026-10-25T00:00:00Z" if edited else None,
     )
+
+
+def test_explicit_empty_intents_are_preserved() -> None:
+    runtime = Bot(token="vrb_secret", intents=Intents())
+
+    assert runtime.intents.values == ()
 
 
 async def test_command_receives_parsed_arguments() -> None:
