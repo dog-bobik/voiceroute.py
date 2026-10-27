@@ -71,6 +71,7 @@ from voiceroute.models.role import (
     Role,
 )
 from voiceroute.models.user import User
+from voiceroute.models.voice import VoiceServerGrant, VoiceState, VoiceStatePage, VoiceTrack
 from voiceroute.models.wire import (
     UNSET,
     OpenEnumValue,
@@ -150,6 +151,10 @@ __all__ = [
     "UnsetType",
     "User",
     "VoiceCapabilities",
+    "VoiceServerGrant",
+    "VoiceState",
+    "VoiceStatePage",
+    "VoiceTrack",
     "WireObject",
     "camel_to_snake",
     "is_set",

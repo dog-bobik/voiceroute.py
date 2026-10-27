@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from voiceroute.errors import GatewayError
+from voiceroute.errors import GatewayError, PrivilegedIntentRequired
 from voiceroute.gateway import GatewayCheckpoint, GatewayClient, MemoryGatewayCheckpointStore
 from voiceroute.models import GatewayDiscovery, GatewaySessionStartLimit, PlatformEvent
 
@@ -197,6 +197,72 @@ async def test_gateway_control_frames_are_not_blocked_by_slow_handler() -> None:
     await asyncio.wait_for(acknowledged.wait(), timeout=1)
     release.set()
     await running
+
+
+async def test_gateway_routes_voice_control_frames_without_dispatching_them() -> None:
+    request_id = "00000000-0000-4000-8000-000000000010"
+    socket = FakeSocket(
+        [
+            hello(),
+            ready(),
+            {"op": 4, "data": {"requestId": request_id, "sessionId": "session-id"}},
+        ]
+    )
+    seen: list[dict[str, Any]] = []
+    dispatched: list[PlatformEvent] = []
+
+    async def connector(url: str) -> FakeSocket:
+        return socket
+
+    async def handle(event: PlatformEvent) -> None:
+        dispatched.append(event)
+
+    client = GatewayClient(
+        token="vrb_test",
+        platform_api=FakePlatformAPI(),  # type: ignore[arg-type]
+        base_url="https://voiceroute.cc",
+        connector=connector,
+    )
+    client.subscribe_voice(lambda frame: seen.append(dict(frame)))
+    await client.run_once(handle)
+
+    assert seen == [{"op": 4, "data": {"requestId": request_id, "sessionId": "session-id"}}]
+    assert dispatched == []
+
+
+async def test_gateway_does_not_retry_unapproved_privileged_intent() -> None:
+    class UnapprovedPlatform(FakePlatformAPI):
+        async def capabilities(self) -> Any:
+            return SimpleNamespace(intents={"voiceStates": SimpleNamespace(privileged=True)})
+
+        async def current_application(self) -> Any:
+            return SimpleNamespace(
+                requested_intents=("voiceStates",),
+                approved_intents=(),
+            )
+
+    connections = 0
+
+    async def connector(url: str) -> FakeSocket:
+        nonlocal connections
+        connections += 1
+        return FakeSocket([])
+
+    async def ignore(event: PlatformEvent) -> None:
+        return None
+
+    client = GatewayClient(
+        token="vrb_test",
+        platform_api=UnapprovedPlatform(),  # type: ignore[arg-type]
+        base_url="https://voiceroute.cc",
+        intents=("voiceStates",),
+        connector=connector,
+    )
+
+    with pytest.raises(PrivilegedIntentRequired, match="voiceStates"):
+        await client.run(ignore)
+
+    assert connections == 0
 
 
 async def _socket(socket: FakeSocket) -> FakeSocket:

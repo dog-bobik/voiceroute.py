@@ -194,6 +194,10 @@ from voiceroute.models import (
     TextInput,
     User,
     VoiceCapabilities,
+    VoiceServerGrant,
+    VoiceState,
+    VoiceStatePage,
+    VoiceTrack,
 )
 from voiceroute.runtime import RuntimeState
 from voiceroute.state import CacheChange, CachePolicy, StateCache
@@ -207,6 +211,14 @@ from voiceroute.state_models import (
     CachedRole,
 )
 from voiceroute.transport import RateLimiter
+from voiceroute.voice import (
+    LiveKitMediaTransport,
+    VoiceAccessDenied,
+    VoiceError,
+    VoiceMediaTransport,
+    VoiceRuntimeMissing,
+    VoiceSession,
+)
 
 __all__ = [
     "ALL_PERMISSIONS",
@@ -333,6 +345,7 @@ __all__ = [
     "InteractionTarget",
     "LegacyCapabilities",
     "LegacySSETransport",
+    "LiveKitMediaTransport",
     "MaxConcurrencyReached",
     "Member",
     "MemberPresence",
@@ -397,9 +410,18 @@ __all__ = [
     "User",
     "ValidationError",
     "VersionConflict",
+    "VoiceAccessDenied",
     "VoiceCapabilities",
+    "VoiceError",
+    "VoiceMediaTransport",
     "VoiceRouteClient",
     "VoiceRouteError",
+    "VoiceRuntimeMissing",
+    "VoiceServerGrant",
+    "VoiceSession",
+    "VoiceState",
+    "VoiceStatePage",
+    "VoiceTrack",
     "application_command",
     "bot_has_permissions",
     "check",

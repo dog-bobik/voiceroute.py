@@ -115,7 +115,10 @@ class PrivilegedIntentRequired(GatewayError):
 
     def __init__(self, intents: tuple[str, ...]) -> None:
         self.intents = intents
-        super().__init__(f"privileged Gateway intents require approval: {', '.join(intents)}")
+        super().__init__(
+            "privileged Gateway intents were requested but are not approved by a VoiceRoute "
+            f"operator: {', '.join(intents)}; channel permissions do not grant intent approval"
+        )
 
 
 class IntentNotEnabled(GatewayError):

@@ -15,6 +15,7 @@ from voiceroute.api import (
     ModerationAPI,
     PlatformAPI,
     RolesAPI,
+    VoiceAPI,
 )
 from voiceroute.config import APIVersion, ClientConfig
 from voiceroute.gateway import (
@@ -70,6 +71,7 @@ class VoiceRouteClient:
         self.platform = PlatformAPI(self._transport)
         self.members = MembersAPI(self._transport)
         self.roles = RolesAPI(self._transport)
+        self.voice = VoiceAPI(self._transport)
 
     async def resolve_api_version(self) -> APIVersion:
         """Resolve auto mode without changing existing resource routing."""

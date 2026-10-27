@@ -12,6 +12,7 @@ from voiceroute.api.messages import MessagesAPI
 from voiceroute.api.moderation import ModerationAPI
 from voiceroute.api.platform import PlatformAPI
 from voiceroute.api.roles import RolesAPI
+from voiceroute.api.voice import VoiceAPI
 
 __all__ = [
     "ApplicationCommandsAPI",
@@ -27,4 +28,5 @@ __all__ = [
     "ModerationAPI",
     "PlatformAPI",
     "RolesAPI",
+    "VoiceAPI",
 ]

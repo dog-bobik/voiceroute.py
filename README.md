@@ -109,7 +109,7 @@ Redis. Подробнее: [события и восстановление](docs
 | Модерация участников | Kick, bans и timeout готовы |
 | AutoMod | Чтение и настройка политики готовы |
 | Журнал аудита | Фильтры и cursor pagination готовы |
-| Голос для сторонних ботов | Не поддерживается API [VoiceRoute](https://voiceroute.cc) |
+| Голос для сторонних ботов | Voice states, Gateway join и PCM transmit готовы при `voiceTransport=true` |
 
 Подробная последовательность работ находится в
 [полном плане реализации](docs/full-platform-implementation-plan.md),

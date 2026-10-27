@@ -10,7 +10,7 @@ import platform
 import random
 import ssl
 import uuid
-from collections.abc import AsyncIterator, Awaitable, Callable, Sequence
+from collections.abc import AsyncIterator, Awaitable, Callable, Mapping, Sequence
 from contextlib import suppress
 from typing import Any, Protocol
 from urllib.parse import parse_qs, urlparse
@@ -61,6 +61,7 @@ class GatewaySocket(Protocol):
 GatewayConnector = Callable[[str], Awaitable[GatewaySocket]]
 GatewayHandler = Callable[[PlatformEvent], Awaitable[None]]
 GatewayMetricHook = Callable[[str, dict[str, int | float | str]], None]
+VoiceFrameHandler = Callable[[Mapping[str, Any]], None]
 
 
 async def _default_connector(url: str) -> GatewaySocket:
@@ -125,7 +126,12 @@ class GatewayClient:
         self._heartbeat_acknowledged = True
         self._identified = asyncio.Event()
         self._ready = asyncio.Event()
+        self._voice_handlers: set[VoiceFrameHandler] = set()
         self.on_session_invalidated: Callable[[], Awaitable[None]] | None = None
+
+    @property
+    def platform(self) -> PlatformAPI:
+        return self._platform
 
     async def run_once(self, handler: GatewayHandler) -> None:
         """Run one connection until it closes, committing only handled events."""
@@ -236,9 +242,14 @@ class GatewayClient:
                         else 1.0
                     )
                     raise _GatewayReconnect(server_delay)
+                if opcode == 4:
+                    self._notify_voice(frame)
+                    continue
                 if opcode != 0:
                     continue
                 event = PlatformEvent.from_gateway_frame(frame)
+                if event.name in {"VOICE_SERVER_UPDATED", "VOICE_STATE_UPDATED"}:
+                    self._notify_voice(frame)
                 self._last_sequence = event.sequence
                 if event.name in {"READY", "RESUMED"}:
                     checkpoint = self._checkpoint_from_ready(event, checkpoint)
@@ -295,6 +306,8 @@ class GatewayClient:
             try:
                 await self.run_once(handler)
                 attempt = 0
+            except (IntentNotEnabled, PrivilegedIntentRequired):
+                raise
             except GatewayClosed:
                 raise
             except _GatewayReconnect as exc:
@@ -361,6 +374,61 @@ class GatewayClient:
         if len(values) > 10 or len(values) != len(set(values)):
             raise ValueError("subscriptions must be unique and contain at most ten IDs")
         await self._send({"op": 12, "data": {"subscriptionIds": list(values)}})
+
+    async def set_voice_state(
+        self,
+        community_id: str,
+        channel_id: str | None,
+        *,
+        request_id: str | None = None,
+        receive: bool = False,
+        transmit: bool = False,
+        self_mute: bool = False,
+        self_deaf: bool = False,
+        purpose: str = "LISTENING",
+    ) -> str:
+        """Join, update, or leave one application voice session using Gateway opcode 4."""
+        if "voiceStates" not in self.intents:
+            raise GatewayError("Gateway voiceStates intent is required")
+        if purpose not in {"LISTENING", "RECORDING", "TRANSCRIPTION"}:
+            raise ValueError("invalid voice purpose")
+        _validate_uuid(community_id, "community_id")
+        if channel_id is not None:
+            _validate_uuid(channel_id, "channel_id")
+        voice_request_id = request_id or str(uuid.uuid4())
+        _validate_uuid(voice_request_id, "request_id")
+        await self._send(
+            {
+                "op": 4,
+                "data": {
+                    "requestId": voice_request_id,
+                    "communityId": community_id,
+                    "channelId": channel_id,
+                    "receive": receive,
+                    "transmit": transmit,
+                    "selfMute": self_mute,
+                    "selfDeaf": self_deaf,
+                    "purpose": purpose,
+                },
+            }
+        )
+        return voice_request_id
+
+    def subscribe_voice(self, handler: VoiceFrameHandler) -> Callable[[], None]:
+        """Subscribe a lightweight handler to voice control frames and dispatches."""
+        self._voice_handlers.add(handler)
+
+        def unsubscribe() -> None:
+            self._voice_handlers.discard(handler)
+
+        return unsubscribe
+
+    def _notify_voice(self, frame: Mapping[str, Any]) -> None:
+        for handler in tuple(self._voice_handlers):
+            try:
+                handler(frame)
+            except Exception:
+                logger.exception("Voice control handler failed")
 
     async def _validate_intents(self) -> None:
         if not self.intents:
@@ -506,3 +574,12 @@ class GatewayClient:
             or query != {"v": ["1"], "encoding": ["json"]}
         ):
             raise GatewayError("VoiceRoute returned an untrusted Gateway URL")
+
+
+def _validate_uuid(value: str, field: str) -> None:
+    try:
+        parsed = uuid.UUID(value)
+    except (ValueError, AttributeError) as error:
+        raise ValueError(f"{field} must be a UUID") from error
+    if str(parsed) != value.lower():
+        raise ValueError(f"{field} must be a canonical UUID")
