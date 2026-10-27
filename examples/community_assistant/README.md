@@ -1,10 +1,10 @@
 # Community Assistant Bot
 
-Демонстрационный бот показывает основные возможности `voiceroute.py`: extensions,
-prefix- и нативные slash-команды, Gateway events, intents, presence, локальный cache,
-interactions, permissions, content API и восстановление checkpoints. Legacy SSE остаётся
-включённым только для старых команд, которым нужна полная модель сообщения. Пример не
-является частью публичного API библиотеки.
+Демонстрационный бот показывает актуальный Gateway-first сценарий `voiceroute.py`:
+extensions, нативные slash-команды, Gateway events, intents, presence, локальный cache,
+interactions, permissions, content API и восстановление checkpoints. Пример не зависит
+от legacy message SSE и не требует privileged intent `messageContent` для запуска.
+Пример не является частью публичного API библиотеки.
 
 ## Установка
 
@@ -27,7 +27,7 @@ VOICEROUTE_COMMUNITY_ID=
 VOICEROUTE_CHANNEL_ID=
 VOICEROUTE_COMMAND_PREFIX=/
 VOICEROUTE_SYNC_APPLICATION_COMMANDS=true
-VOICEROUTE_GATEWAY_INTENTS=
+VOICEROUTE_GATEWAY_INTENTS=messages
 VOICEROUTE_COMPONENT_SECRET=replace-with-at-least-16-random-bytes
 VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 ```
@@ -37,18 +37,20 @@ VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 только вместе с `VOICEROUTE_COMMUNITY_ID`. Путь SQLite при необходимости меняется
 через `VOICEROUTE_CURSOR_PATH`.
 
-По умолчанию пример открывает Gateway без domain intents: этого достаточно для статуса
-online, heartbeat и обработки старых команд через совместимый SSE. Чтобы получать domain
-events, сначала включите intents в настройках приложения, а затем перечислите те же
-значения через запятую, например:
+По умолчанию пример запрашивает только обычный intent `messages`, который нужно включить
+в настройках приложения. Нативные команды приходят через interaction transport. Чтобы
+получать дополнительные domain events, сначала включите intents в настройках приложения,
+а затем перечислите те же значения через запятую, например:
 
 ```ini
 VOICEROUTE_GATEWAY_INTENTS=communities,messages,interactions
 ```
 
-Для `MEMBER_JOINED`, presence других участников и message content также требуется approval
-соответствующих privileged intents. SDK проверяет настройки до подключения и завершает
-запуск понятной ошибкой, а не циклом reconnect с кодом `4014`.
+Не добавляйте `messageContent`: актуальная версия примера не использует prefix-команды.
+Для `MEMBER_JOINED`, presence других участников и Gateway message content требуется
+отдельное approval соответствующих privileged intents. Одного чекбокса недостаточно.
+SDK проверяет настройки до подключения и завершает запуск понятной ошибкой, если
+запрошенный intent не включён или ещё не одобрен.
 
 `VOICEROUTE_COMPONENT_SECRET` включает демонстрационную `/panel` с подписанной кнопкой.
 Секрет должен быть одинаковым на всех экземплярах бота и не должен попадать в Git.
@@ -75,21 +77,6 @@ python -m examples.community_assistant.bot
 - `/panel` — демонстрирует persistent signed button, если задан
   `VOICEROUTE_COMPONENT_SECRET`.
 
-Старые prefix-команды оставлены, чтобы пример одновременно показывал оба режима:
-
-- `/help [команда]`, `/ping`, `/about`, `/health`, `/permissions`;
-- `/faq`, `/faq <тема>`, `/faq search <запрос>`;
-- `/search <запрос>`, `/pins`;
-- `/pin [seq]`, `/unpin [seq]`;
-- `/react [seq] <emoji>`, `/unreact [seq] <emoji>`;
-- `/delete [seq]` — только для сообщения, принадлежащего текущему боту.
-
-Для управляющих команд `seq` можно не указывать: ответьте командой на нужное сообщение.
-Например, reply с текстом `/pin` закрепит исходное сообщение, а reply с `/react 👍`
-добавит к нему реакцию. Явный `seq` остаётся доступен для автоматизации.
-
-FAQ редактируется в `data/faq.json` без изменения Python-кода.
-
 ## Необходимые права
 
 Боту нужен доступ к сообществу и текстовому каналу, чтение истории, отправка сообщений
@@ -111,7 +98,7 @@ FAQ редактируется в `data/faq.json` без изменения Pyth
 - Один процесс может слушать не более 32 автоматически найденных каналов. Для
   больших установок задайте community/channel ID или разделите нагрузку.
 
-Runtime использует Gateway для lifecycle-событий, presence и cache. Prefix-команды и
-текущие slash interactions временно сохраняют совместимые SSE-потоки до их полной
-миграции на v1. Gateway checkpoint продвигается только после успешного handler, а cache
-откатывается при ошибке, поэтому Resume безопасно повторит необработанное событие.
+Runtime использует Gateway для lifecycle-событий, presence и cache, а interaction
+transport — для нативных slash-команд. Gateway checkpoint продвигается только после
+успешного handler, а cache откатывается при ошибке, поэтому Resume безопасно повторит
+необработанное событие.

@@ -16,13 +16,7 @@ from voiceroute import (
     SQLiteCursorStore,
 )
 
-EXTENSIONS = (
-    "examples.community_assistant.extensions.general",
-    "examples.community_assistant.extensions.knowledge",
-    "examples.community_assistant.extensions.messages",
-    "examples.community_assistant.extensions.diagnostics",
-    "examples.community_assistant.extensions.gateway",
-)
+EXTENSIONS = ("examples.community_assistant.extensions.gateway",)
 
 
 class CommunityAssistantBot(Bot):

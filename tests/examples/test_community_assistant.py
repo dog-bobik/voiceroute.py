@@ -106,7 +106,7 @@ def test_config_reads_optional_values_and_requires_token() -> None:
     assert config.channel_id is None
     assert config.command_prefix == "/"
     assert config.sync_application_commands is True
-    assert config.gateway_intents == ()
+    assert config.gateway_intents == ("messages",)
 
     configured = CommunityAssistantConfig.from_env(
         {
