@@ -6,9 +6,12 @@ import time
 
 from examples.community_assistant.extensions.messages import format_messages
 from voiceroute import (
+    ActionRow,
     Bot,
+    ButtonStyle,
     CommandOption,
     CommandOptionType,
+    Component,
     InteractionContext,
     Permission,
 )
@@ -84,3 +87,29 @@ def register_native_commands(bot: Bot) -> None:
             "Права бота в этом канале:\n" + (", ".join(values) if values else "нет прав"),
             ephemeral=True,
         )
+
+    if bot.components is not None:
+        components = bot.components
+
+        @bot.component("assistant-refresh")
+        async def refresh_panel(context: InteractionContext, payload: str) -> None:
+            await context.respond(f"Панель обновлена. Состояние: {payload}", ephemeral=True)
+
+        @bot.slash_command("panel", description="Открыть интерактивную панель")
+        async def panel(context: InteractionContext) -> None:
+            custom_id = components.custom_id("assistant-refresh", "ready")
+            await context.respond(
+                "Community Assistant готов к работе.",
+                components=(
+                    ActionRow(
+                        components=(
+                            Component(
+                                type="BUTTON",
+                                custom_id=custom_id,
+                                style=ButtonStyle.PRIMARY,
+                                label="Обновить",
+                            ),
+                        )
+                    ),
+                ),
+            )

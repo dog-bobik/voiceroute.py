@@ -139,8 +139,18 @@ def test_native_commands_cover_interactions_members_and_permissions() -> None:
         item.definition.name: item.definition for item in bot.application_command_registry.commands
     }
     assert set(commands) == {"ping", "search", "whoami", "capabilities"}
-    assert commands["search"].options[0].type.value == "string"
+    assert commands["search"].options[0].type.value == "STRING"
     assert commands["capabilities"].default_member_permissions == (Permission.MANAGE_MESSAGES,)
+
+
+def test_native_panel_registers_with_signed_persistent_component() -> None:
+    bot = Bot(token="vrb_test", component_secret="0123456789abcdef")
+    register_native_commands(bot)
+
+    assert bot.application_command_registry.get("panel") is not None
+    assert bot.components is not None
+    custom_id = bot.components.custom_id("assistant-refresh", "ready")
+    assert len(custom_id) <= 100
 
 
 def test_faq_repository_loads_json_and_rejects_duplicate_slugs(tmp_path: Path) -> None:

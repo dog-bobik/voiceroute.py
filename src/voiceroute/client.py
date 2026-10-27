@@ -78,6 +78,10 @@ class VoiceRouteClient:
         capabilities = await self.platform.capabilities()
         return APIVersion.V1 if capabilities.api_version == "1" else APIVersion.LEGACY
 
+    async def require_feature(self, feature: str) -> None:
+        """Fail early when the connected deployment does not expose a feature."""
+        await self.platform.require(feature)
+
     def gateway(
         self,
         *,

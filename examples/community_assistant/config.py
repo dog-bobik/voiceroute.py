@@ -21,6 +21,7 @@ class CommunityAssistantConfig:
     gateway_path: Path = Path(".voiceroute/community-assistant-gateway.json")
     sync_application_commands: bool = True
     gateway_intents: tuple[str, ...] = ()
+    component_secret: str | None = None
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> CommunityAssistantConfig:
@@ -64,6 +65,7 @@ class CommunityAssistantConfig:
                 for item in values.get("VOICEROUTE_GATEWAY_INTENTS", "").split(",")
                 if item.strip()
             ),
+            component_secret=_optional(values.get("VOICEROUTE_COMPONENT_SECRET")),
         )
 
 

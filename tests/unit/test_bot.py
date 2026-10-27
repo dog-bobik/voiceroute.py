@@ -3,7 +3,14 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from voiceroute import Bot, Context, Intents, MemoryCursorStore, NoChannelsAvailable
+from voiceroute import (
+    Bot,
+    Context,
+    Intents,
+    MemoryCursorStore,
+    NoChannelsAvailable,
+    PlatformEvent,
+)
 from voiceroute.bot import ChannelTarget
 from voiceroute.events import MessageUpserted
 from voiceroute.models import Channel, Community, Message, MessagePage, User
@@ -92,6 +99,24 @@ async def test_duplicate_command_registration_is_rejected() -> None:
             pass
 
     await runtime.close()
+
+
+async def test_listen_registers_additional_named_listener() -> None:
+    runtime = Bot(token="vrb_secret")
+    seen: list[str] = []
+
+    @runtime.listen("on_reaction_add")
+    async def collect(event: object) -> None:
+        seen.append(type(event).__name__)
+
+    await runtime.dispatcher.dispatch(
+        PlatformEvent.from_gateway_frame(
+            {"event": "REACTION_ADDED", "sequence": "1", "data": {"messageId": "m"}}
+        )
+    )
+    await runtime.close()
+
+    assert seen == ["PlatformEvent"]
 
 
 async def test_discovers_text_channels_across_communities() -> None:

@@ -5,15 +5,13 @@ from __future__ import annotations
 from collections import OrderedDict
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from types import MappingProxyType
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any
 
 from voiceroute.models import PlatformEvent
+from voiceroute.state_models import CachedEntity, EntityKind, cached_entity
 
 if TYPE_CHECKING:
     from voiceroute.client import VoiceRouteClient
-
-EntityKind = Literal["community", "channel", "role", "member", "thread", "message"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -24,32 +22,21 @@ class CachePolicy:
     members: bool = True
     threads: bool = True
     messages: bool = False
+    categories: bool = True
+    polls: bool = True
+    expressions: bool = True
+    bans: bool = True
+    voice_states: bool = True
+    installations: bool = True
     max_messages: int = 1_000
+    max_per_domain: int = 10_000
     reconcile_on_ready: bool = False
 
     def __post_init__(self) -> None:
         if self.max_messages <= 0:
             raise ValueError("max_messages must be positive")
-
-
-@dataclass(frozen=True, slots=True)
-class CachedEntity:
-    """Possibly partial resource snapshot assembled from signal events."""
-
-    kind: EntityKind
-    id: str
-    data: Mapping[str, Any]
-    sequence: str | None = None
-    community_id: str | None = None
-    channel_id: str | None = None
-    partial: bool = True
-    redacted: bool = False
-
-    def __getattr__(self, name: str) -> Any:
-        try:
-            return self.data[name]
-        except KeyError as exc:
-            raise AttributeError(name) from exc
+        if self.max_per_domain <= 0:
+            raise ValueError("max_per_domain must be positive")
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,19 +50,25 @@ class CacheChange:
 class StateCache:
     policy: CachePolicy = field(default_factory=CachePolicy)
     _entities: dict[EntityKind, dict[str, CachedEntity]] = field(init=False)
-    _message_order: OrderedDict[str, None] = field(init=False)
+    _orders: dict[EntityKind, OrderedDict[str, None]] = field(init=False)
     _changes: OrderedDict[str, CacheChange] = field(init=False)
 
     def __post_init__(self) -> None:
         self._entities = {
             "community": {},
+            "category": {},
             "channel": {},
             "role": {},
             "member": {},
             "thread": {},
             "message": {},
+            "poll": {},
+            "expression": {},
+            "ban": {},
+            "voice_state": {},
+            "installation": {},
         }
-        self._message_order = OrderedDict()
+        self._orders = {kind: OrderedDict() for kind in self._entities}
         self._changes = OrderedDict()
 
     async def apply(self, event: PlatformEvent) -> None:
@@ -83,21 +76,24 @@ class StateCache:
         if descriptor is None:
             return
         kind, entity_id, deleted = descriptor
-        policy_name = "communities" if kind == "community" else f"{kind}s"
+        policy_name = {
+            "community": "communities",
+            "category": "categories",
+        }.get(kind, f"{kind}s")
         if not getattr(self.policy, policy_name):
             return
         before = self._entities[kind].get(entity_id)
         if deleted:
             after = None
             self._entities[kind].pop(entity_id, None)
-            self._message_order.pop(entity_id, None)
+            self._orders[kind].pop(entity_id, None)
         else:
             merged = dict(before.data) if before is not None else {}
             merged.update(event.data)
-            after = CachedEntity(
-                kind=kind,
-                id=entity_id,
-                data=MappingProxyType(merged),
+            after = cached_entity(
+                kind,
+                entity_id,
+                merged,
                 sequence=event.sequence,
                 community_id=self._string(event.data.get("communityId")),
                 channel_id=self._string(event.data.get("channelId")),
@@ -105,10 +101,9 @@ class StateCache:
                 redacted=bool(event.data.get("redacted", False)),
             )
             self._entities[kind][entity_id] = after
-            if kind == "message":
-                self._message_order.pop(entity_id, None)
-                self._message_order[entity_id] = None
-                self._trim_messages()
+            self._orders[kind].pop(entity_id, None)
+            self._orders[kind][entity_id] = None
+            self._trim(kind)
         key = self._event_key(event)
         self._changes[key] = CacheChange(event, before, after)
         while len(self._changes) > 1_024:
@@ -128,12 +123,11 @@ class StateCache:
         kind, entity_id, _ = descriptor
         if change.before is None:
             self._entities[kind].pop(entity_id, None)
-            self._message_order.pop(entity_id, None)
+            self._orders[kind].pop(entity_id, None)
             return
         self._entities[kind][entity_id] = change.before
-        if kind == "message":
-            self._message_order.pop(entity_id, None)
-            self._message_order[entity_id] = None
+        self._orders[kind].pop(entity_id, None)
+        self._orders[kind][entity_id] = None
 
     def get_community(self, community_id: str) -> CachedEntity | None:
         return self._entities["community"].get(community_id)
@@ -154,6 +148,9 @@ class StateCache:
         self, community_id: str, channel_id: str, message_id_or_seq: str
     ) -> CachedEntity | None:
         return self._entities["message"].get(f"{community_id}:{channel_id}:{message_id_or_seq}")
+
+    def get_cached(self, kind: EntityKind, entity_id: str) -> CachedEntity | None:
+        return self._entities[kind].get(entity_id)
 
     async def reconcile(self, client: VoiceRouteClient) -> None:
         """Rebuild REST-readable state after a non-resumable Gateway gap."""
@@ -218,10 +215,11 @@ class StateCache:
         partial: bool,
         sequence: str | None = None,
     ) -> CachedEntity:
-        entity = CachedEntity(
+        payload = dict(data)
+        entity = cached_entity(
             kind,
             entity_id,
-            MappingProxyType(dict(data)),
+            payload,
             sequence=sequence,
             community_id=self._string(data.get("communityId")),
             channel_id=self._string(data.get("channelId")),
@@ -229,12 +227,16 @@ class StateCache:
             redacted=bool(data.get("redacted", False)),
         )
         self._entities[kind][entity_id] = entity
+        self._orders[kind].pop(entity_id, None)
+        self._orders[kind][entity_id] = None
+        self._trim(kind)
         return entity
 
     def clear(self) -> None:
         for values in self._entities.values():
             values.clear()
-        self._message_order.clear()
+        for order in self._orders.values():
+            order.clear()
         self._changes.clear()
 
     def _descriptor(self, event: PlatformEvent) -> tuple[EntityKind, str, bool] | None:
@@ -242,7 +244,9 @@ class StateCache:
         kind: EntityKind | None = None
         if name.startswith("COMMUNITY_"):
             kind = "community"
-        elif name.startswith(("CHANNEL_", "CATEGORY_")):
+        elif name.startswith("CATEGORY_"):
+            kind = "category"
+        elif name.startswith("CHANNEL_"):
             kind = "channel"
         elif name.startswith("ROLE_"):
             kind = "role"
@@ -252,6 +256,16 @@ class StateCache:
             kind = "thread"
         elif name.startswith("MESSAGE_"):
             kind = "message"
+        elif name.startswith("POLL_"):
+            kind = "poll"
+        elif name.startswith("EXPRESSION_"):
+            kind = "expression"
+        elif name.startswith("BAN_"):
+            kind = "ban"
+        elif name.startswith("VOICE_STATE_"):
+            kind = "voice_state"
+        elif name.startswith(("INSTALLATION_", "USER_INSTALLATION_")):
+            kind = "installation"
         if kind is None:
             return None
         entity_id = self._entity_id(kind, event.data)
@@ -265,10 +279,26 @@ class StateCache:
             return self._string(data.get("id", data.get("communityId")))
         if kind == "channel":
             return self._string(data.get("id", data.get("channelId", data.get("categoryId"))))
+        if kind == "category":
+            return self._string(data.get("id", data.get("categoryId")))
         if kind == "role":
             return self._string(data.get("id", data.get("roleId")))
         if kind == "thread":
             return self._string(data.get("id", data.get("threadId")))
+        if kind == "poll":
+            return self._string(data.get("id", data.get("pollId")))
+        if kind == "expression":
+            return self._string(data.get("id", data.get("expressionId")))
+        if kind == "ban":
+            community_id = self._string(data.get("communityId"))
+            user_id = self._string(data.get("userId"))
+            return f"{community_id}:{user_id}" if community_id and user_id else None
+        if kind == "voice_state":
+            community_id = self._string(data.get("communityId"))
+            user_id = self._string(data.get("userId"))
+            return f"{community_id}:{user_id}" if community_id and user_id else None
+        if kind == "installation":
+            return self._string(data.get("id", data.get("installationId")))
         community_id = self._string(data.get("communityId"))
         if kind == "member":
             user_id = self._string(data.get("userId"))
@@ -281,10 +311,11 @@ class StateCache:
             else None
         )
 
-    def _trim_messages(self) -> None:
-        while len(self._message_order) > self.policy.max_messages:
-            entity_id, _ = self._message_order.popitem(last=False)
-            self._entities["message"].pop(entity_id, None)
+    def _trim(self, kind: EntityKind) -> None:
+        limit = self.policy.max_messages if kind == "message" else self.policy.max_per_domain
+        while len(self._orders[kind]) > limit:
+            entity_id, _ = self._orders[kind].popitem(last=False)
+            self._entities[kind].pop(entity_id, None)
 
     @staticmethod
     def _event_key(event: PlatformEvent) -> str:

@@ -16,6 +16,67 @@ class IntentCapability:
 
 
 @dataclass(frozen=True, slots=True)
+class HTTPCapabilities:
+    max_json_bytes: int
+    max_concurrent_json_parsers_per_node: int
+    body_read_timeout_ms: int
+
+
+@dataclass(frozen=True, slots=True)
+class VoiceCapabilities:
+    media_token_ttl_seconds: int
+    session_ttl_seconds: int
+    max_sessions_per_application: int
+    max_receive_sessions_per_application: int
+    max_receive_sessions_global: int
+    max_receive_tracks: int
+    pcm_sample_rate: int
+    pcm_channels: int
+    pcm_frame_ms: int
+    video_receive: bool
+    active_authorization_recheck_ms: int
+
+
+@dataclass(frozen=True, slots=True)
+class FileCapabilities:
+    max_bytes: int
+    part_bytes: int
+    max_attachments_per_message: int
+    staging_ttl_ms: int
+    max_active_uploads_per_application: int
+    max_application_bytes: int
+
+
+@dataclass(frozen=True, slots=True)
+class CommandCapabilities:
+    types: tuple[str, ...]
+    scopes: tuple[str, ...]
+    contexts: tuple[str, ...]
+    callback_types: tuple[str, ...]
+    max_per_scope: int
+    global_propagation_ms: int
+    initial_response_deadline_ms: int
+    interaction_token_ttl_ms: int
+    max_responses: int
+    components: bool
+    modals: bool
+
+
+@dataclass(frozen=True, slots=True)
+class OAuthCapabilities:
+    grant_types: tuple[str, ...]
+    pkce_methods: tuple[str, ...]
+    access_token_ttl_seconds: int
+    refresh_token_ttl_seconds: int
+    user_consent: bool
+    community_consent: bool
+    user_commands: bool
+    dm_interactions: bool
+    max_active_client_secrets: int
+    refresh_reuse_revokes_grant: bool
+
+
+@dataclass(frozen=True, slots=True)
 class GatewayCapabilities:
     """Gateway limits needed before opening a session."""
 
@@ -58,6 +119,11 @@ class PlatformCapabilities:
     stage: str
     environment: str
     gateway: GatewayCapabilities
+    http: HTTPCapabilities
+    voice: VoiceCapabilities
+    files: FileCapabilities
+    commands: CommandCapabilities
+    oauth2: OAuthCapabilities
     features: Mapping[str, bool]
     events: tuple[str, ...]
     intents: Mapping[str, IntentCapability]
@@ -98,12 +164,76 @@ class PlatformCapabilities:
         )
         gateway_value = data.get("gateway")
         raw_gateway: dict[str, Any] = gateway_value if isinstance(gateway_value, dict) else {}
+        raw_http = _object(data.get("http"))
+        raw_voice = _object(data.get("voice"))
+        raw_files = _object(data.get("files"))
+        raw_commands = _object(data.get("commands"))
+        raw_oauth = _object(data.get("oauth2"))
         return cls(
             api_version=str(data.get("apiVersion", "")),
             maturity=str(data.get("maturity", "unknown")),
             stage=str(data.get("stage", "")),
             environment=str(raw_environment.get("mode", "unknown")),
             gateway=GatewayCapabilities.from_dict(raw_gateway),
+            http=HTTPCapabilities(
+                max_json_bytes=int(raw_http.get("maxJsonBytes", 0)),
+                max_concurrent_json_parsers_per_node=int(
+                    raw_http.get("maxConcurrentJsonParsersPerNode", 0)
+                ),
+                body_read_timeout_ms=int(raw_http.get("bodyReadTimeoutMs", 0)),
+            ),
+            voice=VoiceCapabilities(
+                media_token_ttl_seconds=int(raw_voice.get("mediaTokenTtlSeconds", 0)),
+                session_ttl_seconds=int(raw_voice.get("sessionTtlSeconds", 0)),
+                max_sessions_per_application=int(raw_voice.get("maxSessionsPerApplication", 0)),
+                max_receive_sessions_per_application=int(
+                    raw_voice.get("maxReceiveSessionsPerApplication", 0)
+                ),
+                max_receive_sessions_global=int(raw_voice.get("maxReceiveSessionsGlobal", 0)),
+                max_receive_tracks=int(raw_voice.get("maxReceiveTracks", 0)),
+                pcm_sample_rate=int(raw_voice.get("pcmSampleRate", 0)),
+                pcm_channels=int(raw_voice.get("pcmChannels", 0)),
+                pcm_frame_ms=int(raw_voice.get("pcmFrameMs", 0)),
+                video_receive=bool(raw_voice.get("videoReceive", False)),
+                active_authorization_recheck_ms=int(
+                    raw_voice.get("activeAuthorizationRecheckMs", 0)
+                ),
+            ),
+            files=FileCapabilities(
+                max_bytes=int(raw_files.get("maxBytes", 0)),
+                part_bytes=int(raw_files.get("partBytes", 0)),
+                max_attachments_per_message=int(raw_files.get("maxAttachmentsPerMessage", 0)),
+                staging_ttl_ms=int(raw_files.get("stagingTtlMs", 0)),
+                max_active_uploads_per_application=int(
+                    raw_files.get("maxActiveUploadsPerApplication", 0)
+                ),
+                max_application_bytes=int(raw_files.get("maxApplicationBytes", 0)),
+            ),
+            commands=CommandCapabilities(
+                types=_strings(raw_commands.get("types")),
+                scopes=_strings(raw_commands.get("scopes")),
+                contexts=_strings(raw_commands.get("contexts")),
+                callback_types=_strings(raw_commands.get("callbackTypes")),
+                max_per_scope=int(raw_commands.get("maxPerScope", 0)),
+                global_propagation_ms=int(raw_commands.get("globalPropagationMs", 0)),
+                initial_response_deadline_ms=int(raw_commands.get("initialResponseDeadlineMs", 0)),
+                interaction_token_ttl_ms=int(raw_commands.get("interactionTokenTtlMs", 0)),
+                max_responses=int(raw_commands.get("maxResponses", 0)),
+                components=bool(raw_commands.get("components", False)),
+                modals=bool(raw_commands.get("modals", False)),
+            ),
+            oauth2=OAuthCapabilities(
+                grant_types=_strings(raw_oauth.get("grantTypes")),
+                pkce_methods=_strings(raw_oauth.get("pkceMethods")),
+                access_token_ttl_seconds=int(raw_oauth.get("accessTokenTtlSeconds", 0)),
+                refresh_token_ttl_seconds=int(raw_oauth.get("refreshTokenTtlSeconds", 0)),
+                user_consent=bool(raw_oauth.get("userConsent", False)),
+                community_consent=bool(raw_oauth.get("communityConsent", False)),
+                user_commands=bool(raw_oauth.get("userCommands", False)),
+                dm_interactions=bool(raw_oauth.get("dmInteractions", False)),
+                max_active_client_secrets=int(raw_oauth.get("maxActiveClientSecrets", 0)),
+                refresh_reuse_revokes_grant=bool(raw_oauth.get("refreshReuseRevokesGrant", False)),
+            ),
             features=MappingProxyType(features),
             events=tuple(str(item) for item in data.get("events", ())),
             intents=MappingProxyType(intents),
@@ -116,6 +246,81 @@ class PlatformCapabilities:
             ),
             raw=MappingProxyType(dict(data)),
         )
+
+
+@dataclass(frozen=True, slots=True)
+class ServiceIncident:
+    id: str
+    component: str
+    impact: str
+    state: str
+    title: str
+    message: str
+    version: str
+    created_at: str
+    updated_at: str
+    resolved_at: str | None
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
+        return cls(
+            id=str(data["id"]),
+            component=str(data["component"]),
+            impact=str(data["impact"]),
+            state=str(data["state"]),
+            title=str(data["title"]),
+            message=str(data["message"]),
+            version=str(data["version"]),
+            created_at=str(data["createdAt"]),
+            updated_at=str(data["updatedAt"]),
+            resolved_at=(str(data["resolvedAt"]) if data.get("resolvedAt") is not None else None),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class PlatformServiceStatus:
+    status: str
+    checked_at: str
+    components: Mapping[str, str]
+    incidents: tuple[ServiceIncident, ...]
+
+    @property
+    def operational(self) -> bool:
+        return self.status == "operational"
+
+    @property
+    def degraded(self) -> bool:
+        return self.status == "degraded"
+
+    @property
+    def unavailable(self) -> bool:
+        return self.status == "unavailable"
+
+    def component_available(self, component: str) -> bool:
+        return self.components.get(component) not in {"unavailable", "unknown", None}
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
+        components = _object(data.get("components"))
+        incidents = data.get("incidents")
+        return cls(
+            status=str(data.get("status", "unknown")),
+            checked_at=str(data.get("checkedAt", "")),
+            components=MappingProxyType({str(k): str(v) for k, v in components.items()}),
+            incidents=tuple(
+                ServiceIncident.from_dict(item) for item in incidents if isinstance(item, dict)
+            )
+            if isinstance(incidents, list)
+            else (),
+        )
+
+
+def _object(value: Any) -> dict[str, Any]:
+    return dict(value) if isinstance(value, Mapping) else {}
+
+
+def _strings(value: Any) -> tuple[str, ...]:
+    return tuple(str(item) for item in value) if isinstance(value, list) else ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -155,6 +360,19 @@ class CurrentApplication:
             requested_intents=tuple(str(item) for item in data.get("requestedIntents", ())),
             approved_intents=tuple(str(item) for item in data.get("approvedIntents", ())),
         )
+
+
+@dataclass(frozen=True, slots=True)
+class StartupDiagnostics:
+    application_id: str
+    bot_id: str
+    api_version: str
+    environment: str
+    service_status: str
+    requested_intents: tuple[str, ...]
+    approved_intents: tuple[str, ...]
+    unavailable_intents: tuple[str, ...]
+    enabled_features: tuple[str, ...]
 
 
 @dataclass(frozen=True, slots=True)

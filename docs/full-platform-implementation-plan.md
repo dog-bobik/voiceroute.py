@@ -356,9 +356,14 @@ member chunks и subscription update.
 Бот переживает сетевые разрывы, рестарт процесса и rolling deploy без ручной работы с
 WebSocket.
 
-## Этап 4. Полный каталог событий и high-level handlers
+## Этап 4. Полный каталог событий и high-level handlers — выполнено
 
 **Ветка:** `feature/event-catalog`
+
+**Статус:** ✅ Выполнено 27 октября 2026 года.
+
+Реализация: каталог всех 76 событий, forward-compatible raw envelope, ergonomic handler
+aliases, `@bot.listen()`, `wait_for()`, bounded concurrency и causal ordering по resource key.
 
 ### Задачи
 
@@ -395,9 +400,14 @@ WebSocket.
 Работают привычные handlers `on_member_join`, `on_message`, `on_reaction_add`,
 `on_thread_create`, `on_automod_action` и остальные события.
 
-## Этап 5. State cache 2.0 и converters
+## Этап 5. State cache 2.0 и converters — выполнено
 
 **Ветка:** `feature/domain-cache`
+
+**Статус:** ✅ Выполнено 27 октября 2026 года.
+
+Реализация: typed cached entities, partial/redacted snapshots, отдельные domain policies,
+bounded LRU, opt-in message cache, rollback, REST reconciliation и explicit converters.
 
 ### Задачи
 
@@ -419,9 +429,14 @@ WebSocket.
 Handlers получают богатые объекты вместо словарей, но память и сетевые запросы остаются
 предсказуемыми.
 
-## Этап 6. Current application, capabilities и service status
+## Этап 6. Current application, capabilities и service status — выполнено
 
 **Ветка:** `feature/platform-bootstrap`
+
+**Статус:** ✅ Выполнено 27 октября 2026 года.
+
+Реализация: полностью типизированные capability sections, status/incidents, runtime
+OpenAPI/AsyncAPI, TTL cache, explicit refresh, feature guards и safe startup diagnostics.
 
 ### Операции
 
@@ -446,9 +461,14 @@ Handlers получают богатые объекты вместо слова�
 
 Бот заранее объясняет, почему функция недоступна, вместо случайного 404/403.
 
-## Этап 7. Application commands v1
+## Этап 7. Application commands v1 — выполнено
 
 **Ветка:** `feature/v1-application-commands`
+
+**Статус:** ✅ Выполнено 27 октября 2026 года.
+
+Реализация: global/community CRUD и atomic sync, discovery, dry diff, command
+permissions, ETag/idempotency, три command type, contexts и полный option tree.
 
 ### Операции
 
@@ -476,9 +496,14 @@ Handlers получают богатые объекты вместо слова�
 Разработчик объявляет команды Python-декораторами и одной операцией синхронизирует их с
 VoiceRoute.
 
-## Этап 8. Interactions, autocomplete, components и modals
+## Этап 8. Interactions, autocomplete, components и modals — выполнено
 
 **Ветка:** `feature/rich-interactions`
+
+**Статус:** ✅ Выполнено 27 октября 2026 года.
+
+Реализация: v1 interaction payloads, initial/deferred callbacks, autocomplete, follow-ups,
+edit/delete original, components, modals, private operations и signed persistent routing.
 
 ### Операции
 
