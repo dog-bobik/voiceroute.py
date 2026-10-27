@@ -1,5 +1,6 @@
 """Public bot event models and SSE primitives."""
 
+from voiceroute.events.catalog import EVENT_CATALOG, EventDefinition, event_definition
 from voiceroute.events.cursors import (
     CursorStore,
     FileCursorStore,
@@ -23,10 +24,12 @@ from voiceroute.events.transport import (
 )
 
 __all__ = [
+    "EVENT_CATALOG",
     "AccessLost",
     "BotEvent",
     "ChannelTarget",
     "CursorStore",
+    "EventDefinition",
     "EventDelivery",
     "EventDispatcher",
     "EventSource",
@@ -44,4 +47,5 @@ __all__ = [
     "SSEDecoder",
     "SSEEvent",
     "StreamCheckpoint",
+    "event_definition",
 ]

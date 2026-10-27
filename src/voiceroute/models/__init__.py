@@ -4,9 +4,13 @@ from voiceroute.models.application_command import (
     ApplicationCommand,
     ApplicationSummary,
     CommandChoice,
+    CommandContext,
     CommandDefinition,
     CommandOption,
     CommandOptionType,
+    CommandPermissions,
+    CommandPermissionTarget,
+    CommandType,
 )
 from voiceroute.models.audit import (
     AuditActionOption,
@@ -19,7 +23,19 @@ from voiceroute.models.automod import AutoModConfig
 from voiceroute.models.bot import BotIdentity
 from voiceroute.models.community import Channel, Community
 from voiceroute.models.generated_events import PlatformEventType
-from voiceroute.models.interaction import Interaction, InteractionCommand, InteractionResponse
+from voiceroute.models.interaction import (
+    ActionRow,
+    ButtonStyle,
+    Component,
+    Interaction,
+    InteractionCallbackType,
+    InteractionCommand,
+    InteractionMessage,
+    InteractionResponse,
+    Modal,
+    SelectOption,
+    TextInput,
+)
 from voiceroute.models.member import Member, MemberPresence, MemberRole, PresenceStatus
 from voiceroute.models.message import Message, MessagePage
 from voiceroute.models.moderation import (
@@ -30,14 +46,22 @@ from voiceroute.models.moderation import (
 )
 from voiceroute.models.permissions import ALL_PERMISSIONS, Permission, Permissions
 from voiceroute.models.platform import (
+    CommandCapabilities,
     CurrentApplication,
+    FileCapabilities,
     GatewayCapabilities,
     GatewayDiscovery,
     GatewaySessionStartLimit,
+    HTTPCapabilities,
     IntentCapability,
     LegacyCapabilities,
+    OAuthCapabilities,
     PlatformBotIdentity,
     PlatformCapabilities,
+    PlatformServiceStatus,
+    ServiceIncident,
+    StartupDiagnostics,
+    VoiceCapabilities,
 )
 from voiceroute.models.platform_event import PlatformEvent
 from voiceroute.models.role import (
@@ -59,6 +83,7 @@ from voiceroute.models.wire import (
 __all__ = [
     "ALL_PERMISSIONS",
     "UNSET",
+    "ActionRow",
     "ApplicationCommand",
     "ApplicationSummary",
     "AuditActionOption",
@@ -69,20 +94,31 @@ __all__ = [
     "AutoModConfig",
     "Ban",
     "BotIdentity",
+    "ButtonStyle",
     "Channel",
     "ChannelPermissionSnapshot",
+    "CommandCapabilities",
     "CommandChoice",
+    "CommandContext",
     "CommandDefinition",
     "CommandOption",
     "CommandOptionType",
+    "CommandPermissionTarget",
+    "CommandPermissions",
+    "CommandType",
     "Community",
+    "Component",
     "CurrentApplication",
+    "FileCapabilities",
     "GatewayCapabilities",
     "GatewayDiscovery",
     "GatewaySessionStartLimit",
+    "HTTPCapabilities",
     "IntentCapability",
     "Interaction",
+    "InteractionCallbackType",
     "InteractionCommand",
+    "InteractionMessage",
     "InteractionResponse",
     "LegacyCapabilities",
     "Member",
@@ -91,8 +127,10 @@ __all__ = [
     "MemberTimeout",
     "Message",
     "MessagePage",
+    "Modal",
     "ModerationMember",
     "ModerationSnapshot",
+    "OAuthCapabilities",
     "OpenEnumValue",
     "Permission",
     "PermissionOverride",
@@ -102,10 +140,16 @@ __all__ = [
     "PlatformCapabilities",
     "PlatformEvent",
     "PlatformEventType",
+    "PlatformServiceStatus",
     "PresenceStatus",
     "Role",
+    "SelectOption",
+    "ServiceIncident",
+    "StartupDiagnostics",
+    "TextInput",
     "UnsetType",
     "User",
+    "VoiceCapabilities",
     "WireObject",
     "camel_to_snake",
     "is_set",

@@ -1,5 +1,6 @@
 """Transport-independent command framework primitives."""
 
+from voiceroute.commands.components import ComponentCallback, ComponentRouter
 from voiceroute.commands.context import Context
 from voiceroute.commands.core import (
     Command,
@@ -41,6 +42,8 @@ __all__ = [
     "CommandParameter",
     "CommandPipeline",
     "CommandRegistry",
+    "ComponentCallback",
+    "ComponentRouter",
     "ConcurrencyLimit",
     "Context",
     "Cooldown",

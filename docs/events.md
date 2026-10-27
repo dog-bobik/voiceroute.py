@@ -1,5 +1,25 @@
 # События и восстановление
 
+Gateway-каталог содержит все 76 событий актуального AsyncAPI. Для каждого события
+доступно точное имя `PlatformEventType`, raw envelope и привычные aliases:
+
+```python
+@bot.event
+async def on_member_join(member):
+    print(member.id)
+
+@bot.listen("on_reaction_add")
+async def audit_reaction(event):
+    print(event.data)
+
+event = await bot.wait_for("REACTION_ADDED", timeout=30)
+```
+
+Неизвестное будущее событие сохраняется как `PlatformEvent` и поступает в
+`on_unknown_event`. События обрабатываются конкурентно только между независимыми
+resources; внутри одного resource сохраняется причинный порядок. Ошибка listener не
+продвигает Gateway checkpoint и откатывает изменение cache.
+
 Bot runtime объединяет два независимых источника: channel message SSE и глобальный
 interaction SSE приложения. Для каждого потока используется отдельный ключ checkpoint,
 поскольку их курсоры принадлежат разным журналам и не взаимозаменяемы.

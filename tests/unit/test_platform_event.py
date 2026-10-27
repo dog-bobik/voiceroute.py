@@ -1,6 +1,22 @@
 import pytest
 
+from voiceroute import EVENT_CATALOG
+from voiceroute.events import event_definition
 from voiceroute.models import PlatformEvent, PlatformEventType
+
+
+def test_event_catalog_covers_all_advertised_events_and_aliases() -> None:
+    assert len(EVENT_CATALOG) == 76
+    assert event_definition("REACTION_ADDED").handlers == (  # type: ignore[union-attr]
+        "on_reaction_added",
+        "on_reaction_add",
+    )
+    assert (
+        "on_automod_action"
+        in event_definition(  # type: ignore[union-attr]
+            "AUTOMOD_ACTION_EXECUTED"
+        ).handlers
+    )
 
 
 def test_platform_event_preserves_large_sequence_as_string() -> None:

@@ -18,6 +18,8 @@ from voiceroute.commands import (
     Command,
     CommandPipeline,
     CommandRegistry,
+    ComponentCallback,
+    ComponentRouter,
     Context,
     InteractionCallback,
     InteractionContext,
@@ -49,6 +51,7 @@ from voiceroute.events import (
     LegacySSETransport,
     MemoryCursorStore,
     MessageUpserted,
+    event_definition,
 )
 from voiceroute.events.transport import ChannelTarget
 from voiceroute.extensions import Extension, extension_command, listener_name
@@ -57,7 +60,9 @@ from voiceroute.models import (
     ApplicationCommand,
     BotIdentity,
     Channel,
+    CommandContext,
     CommandOption,
+    CommandType,
     Community,
     Member,
     Message,
@@ -65,7 +70,8 @@ from voiceroute.models import (
     Role,
 )
 from voiceroute.runtime import RuntimeState
-from voiceroute.state import CachedEntity, CachePolicy, StateCache
+from voiceroute.state import CachePolicy, StateCache
+from voiceroute.state_models import CachedEntity
 
 AsyncHandler = Callable[..., Awaitable[None]]
 HandlerT = TypeVar("HandlerT", bound=AsyncHandler)
@@ -106,6 +112,7 @@ class Bot:
         sync_application_commands: bool = False,
         interaction_deduplication_size: int = 1024,
         max_consumer_backoff: float = 30.0,
+        component_secret: str | bytes | None = None,
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
         self.command_adapter = PrefixCommandAdapter(prefixes)
@@ -158,6 +165,9 @@ class Bot:
         self.command_registry = CommandRegistry()
         self.application_command_registry = ApplicationCommandRegistry()
         self.command_pipeline = CommandPipeline()
+        self.components = (
+            ComponentRouter(component_secret) if component_secret is not None else None
+        )
         self._events: dict[str, list[AsyncHandler]] = {}
         self.dispatcher = EventDispatcher(
             before_dispatch=self.cache.apply,
@@ -200,13 +210,25 @@ class Bot:
 
         return decorator
 
+    def listen(self, name: str | None = None) -> Callable[[HandlerT], HandlerT]:
+        """Register an additional event listener without using its function name as identity."""
+
+        def decorator(callback: HandlerT) -> HandlerT:
+            self.add_listener(callback, name or callback.__name__)
+            return callback
+
+        return decorator
+
     def slash_command(
         self,
         name: str,
         *,
         description: str,
+        type: CommandType = CommandType.CHAT_INPUT,
         options: Sequence[CommandOption] = (),
+        contexts: Sequence[CommandContext] = (CommandContext.COMMUNITY,),
         default_member_permissions: Sequence[str] = (),
+        community_id: str | None = None,
     ) -> Callable[[InteractionCallback], InteractionCallback]:
         """Register a native application-command callback."""
 
@@ -216,23 +238,46 @@ class Bot:
                 application_command(
                     name=name,
                     description=description,
+                    type=type,
                     callback=handler,
                     options=options,
+                    contexts=contexts,
                     default_member_permissions=default_member_permissions,
+                    community_id=community_id,
                 )
             )
             return handler
 
         return decorator
 
+    def component(self, route: str) -> Callable[[ComponentCallback], ComponentCallback]:
+        """Register a persistent signed component route."""
+
+        def decorator(callback: ComponentCallback) -> ComponentCallback:
+            if self.components is None:
+                raise RuntimeError("component_secret is required for persistent components")
+            self.components.register(route, callback)
+            return callback
+
+        return decorator
+
     async def sync_application_commands(self) -> list[ApplicationCommand]:
-        """Replace the remote registry with all locally declared slash commands."""
+        """Atomically sync global and explicitly community-scoped commands."""
         if self.user is None:
             raise RuntimeError("bot identity is unavailable before start")
-        return await self.client.application_commands.replace(
+        synchronized = await self.client.application_commands.sync(
             self.user.application_id,
-            self.application_command_registry.definitions,
+            self.application_command_registry.definitions_for(None),
         )
+        for community_id in self.application_command_registry.community_ids:
+            synchronized.extend(
+                await self.client.application_commands.sync(
+                    self.user.application_id,
+                    self.application_command_registry.definitions_for(community_id),
+                    community_id=community_id,
+                )
+            )
+        return synchronized
 
     @property
     def commands(self) -> tuple[Command, ...]:
@@ -727,7 +772,13 @@ class Bot:
             self.client.members,
         )
         await self._dispatch("on_interaction", context)
-        command = self.application_command_registry.get(event.interaction.command.name)
+        if event.interaction.custom_id is not None and self.components is not None:
+            if await self.components.dispatch(context, event.interaction.custom_id):
+                self._remember_interaction(interaction_id)
+                return
+        command = self.application_command_registry.get(
+            event.interaction.command.name, event.interaction.community_id
+        )
         if command is None:
             self._remember_interaction(interaction_id)
             return
@@ -856,8 +907,14 @@ class Bot:
 
     async def _handle_platform_event(self, event: PlatformEvent) -> None:
         await self._dispatch("on_raw_event", event)
-        await self._dispatch(f"on_{event.name.casefold()}", event)
+        definition = event_definition(event.name)
+        handlers = (
+            definition.handlers if definition is not None else (f"on_{event.name.casefold()}",)
+        )
         change = self.cache.change_for(event)
+        raw_handlers = handlers[:1] if change is not None else handlers
+        for handler in raw_handlers:
+            await self._dispatch(handler, event)
         if change is not None:
             await self._dispatch_cache_change(event.name, change.before, change.after)
         if not event.is_known:

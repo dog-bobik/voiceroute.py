@@ -69,6 +69,43 @@ async def test_dispatcher_does_not_ack_unhandled_listener_error() -> None:
         await dispatcher.dispatch(event())
 
 
+async def test_dispatcher_preserves_resource_order_without_global_serialization() -> None:
+    dispatcher = EventDispatcher(max_concurrency=4)
+    active = 0
+    peak = 0
+
+    async def observe(item: PlatformEvent) -> None:
+        nonlocal active, peak
+        active += 1
+        peak = max(peak, active)
+        await asyncio.sleep(0.01)
+        active -= 1
+
+    dispatcher.add_listener(observe, "MEMBER_JOINED")
+
+    def member(user_id: str, delivery_id: str) -> PlatformEvent:
+        return PlatformEvent.from_gateway_frame(
+            {
+                "event": "MEMBER_JOINED",
+                "sequence": delivery_id,
+                "deliveryId": delivery_id,
+                "data": {"communityId": "community", "userId": user_id},
+            }
+        )
+
+    await asyncio.gather(
+        dispatcher.dispatch(member("1", "1")),
+        dispatcher.dispatch(member("1", "2")),
+    )
+    assert peak == 1
+
+    await asyncio.gather(
+        dispatcher.dispatch(member("2", "3")),
+        dispatcher.dispatch(member("3", "4")),
+    )
+    assert peak == 2
+
+
 async def test_bot_exposes_known_and_unknown_gateway_events() -> None:
     bot = Bot(token="vrb_test", event_transport="gateway")
     known: list[PlatformEvent] = []

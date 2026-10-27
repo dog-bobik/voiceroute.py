@@ -106,3 +106,84 @@ async def test_client_preserves_explicit_legacy_mode() -> None:
 
     assert await client.resolve_api_version() is APIVersion.LEGACY
     await client.close()
+
+
+@respx.mock
+async def test_status_specs_and_explicit_refresh() -> None:
+    capabilities_route = respx.get("https://voiceroute.cc/api/v1/capabilities").mock(
+        return_value=httpx.Response(200, json=CAPABILITIES)
+    )
+    status_route = respx.get("https://voiceroute.cc/api/v1/status").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "status": "degraded",
+                "checkedAt": "2026-10-27T00:00:00Z",
+                "components": {
+                    "api": "operational",
+                    "eventDelivery": "degraded",
+                    "voice": "unknown",
+                },
+                "incidents": [],
+            },
+        )
+    )
+    respx.get("https://voiceroute.cc/api/v1/openapi.json").mock(
+        return_value=httpx.Response(200, json={"openapi": "3.1.0"})
+    )
+    respx.get("https://voiceroute.cc/api/v1/asyncapi.json").mock(
+        return_value=httpx.Response(200, json={"asyncapi": "3.0.0"})
+    )
+    transport = HTTPTransport(token="vrb_test", base_url="https://voiceroute.cc", timeout=1)
+    api = PlatformAPI(transport)
+
+    first = await api.status()
+    second = await api.status()
+    assert first is second and first.degraded
+    assert first.component_available("api")
+    assert not first.component_available("voice")
+    assert (await api.openapi())["openapi"] == "3.1.0"
+    assert (await api.asyncapi())["asyncapi"] == "3.0.0"
+
+    await api.refresh()
+    await transport.close()
+    assert capabilities_route.call_count == 1
+    assert status_route.call_count == 2
+
+
+@respx.mock
+async def test_safe_diagnostics_reports_unapproved_intents_without_token() -> None:
+    respx.get("https://voiceroute.cc/api/v1/capabilities").mock(
+        return_value=httpx.Response(200, json=CAPABILITIES)
+    )
+    respx.get("https://voiceroute.cc/api/v1/status").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "status": "operational",
+                "checkedAt": "2026-10-27T00:00:00Z",
+                "components": {},
+                "incidents": [],
+            },
+        )
+    )
+    respx.get("https://voiceroute.cc/api/v1/applications/@me").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "id": "app",
+                "name": "Bot",
+                "description": "",
+                "public": False,
+                "bot": {"id": "1", "username": "bot", "displayName": "Bot"},
+                "requestedIntents": ["messages", "messageContent"],
+                "approvedIntents": ["messages"],
+            },
+        )
+    )
+    transport = HTTPTransport(token="vrb_secret", base_url="https://voiceroute.cc", timeout=1)
+    diagnostics = await PlatformAPI(transport).diagnostics()
+    await transport.close()
+
+    assert diagnostics.unavailable_intents == ("messageContent",)
+    assert "vrb_secret" not in repr(diagnostics)

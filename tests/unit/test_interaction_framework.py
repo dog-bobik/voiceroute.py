@@ -22,7 +22,7 @@ def interaction() -> Interaction:
         community_id="community-id",
         channel_id="channel-id",
         user=User(7, "member", "Member"),
-        command=InteractionCommand("command-id", "echo", 1),
+        command=InteractionCommand("command-id", "echo", "1"),
         options={"text": "hello"},
     )
 

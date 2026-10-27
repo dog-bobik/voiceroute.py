@@ -45,12 +45,14 @@ def create_bot(config: CommunityAssistantConfig) -> CommunityAssistantBot:
         intents=intents,
         cache_policy=CachePolicy(messages=True, max_messages=500),
         sync_application_commands=config.sync_application_commands,
+        component_secret=config.component_secret,
     )
 
 
 def main() -> None:
     load_dotenv()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     config = CommunityAssistantConfig.from_env()
     create_bot(config).run()
 

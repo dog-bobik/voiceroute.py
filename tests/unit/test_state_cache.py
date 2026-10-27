@@ -1,4 +1,12 @@
-from voiceroute import Bot, CachedEntity, CachePolicy, PlatformEvent, StateCache
+from voiceroute import (
+    Bot,
+    CachedEntity,
+    CachedResource,
+    CachedRole,
+    CachePolicy,
+    PlatformEvent,
+    StateCache,
+)
 
 
 def platform_event(
@@ -80,6 +88,30 @@ async def test_message_cache_is_optional_and_bounded() -> None:
 
     assert cache.get_message("c", "ch", "1") is None
     assert cache.get_message("c", "ch", "2") is not None
+
+
+async def test_cache_uses_typed_entities_and_per_domain_lru() -> None:
+    cache = StateCache(CachePolicy(max_per_domain=1))
+    await cache.apply(
+        platform_event(
+            "ROLE_CREATED",
+            "1",
+            {"id": "first", "communityId": "c", "name": "First", "position": 1},
+        )
+    )
+    await cache.apply(
+        platform_event(
+            "ROLE_CREATED",
+            "2",
+            {"id": "second", "communityId": "c", "name": "Second", "position": 2},
+        )
+    )
+    assert cache.get_role("first") is None
+    second = cache.get_role("second")
+    assert isinstance(second, CachedRole)
+
+    await cache.apply(platform_event("POLL_CREATED", "3", {"id": "poll", "channelId": "ch"}))
+    assert isinstance(cache.get_cached("poll", "poll"), CachedResource)
 
 
 async def test_bot_dispatches_semantic_cache_events() -> None:

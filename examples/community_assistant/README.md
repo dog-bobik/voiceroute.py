@@ -28,6 +28,7 @@ VOICEROUTE_CHANNEL_ID=
 VOICEROUTE_COMMAND_PREFIX=/
 VOICEROUTE_SYNC_APPLICATION_COMMANDS=true
 VOICEROUTE_GATEWAY_INTENTS=
+VOICEROUTE_COMPONENT_SECRET=replace-with-at-least-16-random-bytes
 VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 ```
 
@@ -49,8 +50,11 @@ VOICEROUTE_GATEWAY_INTENTS=communities,messages,interactions
 соответствующих privileged intents. SDK проверяет настройки до подключения и завершает
 запуск понятной ошибкой, а не циклом reconnect с кодом `4014`.
 
+`VOICEROUTE_COMPONENT_SECRET` включает демонстрационную `/panel` с подписанной кнопкой.
+Секрет должен быть одинаковым на всех экземплярах бота и не должен попадать в Git.
+
 При `VOICEROUTE_SYNC_APPLICATION_COMMANDS=true` бот во время запуска полностью заменяет
-удалённый реестр slash-команд четырьмя определениями из примера. Установите `false`, если
+удалённый реестр slash-команд из примера. Установите `false`, если
 реестром управляет другой процесс.
 
 ## Запуск
@@ -68,6 +72,8 @@ python -m examples.community_assistant.bot
 - `/whoami` — приватно показывает member snapshot, роли и presence;
 - `/capabilities` — показывает effective permissions бота; доступна пользователям с
   `manageMessages`.
+- `/panel` — демонстрирует persistent signed button, если задан
+  `VOICEROUTE_COMPONENT_SECRET`.
 
 Старые prefix-команды оставлены, чтобы пример одновременно показывал оба режима:
 

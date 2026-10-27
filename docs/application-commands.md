@@ -1,31 +1,36 @@
 # Нативные команды приложений
 
-VoiceRoute поддерживает зарегистрированные slash-команды и приватные ответы. Реестр
-команд приложения заменяется целиком, поэтому перед вызовом `replace` нужно передать
-все команды, которые должны остаться активными.
+VoiceRoute поддерживает `CHAT_INPUT`, `USER` и `MESSAGE` команды в global и community
+scope. SDK предоставляет полный CRUD, atomic sync, dry diff, discovery и permission rules.
 
 ```python
 from voiceroute import CommandDefinition, CommandOption, CommandOptionType, VoiceRouteClient
 
 async with VoiceRouteClient(token="...") as client:
     me = await client.bots.get_current()
-    await client.application_commands.replace(
-        me.application_id,
-        [
-            CommandDefinition(
-                name="echo",
-                description="Повторить текст",
-                options=(
-                    CommandOption(
-                        name="text",
-                        description="Текст ответа",
-                        type=CommandOptionType.STRING,
-                        required=True,
-                        max_length=1000,
-                    ),
+    definitions = [
+        CommandDefinition(
+            name="echo",
+            description="Повторить текст",
+            options=(
+                CommandOption(
+                    name="text",
+                    description="Текст ответа",
+                    type=CommandOptionType.STRING,
+                    required=True,
+                    max_length=1000,
                 ),
-            )
-        ],
+            ),
+        )
+    ]
+    diff = await client.application_commands.diff(
+        me.application_id,
+        definitions,
+    )
+    print(diff)
+    await client.application_commands.sync(
+        me.application_id,
+        definitions,
     )
 ```
 
@@ -82,3 +87,8 @@ bot.run()
 У global interaction SSE собственный checkpoint. Он сохраняется только после успешной
 обработки. Повторно доставленный UUID не запускает callback второй раз в пределах
 процесса; внешние действия при нескольких процессах всё равно должны быть идемпотентны.
+
+`CommandOption` поддерживает subcommand/groups, все v1 option types, choices,
+autocomplete, bounds, channel types и localizations. Для точечных mutations SDK
+автоматически создаёт `Idempotency-Key`, а update/delete требуют server version через
+`If-Match`. Community permissions поддерживают role/user/channel/allMembers/allChannels.

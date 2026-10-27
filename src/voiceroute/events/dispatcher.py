@@ -8,6 +8,7 @@ from collections import deque
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
+from voiceroute.events.catalog import event_definition
 from voiceroute.models import PlatformEvent
 
 EventListener = Callable[[PlatformEvent], Awaitable[None]]
@@ -23,6 +24,12 @@ class _Waiter:
     check: EventCheck | None
 
 
+@dataclass(slots=True)
+class _ResourceGate:
+    lock: asyncio.Lock
+    users: int = 0
+
+
 class EventDispatcher:
     """Dispatch every advertised event while accepting unknown future events."""
 
@@ -34,9 +41,12 @@ class EventDispatcher:
         after_dispatch: DispatchHook | None = None,
         dispatch_failed: DispatchHook | None = None,
         error_handler: DispatchErrorHandler | None = None,
+        max_concurrency: int = 100,
     ) -> None:
         if deduplication_size <= 0:
             raise ValueError("deduplication_size must be positive")
+        if max_concurrency <= 0:
+            raise ValueError("max_concurrency must be positive")
         self._listeners: dict[str, list[EventListener]] = {}
         self._waiters: list[_Waiter] = []
         self._delivery_ids: set[str] = set()
@@ -46,6 +56,9 @@ class EventDispatcher:
         self.after_dispatch = after_dispatch
         self.dispatch_failed = dispatch_failed
         self.error_handler = error_handler
+        self._semaphore = asyncio.Semaphore(max_concurrency)
+        self._resource_gates: dict[str, _ResourceGate] = {}
+        self._resource_guard = asyncio.Lock()
 
     @staticmethod
     def event_name(value: str) -> str:
@@ -68,9 +81,24 @@ class EventDispatcher:
             del self._listeners[key]
 
     async def dispatch(self, event: PlatformEvent) -> bool:
-        """Return false for a duplicate delivery, otherwise run listeners serially."""
+        """Dispatch with bounded concurrency and causal ordering per resource."""
         if event.delivery_id is not None and event.delivery_id in self._delivery_ids:
             return False
+        definition = event_definition(event.name)
+        resource_key = (
+            definition.resource_key(event.data)
+            if definition is not None
+            else f"unknown:{event.name}"
+        )
+        async with self._semaphore:
+            gate = await self._acquire_gate(resource_key)
+            try:
+                async with gate.lock:
+                    return await self._dispatch_serial(event)
+            finally:
+                await self._release_gate(resource_key, gate)
+
+    async def _dispatch_serial(self, event: PlatformEvent) -> bool:
         try:
             if self.before_dispatch is not None:
                 await self.before_dispatch(event)
@@ -133,3 +161,15 @@ class EventDispatcher:
         if len(self._delivery_order) > self._deduplication_size:
             expired = self._delivery_order.popleft()
             self._delivery_ids.remove(expired)
+
+    async def _acquire_gate(self, key: str) -> _ResourceGate:
+        async with self._resource_guard:
+            gate = self._resource_gates.setdefault(key, _ResourceGate(asyncio.Lock()))
+            gate.users += 1
+            return gate
+
+    async def _release_gate(self, key: str, gate: _ResourceGate) -> None:
+        async with self._resource_guard:
+            gate.users -= 1
+            if gate.users == 0 and self._resource_gates.get(key) is gate:
+                del self._resource_gates[key]
