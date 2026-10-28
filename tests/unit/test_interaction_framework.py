@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
+from dataclasses import replace
 from unittest.mock import AsyncMock
 
 from voiceroute import Bot, CommandOption, CommandOptionType, MemoryCursorStore
 from voiceroute.commands import InteractionContext
+from voiceroute.errors import Conflict
 from voiceroute.events import (
     EventDelivery,
     EventSource,
@@ -97,3 +99,19 @@ async def test_interaction_checkpoint_advances_after_success() -> None:
     await runtime.close()
 
     assert await store.load(transport.stream_key(target)) == checkpoint
+
+
+async def test_replayed_defer_accepts_existing_initial_response() -> None:
+    interactions = AsyncMock()
+    interactions.defer.side_effect = Conflict(
+        409,
+        "This interaction already has an initial response",
+        code="INTERACTION_ALREADY_ACKNOWLEDGED",
+    )
+    context = InteractionContext(replace(interaction(), token="interaction-token"), interactions)
+
+    await context.defer()
+
+    interactions.defer.assert_awaited_once_with(
+        "interaction-id", "interaction-token", ephemeral=False
+    )

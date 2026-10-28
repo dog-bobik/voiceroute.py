@@ -7,6 +7,7 @@ from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass, field
 
 from voiceroute.api import InteractionsAPI, MembersAPI
+from voiceroute.errors import Conflict
 from voiceroute.models import (
     ActionRow,
     CommandChoice,
@@ -93,7 +94,11 @@ class InteractionContext:
     async def defer(self, *, ephemeral: bool | None = None) -> None:
         self._claim_initial_response()
         private = self.interaction.context != "COMMUNITY" if ephemeral is None else ephemeral
-        await self._interactions.defer(self.interaction.id, self._token(), ephemeral=private)
+        try:
+            await self._interactions.defer(self.interaction.id, self._token(), ephemeral=private)
+        except Conflict as error:
+            if error.code != "INTERACTION_ALREADY_ACKNOWLEDGED":
+                raise
 
     async def autocomplete(self, choices: Sequence[CommandChoice]) -> None:
         self._claim_initial_response()

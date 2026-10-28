@@ -25,10 +25,11 @@ class FakeGateway:
     intents = ("voiceStates",)
     platform = FakePlatform()
 
-    def __init__(self, *, error: str | None = None) -> None:
+    def __init__(self, *, error: str | None = None, transmit: bool = True) -> None:
         self.handler: Callable[[Mapping[str, Any]], None] | None = None
         self.requests: list[dict[str, Any]] = []
         self.error = error
+        self.transmit = transmit
 
     def subscribe_voice(self, handler: Callable[[Mapping[str, Any]], None]) -> Callable[[], None]:
         self.handler = handler
@@ -66,7 +67,7 @@ class FakeGateway:
                             "token": "short-lived-token",
                             "sessionExpiresAt": "2026-10-27T12:00:00Z",
                             "receive": False,
-                            "transmit": True,
+                            "transmit": self.transmit,
                         },
                     }
                 )
@@ -126,6 +127,22 @@ async def test_voice_session_surfaces_gateway_denial() -> None:
     with pytest.raises(VoiceAccessDenied, match="VOICE_TRANSMIT_FORBIDDEN"):
         await session.join(COMMUNITY_ID, CHANNEL_ID)
 
+    await session.close()
+
+
+async def test_voice_session_rejects_narrowed_grant_before_media_connect() -> None:
+    gateway = FakeGateway(transmit=False)
+    media = FakeMediaTransport()
+    session = VoiceSession(
+        cast(GatewayClient, gateway),
+        allowed_media_origins=("https://voice.voiceroute.cc",),
+        transport_factory=lambda: media,
+    )
+
+    with pytest.raises(VoiceAccessDenied, match="transmit"):
+        await session.join(COMMUNITY_ID, CHANNEL_ID)
+
+    assert media.grant is None
     await session.close()
 
 

@@ -165,6 +165,10 @@ class VoiceSession:
             )
             grant = await asyncio.wait_for(future, timeout=self._join_timeout)
             self._validate_grant(grant)
+            if transmit and not grant.transmit:
+                raise VoiceAccessDenied("VoiceRoute did not grant voice transmit access")
+            if receive and not grant.receive:
+                raise VoiceAccessDenied("VoiceRoute did not grant voice receive access")
             transport = self._transport_factory()
             await transport.connect(grant)
         except TimeoutError as error:
