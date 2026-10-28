@@ -43,6 +43,9 @@ MediaTransportFactory = Callable[[], VoiceMediaTransport]
 class LiveKitMediaTransport:
     """Publish 48 kHz mono PCM through the official LiveKit Python runtime."""
 
+    SUBSCRIBER_WARMUP_SECONDS = 1.0
+    PLAYOUT_TAIL_SECONDS = 0.25
+
     def __init__(self) -> None:
         self._rtc: Any = None
         self._room: Any = None
@@ -68,6 +71,9 @@ class LiveKitMediaTransport:
         self._room = room
         self._source = source
         self._track = track
+        # Publishing completes before remote participants necessarily subscribe.
+        # Keep the advertised track alive so short clips do not finish during negotiation.
+        await asyncio.sleep(self.SUBSCRIBER_WARMUP_SECONDS)
 
     async def write_pcm(self, samples: Sequence[int]) -> None:
         if self._source is None or self._rtc is None:
@@ -84,6 +90,8 @@ class LiveKitMediaTransport:
     async def drain(self) -> None:
         if self._source is not None:
             await self._source.wait_for_playout()
+            # Let remote jitter buffers consume the final frame before disconnecting.
+            await asyncio.sleep(self.PLAYOUT_TAIL_SECONDS)
 
     async def close(self) -> None:
         room, source = self._room, self._source
