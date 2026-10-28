@@ -74,11 +74,14 @@ python -m examples.community_assistant.bot
 - `/capabilities` — показывает effective permissions бота; доступна пользователям с
   `manageMessages`.
 - `/panel` — демонстрирует persistent signed button, если задан
-  `VOICEROUTE_COMPONENT_SECRET`.
+  `VOICEROUTE_COMPONENT_SECRET`: при каждом клике исходное сообщение обновляется через
+  `UPDATE_MESSAGE`, а состояние и оформление кнопки переключаются.
 
 Runtime также публикует presence при `on_ready`, логирует подключение, вступление
 участников, изменения ролей и неизвестные Gateway events. Кнопка `/panel` вызывает
-подписанный component handler `assistant-refresh`.
+подписанный component handler `assistant-refresh`; новый текст появляется в том же
+сообщении, поэтому сценарий проверяет и доставку `MESSAGE_COMPONENT`, и callback
+`UPDATE_MESSAGE`.
 
 `VOICEROUTE_SYNC_APPLICATION_COMMANDS=true` атомарно заменяет полный глобальный реестр
 команд текущего приложения. Не запускайте Community Assistant и другой проект (например,

@@ -14,7 +14,7 @@ from voiceroute.events import (
     InteractionTarget,
     StreamCheckpoint,
 )
-from voiceroute.models import Interaction, InteractionCommand, User
+from voiceroute.models import ActionRow, Component, Interaction, InteractionCommand, User
 
 
 def interaction() -> Interaction:
@@ -115,3 +115,39 @@ async def test_replayed_defer_accepts_existing_initial_response() -> None:
     interactions.defer.assert_awaited_once_with(
         "interaction-id", "interaction-token", ephemeral=False
     )
+
+
+async def test_component_context_updates_its_source_message() -> None:
+    interactions = AsyncMock()
+    context = InteractionContext(
+        replace(
+            interaction(),
+            type="MESSAGE_COMPONENT",
+            token="interaction-token",
+            custom_id="refresh",
+        ),
+        interactions,
+    )
+    row = ActionRow((Component(type="BUTTON", custom_id="refresh", label="Refresh"),))
+
+    await context.update_message("Updated", components=(row,))
+
+    interactions.update_message.assert_awaited_once()
+    interaction_id, token, message = interactions.update_message.await_args.args
+    assert (interaction_id, token) == ("interaction-id", "interaction-token")
+    assert message.content == "Updated"
+    assert message.components == (row,)
+
+
+async def test_non_component_cannot_update_source_message() -> None:
+    context = InteractionContext(
+        replace(interaction(), token="interaction-token"),
+        AsyncMock(),
+    )
+
+    try:
+        await context.update_message("Updated")
+    except RuntimeError as error:
+        assert str(error) == "only a message component can update its source message"
+    else:
+        raise AssertionError("application command unexpectedly updated a source message")

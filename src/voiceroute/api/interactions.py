@@ -102,8 +102,8 @@ class InteractionsAPI:
         token: str | None = None,
         components: tuple[ActionRow, ...] = (),
     ) -> InteractionResponse:
-        if not body:
-            raise ValueError("interaction response body cannot be empty")
+        if not body and not components:
+            raise ValueError("interaction response must contain text or components")
         if len(body) > 4000:
             raise ValueError("interaction response body cannot exceed 4000 characters")
         if token is not None:

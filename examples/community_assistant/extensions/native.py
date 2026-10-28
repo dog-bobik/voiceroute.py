@@ -91,25 +91,33 @@ def register_native_commands(bot: Bot) -> None:
     if bot.components is not None:
         components = bot.components
 
+        def panel_button(state: str) -> ActionRow:
+            label = "Сбросить" if state == "updated" else "Проверить кнопку"
+            style = ButtonStyle.SECONDARY if state == "updated" else ButtonStyle.PRIMARY
+            return ActionRow(
+                components=(
+                    Component(
+                        type="BUTTON",
+                        custom_id=components.custom_id("assistant-refresh", state),
+                        style=style,
+                        label=label,
+                        accessibility_label="Проверить обработку кнопки ботом",
+                    ),
+                )
+            )
+
         @bot.component("assistant-refresh")
         async def refresh_panel(context: InteractionContext, payload: str) -> None:
-            await context.respond(f"Панель обновлена. Состояние: {payload}", ephemeral=True)
+            next_state = "ready" if payload == "updated" else "updated"
+            await context.update_message(
+                "Кнопка обработана библиотекой voiceroute.py. "
+                f"Текущее состояние: {next_state}.",
+                components=(panel_button(next_state),),
+            )
 
         @bot.slash_command("panel", description="Открыть интерактивную панель")
         async def panel(context: InteractionContext) -> None:
-            custom_id = components.custom_id("assistant-refresh", "ready")
             await context.respond(
-                "Community Assistant готов к работе.",
-                components=(
-                    ActionRow(
-                        components=(
-                            Component(
-                                type="BUTTON",
-                                custom_id=custom_id,
-                                style=ButtonStyle.PRIMARY,
-                                label="Обновить",
-                            ),
-                        )
-                    ),
-                ),
+                "Нажмите кнопку: исходное сообщение должно обновиться без нового ответа.",
+                components=(panel_button("ready"),),
             )

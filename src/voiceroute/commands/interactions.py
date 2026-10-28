@@ -108,6 +108,29 @@ class InteractionContext:
         self._claim_initial_response()
         await self._interactions.show_modal(self.interaction.id, self._token(), modal)
 
+    async def update_message(
+        self,
+        body: str,
+        *,
+        components: Sequence[ActionRow] = (),
+    ) -> InteractionResponse | None:
+        """Acknowledge a component interaction by updating its source message."""
+        if self.interaction.type != "MESSAGE_COMPONENT":
+            raise RuntimeError("only a message component can update its source message")
+        self._claim_initial_response()
+        return await self._interactions.update_message(
+            self.interaction.id,
+            self._token(),
+            InteractionMessage(content=body, components=tuple(components)),
+        )
+
+    async def defer_update(self) -> None:
+        """Acknowledge a component interaction without changing its source yet."""
+        if self.interaction.type != "MESSAGE_COMPONENT":
+            raise RuntimeError("only a message component can defer a source update")
+        self._claim_initial_response()
+        await self._interactions.defer_update(self.interaction.id, self._token())
+
     async def edit_original(
         self, body: str, *, message_id: str = "@original"
     ) -> InteractionResponse:

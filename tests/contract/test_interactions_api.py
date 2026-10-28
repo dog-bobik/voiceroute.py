@@ -6,7 +6,14 @@ import httpx
 import pytest
 import respx
 
-from voiceroute import ActionRow, ButtonStyle, Component, InteractionMessage, VoiceRouteClient
+from voiceroute import (
+    ActionRow,
+    ButtonStyle,
+    Component,
+    Interaction,
+    InteractionMessage,
+    VoiceRouteClient,
+)
 
 
 @pytest.mark.asyncio
@@ -39,8 +46,72 @@ async def test_respond_to_interaction_ephemerally() -> None:
 @pytest.mark.asyncio
 async def test_reject_empty_interaction_response() -> None:
     async with VoiceRouteClient(token="vrb_test") as client:
-        with pytest.raises(ValueError, match="cannot be empty"):
+        with pytest.raises(ValueError, match="must contain text or components"):
             await client.interactions.respond("interaction-id", "")
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_component_only_interaction_response_matches_server_contract() -> None:
+    route = respx.post(
+        "https://voiceroute.cc/api/v1/interactions/interaction-id/token/callback"
+    ).mock(
+        return_value=httpx.Response(
+            200,
+            json={"message": {"id": "message-id", "content": ""}},
+        )
+    )
+    row = ActionRow(
+        (Component(type="BUTTON", custom_id="action", style=ButtonStyle.PRIMARY),)
+    )
+
+    async with VoiceRouteClient(token="vrb_test") as client:
+        await client.interactions.respond(
+            "interaction-id",
+            "",
+            token="token",
+            components=(row,),
+        )
+
+    assert route.called
+    assert route.calls[0].request.read()
+
+
+def test_message_component_preserves_current_server_payload() -> None:
+    interaction = Interaction.from_dict(
+        {
+            "id": "interaction-id",
+            "applicationId": "application-id",
+            "communityId": "community-id",
+            "channelId": "channel-id",
+            "type": "MESSAGE_COMPONENT",
+            "token": "interaction-token",
+            "user": {"id": "7", "username": "member", "displayName": "Member"},
+            "data": {
+                "commandId": "command-id",
+                "name": "panel",
+                "commandVersion": "3",
+                "type": "CHAT_INPUT",
+                "path": [],
+                "options": {},
+                "customId": "refresh",
+                "componentType": "STRING_SELECT",
+                "values": ["one", "two"],
+                "resolved": {},
+                "messageId": "message-id",
+                "messageSeq": "42",
+                "sourceVersion": "5",
+            },
+        }
+    )
+
+    assert interaction.type == "MESSAGE_COMPONENT"
+    assert interaction.custom_id == "refresh"
+    assert interaction.component_type == "STRING_SELECT"
+    assert interaction.values == ("one", "two")
+    assert interaction.message_id == "message-id"
+    assert interaction.message_seq == "42"
+    assert interaction.source_version == "5"
 
 
 @pytest.mark.asyncio

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from unittest.mock import AsyncMock
 from uuid import UUID
 
 import pytest
@@ -23,6 +24,9 @@ from voiceroute import (
     Bot,
     Context,
     Forbidden,
+    Interaction,
+    InteractionCommand,
+    InteractionContext,
     Message,
     NotFound,
     Permission,
@@ -151,6 +155,37 @@ def test_native_panel_registers_with_signed_persistent_component() -> None:
     assert bot.components is not None
     custom_id = bot.components.custom_id("assistant-refresh", "ready")
     assert len(custom_id) <= 100
+
+
+@pytest.mark.asyncio
+async def test_native_panel_button_updates_the_source_message() -> None:
+    bot = Bot(token="vrb_test", component_secret="0123456789abcdef")
+    register_native_commands(bot)
+    assert bot.components is not None
+    interactions = AsyncMock()
+    component_interaction = Interaction(
+        id="interaction-id",
+        application_id="application-id",
+        community_id="community-id",
+        channel_id="channel-id",
+        user=User(1, "member", "Member"),
+        command=InteractionCommand("command-id", "panel", "1"),
+        token="interaction-token",
+        type="MESSAGE_COMPONENT",
+        custom_id=bot.components.custom_id("assistant-refresh", "ready"),
+    )
+    context = InteractionContext(component_interaction, interactions)
+    assert component_interaction.custom_id is not None
+
+    handled = await bot.components.dispatch(context, component_interaction.custom_id)
+
+    assert handled is True
+    interactions.update_message.assert_awaited_once()
+    message = interactions.update_message.await_args.args[2]
+    assert message.content.endswith("updated.")
+    button = message.components[0].components[0]
+    assert button.label == "Сбросить"
+    assert button.style is not None and button.style.value == "SECONDARY"
 
 
 def test_faq_repository_loads_json_and_rejects_duplicate_slugs(tmp_path: Path) -> None:

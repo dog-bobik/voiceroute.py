@@ -177,7 +177,12 @@ class Interaction:
     type: str = "APPLICATION_COMMAND"
     context: str = "COMMUNITY"
     custom_id: str | None = None
-    values: dict[str, str] = field(default_factory=dict)
+    values: tuple[str, ...] | dict[str, str] = ()
+    component_type: str | None = None
+    message_id: str | None = None
+    message_seq: str | None = None
+    source_version: str | None = None
+    parent_interaction_id: str | None = None
     created_at: str | None = None
     expires_at: str | None = None
 
@@ -198,7 +203,15 @@ class Interaction:
         }
         raw_options = data.get("options", nested.get("options", {}))
         raw_resolved = nested.get("resolved", {})
-        raw_values = nested.get("values", data.get("values", {}))
+        raw_values = nested.get("values", data.get("values", ()))
+        if isinstance(raw_values, dict):
+            values: tuple[str, ...] | dict[str, str] = {
+                str(key): str(value) for key, value in raw_values.items()
+            }
+        elif isinstance(raw_values, list):
+            values = tuple(str(value) for value in raw_values)
+        else:
+            values = ()
         return cls(
             id=str(data["id"]),
             application_id=str(data["applicationId"]),
@@ -212,9 +225,14 @@ class Interaction:
             type=str(data.get("type", "APPLICATION_COMMAND")),
             context=str(data.get("context", "COMMUNITY")),
             custom_id=_optional_string(nested.get("customId", data.get("customId"))),
-            values={str(k): str(v) for k, v in raw_values.items()}
-            if isinstance(raw_values, dict)
-            else {},
+            values=values,
+            component_type=_optional_string(nested.get("componentType")),
+            message_id=_optional_string(
+                nested.get("messageId", nested.get("sourceMessageId"))
+            ),
+            message_seq=_optional_string(nested.get("messageSeq")),
+            source_version=_optional_string(nested.get("sourceVersion")),
+            parent_interaction_id=_optional_string(nested.get("parentInteractionId")),
             created_at=_optional_string(data.get("createdAt")),
             expires_at=_optional_string(data.get("expiresAt")),
         )

@@ -8,9 +8,18 @@ from typing import Any, Literal, NotRequired, TypeAlias, TypedDict
 
 
 SOURCE_HASHES = (
-    '2e698ead3ee27a74fde9bc1589ead19f85f4418a412ef7514b229d05a47593ac',
-    '847f77aeb585e2fb72a0569c06d4951bde39d9664828df62b301ec996fc677bb',
+    '52046f405d55f938223f5695fcbb644eaaad687b0df943e1af1b19700bd921be',
 )
+
+
+class AccessManifestV1(TypedDict):
+    capabilities: list[Literal['messages', 'messageContent', 'members', 'reactions', 'polls', 'threads', 'moderation', 'presence', 'voiceStates', 'auditLog'] | str]
+    catalog_version: Any
+    hash: str
+    permissions: list[Literal['viewChannel', 'readMessageHistory', 'sendMessages', 'attachFiles', 'addReactions', 'manageMessages', 'createPublicThreads', 'createPrivateThreads', 'sendMessagesInThreads', 'manageThreads', 'connect', 'speak', 'stream', 'listen', 'useApplicationCommands', 'mentionEveryone', 'muteMembers', 'deafenMembers', 'moveMembers', 'manageChannels', 'manageRoles', 'manageCommunity', 'createInvites', 'kickMembers', 'banMembers', 'moderateMembers', 'changeNickname', 'manageNicknames', 'viewAuditLog', 'manageStage', 'requestToSpeak', 'manageExpressions', 'useSoundboard', 'administrator'] | str]
+    schema_version: Any
+    scopes: list[str]
+    version: str
 
 
 class ActionRow(TypedDict):
@@ -58,14 +67,6 @@ class ApplicationMetadata(TypedDict):
     version: str
 
 
-class ApplicationPlatform(TypedDict):
-    application_id: str
-    approved_intents: list[Literal['moderation', 'threads', 'presence', 'voiceStates', 'webhooks', 'auditLog', 'communities', 'members', 'messages', 'messageContent', 'reactions', 'polls', 'interactions'] | str]
-    requested_intents: list[Literal['moderation', 'threads', 'presence', 'voiceStates', 'webhooks', 'auditLog', 'communities', 'members', 'messages', 'messageContent', 'reactions', 'polls', 'interactions'] | str]
-    updated_at: str | None
-    version: str
-
-
 class ApplicationPrivacy(TypedDict):
     application_id: str
     blocked: bool
@@ -102,10 +103,11 @@ class ApplicationTeam(TypedDict):
 
 class Capabilities(TypedDict):
     api_version: Any
-    events: list[Literal['APPLICATION_UPDATED', 'CHANNEL_ORDER_UPDATED', 'ROLE_ORDER_UPDATED', 'CATEGORY_CREATED', 'CATEGORY_UPDATED', 'CATEGORY_DELETED', 'CATEGORY_ORDER_UPDATED', 'THREAD_CREATED', 'THREAD_UPDATED', 'THREAD_DELETED', 'FORUM_UPDATED', 'INVITE_CREATED', 'INVITE_DELETED', 'BAN_CREATED', 'BAN_DELETED', 'TIMEOUT_UPDATED', 'AUTOMOD_RULE_CREATED', 'AUTOMOD_RULE_UPDATED', 'AUTOMOD_RULE_DELETED', 'AUDIT_LOG_ENTRY_CREATED', 'WEBHOOK_CREATED', 'WEBHOOK_UPDATED', 'WEBHOOK_DELETED', 'VOICE_STATE_UPDATED', 'VOICE_SERVER_UPDATED', 'VOICE_RECEIVE_STARTED', 'VOICE_RECEIVE_STOPPED', 'STAGE_UPDATED', 'SOUNDBOARD_PLAYED', 'EXPRESSION_CREATED', 'EXPRESSION_UPDATED', 'EXPRESSION_DELETED', 'PRESENCE_UPDATED', 'COMMUNITY_AVAILABLE', 'COMMUNITY_UPDATED', 'COMMUNITY_DELETED', 'CHANNEL_CREATED', 'CHANNEL_UPDATED', 'CHANNEL_DELETED', 'CHANNEL_PERMISSIONS_UPDATED', 'ROLE_CREATED', 'ROLE_UPDATED', 'ROLE_DELETED', 'MEMBER_JOINED', 'MEMBER_UPDATED', 'MEMBER_LEFT', 'MESSAGE_CREATED', 'MESSAGE_UPDATED', 'MESSAGE_DELETED', 'MESSAGE_PINS_UPDATED', 'REACTION_ADDED', 'REACTION_REMOVED', 'INSTALLATION_CREATED', 'INSTALLATION_UPDATED', 'INSTALLATION_DELETED', 'INTERACTION_CREATED', 'DIRECT_MESSAGE_CREATED', 'DIRECT_MESSAGE_UPDATED', 'DIRECT_MESSAGE_DELETED', 'USER_INSTALLATION_CREATED', 'USER_INSTALLATION_UPDATED', 'USER_INSTALLATION_DELETED', 'APPLICATION_USER_DATA_DELETION_REQUESTED', 'ATTACHMENT_SCAN_COMPLETED', 'MESSAGES_BULK_DELETED', 'TYPING_STARTED', 'REACTIONS_CLEARED', 'THREAD_MEMBER_UPDATED', 'THREAD_MEMBERS_UPDATED', 'COMMUNITY_UNAVAILABLE', 'MEMBERS_CHUNK', 'AUTOMOD_ACTION_EXECUTED', 'POLL_CREATED', 'POLL_VOTE_ADDED', 'POLL_VOTE_REMOVED', 'POLL_CLOSED'] | str]
+    automatic_event_families: list[Literal['communities', 'interactions', 'miniApps', 'webhooks'] | str]
+    event_capabilities: list[Literal['messages', 'messageContent', 'members', 'reactions', 'polls', 'threads', 'moderation', 'presence', 'voiceStates', 'auditLog'] | str]
+    events: list[Literal['APPLICATION_UPDATED', 'CHANNEL_ORDER_UPDATED', 'ROLE_ORDER_UPDATED', 'CATEGORY_CREATED', 'CATEGORY_UPDATED', 'CATEGORY_DELETED', 'CATEGORY_ORDER_UPDATED', 'THREAD_CREATED', 'THREAD_UPDATED', 'THREAD_DELETED', 'FORUM_UPDATED', 'INVITE_CREATED', 'INVITE_DELETED', 'BAN_CREATED', 'BAN_DELETED', 'TIMEOUT_UPDATED', 'AUTOMOD_RULE_CREATED', 'AUTOMOD_RULE_UPDATED', 'AUTOMOD_RULE_DELETED', 'AUDIT_LOG_ENTRY_CREATED', 'WEBHOOK_CREATED', 'WEBHOOK_UPDATED', 'WEBHOOK_DELETED', 'VOICE_STATE_UPDATED', 'VOICE_SERVER_UPDATED', 'VOICE_RECEIVE_STARTED', 'VOICE_RECEIVE_STOPPED', 'STAGE_UPDATED', 'SOUNDBOARD_PLAYED', 'EXPRESSION_CREATED', 'EXPRESSION_UPDATED', 'EXPRESSION_DELETED', 'MINI_APP_SESSION_OPENED', 'MINI_APP_SESSION_CLOSED', 'MINI_APP_ACTION_CREATED', 'MINI_APP_ACTION_CANCELLED', 'MINI_APP_STATE_UPDATED', 'MINI_APP_POLICY_UPDATED', 'MINI_APP_ACCESS_REVOKED', 'PRESENCE_UPDATED', 'COMMUNITY_AVAILABLE', 'COMMUNITY_UPDATED', 'COMMUNITY_DELETED', 'CHANNEL_CREATED', 'CHANNEL_UPDATED', 'CHANNEL_DELETED', 'CHANNEL_PERMISSIONS_UPDATED', 'ROLE_CREATED', 'ROLE_UPDATED', 'ROLE_DELETED', 'MEMBER_JOINED', 'MEMBER_UPDATED', 'MEMBER_LEFT', 'MESSAGE_CREATED', 'MESSAGE_UPDATED', 'MESSAGE_DELETED', 'MESSAGE_PINS_UPDATED', 'REACTION_ADDED', 'REACTION_REMOVED', 'INSTALLATION_CREATED', 'INSTALLATION_UPDATED', 'INSTALLATION_DELETED', 'INTERACTION_CREATED', 'DIRECT_MESSAGE_CREATED', 'DIRECT_MESSAGE_UPDATED', 'DIRECT_MESSAGE_DELETED', 'USER_INSTALLATION_CREATED', 'USER_INSTALLATION_UPDATED', 'USER_INSTALLATION_DELETED', 'APPLICATION_USER_DATA_DELETION_REQUESTED', 'ATTACHMENT_SCAN_COMPLETED', 'MESSAGES_BULK_DELETED', 'TYPING_STARTED', 'REACTIONS_CLEARED', 'THREAD_MEMBER_UPDATED', 'THREAD_MEMBERS_UPDATED', 'COMMUNITY_UNAVAILABLE', 'MEMBERS_CHUNK', 'AUTOMOD_ACTION_EXECUTED', 'POLL_CREATED', 'POLL_VOTE_ADDED', 'POLL_VOTE_REMOVED', 'POLL_CLOSED'] | str]
     features: dict[str, Any]
     gateway: dict[str, Any]
-    intents: dict[str, Any]
     legacy: dict[str, Any]
     maturity: Any
     stage: NotRequired[str]
@@ -211,7 +213,7 @@ class DeliveryLease(TypedDict):
 class DeliveryLog(TypedDict):
     acknowledged_at: str | None
     attempts: int
-    event: Literal['APPLICATION_UPDATED', 'CHANNEL_ORDER_UPDATED', 'ROLE_ORDER_UPDATED', 'CATEGORY_CREATED', 'CATEGORY_UPDATED', 'CATEGORY_DELETED', 'CATEGORY_ORDER_UPDATED', 'THREAD_CREATED', 'THREAD_UPDATED', 'THREAD_DELETED', 'FORUM_UPDATED', 'INVITE_CREATED', 'INVITE_DELETED', 'BAN_CREATED', 'BAN_DELETED', 'TIMEOUT_UPDATED', 'AUTOMOD_RULE_CREATED', 'AUTOMOD_RULE_UPDATED', 'AUTOMOD_RULE_DELETED', 'AUDIT_LOG_ENTRY_CREATED', 'WEBHOOK_CREATED', 'WEBHOOK_UPDATED', 'WEBHOOK_DELETED', 'VOICE_STATE_UPDATED', 'VOICE_SERVER_UPDATED', 'VOICE_RECEIVE_STARTED', 'VOICE_RECEIVE_STOPPED', 'STAGE_UPDATED', 'SOUNDBOARD_PLAYED', 'EXPRESSION_CREATED', 'EXPRESSION_UPDATED', 'EXPRESSION_DELETED', 'PRESENCE_UPDATED', 'COMMUNITY_AVAILABLE', 'COMMUNITY_UPDATED', 'COMMUNITY_DELETED', 'CHANNEL_CREATED', 'CHANNEL_UPDATED', 'CHANNEL_DELETED', 'CHANNEL_PERMISSIONS_UPDATED', 'ROLE_CREATED', 'ROLE_UPDATED', 'ROLE_DELETED', 'MEMBER_JOINED', 'MEMBER_UPDATED', 'MEMBER_LEFT', 'MESSAGE_CREATED', 'MESSAGE_UPDATED', 'MESSAGE_DELETED', 'MESSAGE_PINS_UPDATED', 'REACTION_ADDED', 'REACTION_REMOVED', 'INSTALLATION_CREATED', 'INSTALLATION_UPDATED', 'INSTALLATION_DELETED', 'INTERACTION_CREATED', 'DIRECT_MESSAGE_CREATED', 'DIRECT_MESSAGE_UPDATED', 'DIRECT_MESSAGE_DELETED', 'USER_INSTALLATION_CREATED', 'USER_INSTALLATION_UPDATED', 'USER_INSTALLATION_DELETED', 'APPLICATION_USER_DATA_DELETION_REQUESTED', 'ATTACHMENT_SCAN_COMPLETED', 'MESSAGES_BULK_DELETED', 'TYPING_STARTED', 'REACTIONS_CLEARED', 'THREAD_MEMBER_UPDATED', 'THREAD_MEMBERS_UPDATED', 'COMMUNITY_UNAVAILABLE', 'MEMBERS_CHUNK', 'AUTOMOD_ACTION_EXECUTED', 'POLL_CREATED', 'POLL_VOTE_ADDED', 'POLL_VOTE_REMOVED', 'POLL_CLOSED'] | str
+    event: Literal['APPLICATION_UPDATED', 'CHANNEL_ORDER_UPDATED', 'ROLE_ORDER_UPDATED', 'CATEGORY_CREATED', 'CATEGORY_UPDATED', 'CATEGORY_DELETED', 'CATEGORY_ORDER_UPDATED', 'THREAD_CREATED', 'THREAD_UPDATED', 'THREAD_DELETED', 'FORUM_UPDATED', 'INVITE_CREATED', 'INVITE_DELETED', 'BAN_CREATED', 'BAN_DELETED', 'TIMEOUT_UPDATED', 'AUTOMOD_RULE_CREATED', 'AUTOMOD_RULE_UPDATED', 'AUTOMOD_RULE_DELETED', 'AUDIT_LOG_ENTRY_CREATED', 'WEBHOOK_CREATED', 'WEBHOOK_UPDATED', 'WEBHOOK_DELETED', 'VOICE_STATE_UPDATED', 'VOICE_SERVER_UPDATED', 'VOICE_RECEIVE_STARTED', 'VOICE_RECEIVE_STOPPED', 'STAGE_UPDATED', 'SOUNDBOARD_PLAYED', 'EXPRESSION_CREATED', 'EXPRESSION_UPDATED', 'EXPRESSION_DELETED', 'MINI_APP_SESSION_OPENED', 'MINI_APP_SESSION_CLOSED', 'MINI_APP_ACTION_CREATED', 'MINI_APP_ACTION_CANCELLED', 'MINI_APP_STATE_UPDATED', 'MINI_APP_POLICY_UPDATED', 'MINI_APP_ACCESS_REVOKED', 'PRESENCE_UPDATED', 'COMMUNITY_AVAILABLE', 'COMMUNITY_UPDATED', 'COMMUNITY_DELETED', 'CHANNEL_CREATED', 'CHANNEL_UPDATED', 'CHANNEL_DELETED', 'CHANNEL_PERMISSIONS_UPDATED', 'ROLE_CREATED', 'ROLE_UPDATED', 'ROLE_DELETED', 'MEMBER_JOINED', 'MEMBER_UPDATED', 'MEMBER_LEFT', 'MESSAGE_CREATED', 'MESSAGE_UPDATED', 'MESSAGE_DELETED', 'MESSAGE_PINS_UPDATED', 'REACTION_ADDED', 'REACTION_REMOVED', 'INSTALLATION_CREATED', 'INSTALLATION_UPDATED', 'INSTALLATION_DELETED', 'INTERACTION_CREATED', 'DIRECT_MESSAGE_CREATED', 'DIRECT_MESSAGE_UPDATED', 'DIRECT_MESSAGE_DELETED', 'USER_INSTALLATION_CREATED', 'USER_INSTALLATION_UPDATED', 'USER_INSTALLATION_DELETED', 'APPLICATION_USER_DATA_DELETION_REQUESTED', 'ATTACHMENT_SCAN_COMPLETED', 'MESSAGES_BULK_DELETED', 'TYPING_STARTED', 'REACTIONS_CLEARED', 'THREAD_MEMBER_UPDATED', 'THREAD_MEMBERS_UPDATED', 'COMMUNITY_UNAVAILABLE', 'MEMBERS_CHUNK', 'AUTOMOD_ACTION_EXECUTED', 'POLL_CREATED', 'POLL_VOTE_ADDED', 'POLL_VOTE_REMOVED', 'POLL_CLOSED'] | str
     expires_at: str
     id: str
     last_code: str | None
@@ -233,13 +235,16 @@ class DeliveryStatus(TypedDict):
 
 
 class DeveloperApplication(TypedDict):
+    access_manifest: NotRequired[dict[str, Any]]
     actions: list[Literal['read', 'commands', 'general', 'install', 'security', 'credentials', 'team', 'transfer', 'delete', 'analytics', 'audit'] | str]
     bot: dict[str, Any] | Any
+    capabilities: list[Literal['messages', 'messageContent', 'members', 'reactions', 'polls', 'threads', 'moderation', 'presence', 'voiceStates', 'auditLog'] | str]
     created_at: str
     description: str
     has_token: bool
     id: str
     install_url: str
+    installation_gaps: NotRequired[list[dict[str, Any]]]
     last_used_at: str | None
     manifest_version: str
     name: str
@@ -298,7 +303,7 @@ class EventSubscription(TypedDict):
     created_at: str
     delivery_count: NotRequired[int]
     enabled: bool
-    event_types: list[Literal['APPLICATION_UPDATED', 'CHANNEL_ORDER_UPDATED', 'ROLE_ORDER_UPDATED', 'CATEGORY_CREATED', 'CATEGORY_UPDATED', 'CATEGORY_DELETED', 'CATEGORY_ORDER_UPDATED', 'THREAD_CREATED', 'THREAD_UPDATED', 'THREAD_DELETED', 'FORUM_UPDATED', 'INVITE_CREATED', 'INVITE_DELETED', 'BAN_CREATED', 'BAN_DELETED', 'TIMEOUT_UPDATED', 'AUTOMOD_RULE_CREATED', 'AUTOMOD_RULE_UPDATED', 'AUTOMOD_RULE_DELETED', 'AUDIT_LOG_ENTRY_CREATED', 'WEBHOOK_CREATED', 'WEBHOOK_UPDATED', 'WEBHOOK_DELETED', 'VOICE_STATE_UPDATED', 'VOICE_SERVER_UPDATED', 'VOICE_RECEIVE_STARTED', 'VOICE_RECEIVE_STOPPED', 'STAGE_UPDATED', 'SOUNDBOARD_PLAYED', 'EXPRESSION_CREATED', 'EXPRESSION_UPDATED', 'EXPRESSION_DELETED', 'PRESENCE_UPDATED', 'COMMUNITY_AVAILABLE', 'COMMUNITY_UPDATED', 'COMMUNITY_DELETED', 'CHANNEL_CREATED', 'CHANNEL_UPDATED', 'CHANNEL_DELETED', 'CHANNEL_PERMISSIONS_UPDATED', 'ROLE_CREATED', 'ROLE_UPDATED', 'ROLE_DELETED', 'MEMBER_JOINED', 'MEMBER_UPDATED', 'MEMBER_LEFT', 'MESSAGE_CREATED', 'MESSAGE_UPDATED', 'MESSAGE_DELETED', 'MESSAGE_PINS_UPDATED', 'REACTION_ADDED', 'REACTION_REMOVED', 'INSTALLATION_CREATED', 'INSTALLATION_UPDATED', 'INSTALLATION_DELETED', 'INTERACTION_CREATED', 'DIRECT_MESSAGE_CREATED', 'DIRECT_MESSAGE_UPDATED', 'DIRECT_MESSAGE_DELETED', 'USER_INSTALLATION_CREATED', 'USER_INSTALLATION_UPDATED', 'USER_INSTALLATION_DELETED', 'APPLICATION_USER_DATA_DELETION_REQUESTED', 'ATTACHMENT_SCAN_COMPLETED', 'MESSAGES_BULK_DELETED', 'TYPING_STARTED', 'REACTIONS_CLEARED', 'THREAD_MEMBER_UPDATED', 'THREAD_MEMBERS_UPDATED', 'COMMUNITY_UNAVAILABLE', 'AUTOMOD_ACTION_EXECUTED', 'POLL_CREATED', 'POLL_VOTE_ADDED', 'POLL_VOTE_REMOVED', 'POLL_CLOSED'] | str]
+    event_types: list[Literal['APPLICATION_UPDATED', 'CHANNEL_ORDER_UPDATED', 'ROLE_ORDER_UPDATED', 'CATEGORY_CREATED', 'CATEGORY_UPDATED', 'CATEGORY_DELETED', 'CATEGORY_ORDER_UPDATED', 'THREAD_CREATED', 'THREAD_UPDATED', 'THREAD_DELETED', 'FORUM_UPDATED', 'INVITE_CREATED', 'INVITE_DELETED', 'BAN_CREATED', 'BAN_DELETED', 'TIMEOUT_UPDATED', 'AUTOMOD_RULE_CREATED', 'AUTOMOD_RULE_UPDATED', 'AUTOMOD_RULE_DELETED', 'AUDIT_LOG_ENTRY_CREATED', 'WEBHOOK_CREATED', 'WEBHOOK_UPDATED', 'WEBHOOK_DELETED', 'VOICE_STATE_UPDATED', 'VOICE_SERVER_UPDATED', 'VOICE_RECEIVE_STARTED', 'VOICE_RECEIVE_STOPPED', 'STAGE_UPDATED', 'SOUNDBOARD_PLAYED', 'EXPRESSION_CREATED', 'EXPRESSION_UPDATED', 'EXPRESSION_DELETED', 'MINI_APP_SESSION_OPENED', 'MINI_APP_SESSION_CLOSED', 'MINI_APP_ACTION_CREATED', 'MINI_APP_ACTION_CANCELLED', 'MINI_APP_STATE_UPDATED', 'MINI_APP_POLICY_UPDATED', 'MINI_APP_ACCESS_REVOKED', 'PRESENCE_UPDATED', 'COMMUNITY_AVAILABLE', 'COMMUNITY_UPDATED', 'COMMUNITY_DELETED', 'CHANNEL_CREATED', 'CHANNEL_UPDATED', 'CHANNEL_DELETED', 'CHANNEL_PERMISSIONS_UPDATED', 'ROLE_CREATED', 'ROLE_UPDATED', 'ROLE_DELETED', 'MEMBER_JOINED', 'MEMBER_UPDATED', 'MEMBER_LEFT', 'MESSAGE_CREATED', 'MESSAGE_UPDATED', 'MESSAGE_DELETED', 'MESSAGE_PINS_UPDATED', 'REACTION_ADDED', 'REACTION_REMOVED', 'INSTALLATION_CREATED', 'INSTALLATION_UPDATED', 'INSTALLATION_DELETED', 'INTERACTION_CREATED', 'DIRECT_MESSAGE_CREATED', 'DIRECT_MESSAGE_UPDATED', 'DIRECT_MESSAGE_DELETED', 'USER_INSTALLATION_CREATED', 'USER_INSTALLATION_UPDATED', 'USER_INSTALLATION_DELETED', 'APPLICATION_USER_DATA_DELETION_REQUESTED', 'ATTACHMENT_SCAN_COMPLETED', 'MESSAGES_BULK_DELETED', 'TYPING_STARTED', 'REACTIONS_CLEARED', 'THREAD_MEMBER_UPDATED', 'THREAD_MEMBERS_UPDATED', 'COMMUNITY_UNAVAILABLE', 'AUTOMOD_ACTION_EXECUTED', 'POLL_CREATED', 'POLL_VOTE_ADDED', 'POLL_VOTE_REMOVED', 'POLL_CLOSED'] | str]
     id: str
     max_attempts: int
     transport: Literal['webhook', 'pull', 'websocket'] | str
@@ -343,6 +348,21 @@ class Installation(TypedDict):
     type: Literal['COMMUNITY', 'USER'] | str
     updated_at: str
     version: NotRequired[str]
+
+
+class InstallationSnapshotV1(TypedDict):
+    application_id: str
+    catalog_version: Any
+    community_id: str
+    granted_capabilities: list[Literal['messages', 'messageContent', 'members', 'reactions', 'polls', 'threads', 'moderation', 'presence', 'voiceStates', 'auditLog'] | str]
+    granted_permissions: list[Literal['viewChannel', 'readMessageHistory', 'sendMessages', 'attachFiles', 'addReactions', 'manageMessages', 'createPublicThreads', 'createPrivateThreads', 'sendMessagesInThreads', 'manageThreads', 'connect', 'speak', 'stream', 'listen', 'useApplicationCommands', 'mentionEveryone', 'muteMembers', 'deafenMembers', 'moveMembers', 'manageChannels', 'manageRoles', 'manageCommunity', 'createInvites', 'kickMembers', 'banMembers', 'moderateMembers', 'changeNickname', 'manageNicknames', 'viewAuditLog', 'manageStage', 'requestToSpeak', 'manageExpressions', 'useSoundboard', 'administrator'] | str]
+    id: str
+    installed_at: str
+    installed_by: str
+    manifest_hash: str
+    manifest_version: str
+    schema_version: Any
+    scopes: list[str]
 
 
 InteractionCallback: TypeAlias = dict[str, Any]
@@ -395,6 +415,7 @@ class InteractionStatus(TypedDict):
     id: str
     message_seq: str | None
     messages: list[InteractionMessage]
+    mini_app: NotRequired[dict[str, Any]]
     modal: NotRequired[Modal]
     status: Literal['pending', 'completed', 'expired'] | str
 
@@ -450,6 +471,75 @@ class MessageInput(TypedDict):
     reply: NotRequired[dict[str, Any] | Any]
 
 
+class MiniAppAction(TypedDict):
+    accepted_at: str
+    action_id: str
+    client_action_id: str
+    expected_state_version: str
+    expires_at: str
+    instance_id: str
+    name: str
+    result: Any
+    status: Literal['PENDING', 'ACKNOWLEDGED', 'COMPLETED', 'REJECTED', 'FAILED', 'EXPIRED'] | str
+
+
+class MiniAppBridgeMessage(TypedDict):
+    bridge_version: Any
+    data: NotRequired[Any]
+    request_id: NotRequired[str]
+    type: Literal['VR_MINI_APP_READY', 'VR_MINI_APP_INIT', 'VR_MINI_APP_REQUEST', 'VR_MINI_APP_RESPONSE', 'VR_MINI_APP_EVENT'] | str
+
+
+class MiniAppConfiguration(TypedDict):
+    application_id: str
+    draft: MiniAppManifest | Any
+    origins: list[dict[str, Any]]
+    published: MiniAppManifest | Any
+    published_version: str | None
+    version: str
+
+
+class MiniAppLaunch(TypedDict):
+    bridge_version: Any
+    expires_at: str
+    instance_id: str
+    launch_code: str
+    launch_url: str
+    session_id: str
+    target_origin: str
+
+
+class MiniAppManifest(TypedDict):
+    action_policies: NotRequired[dict[str, Any]]
+    allowed_origins: list[str]
+    contexts: list[Literal['COMMUNITY', 'CHANNEL'] | str]
+    deletion_url: str
+    description: str
+    enabled: bool
+    external_backend: bool
+    instance_scope: Literal['APPLICATION', 'INSTALLATION', 'COMMUNITY', 'CHANNEL', 'VOICE_CHANNEL', 'USER'] | str
+    launch_policy: NotRequired[dict[str, Any]]
+    launch_url: str
+    name: str
+    open_mode: NotRequired[Any]
+    privacy_url: str
+    read_policy: NotRequired[dict[str, Any]]
+    requested_capabilities: NotRequired[list[str]]
+    requested_fields: NotRequired[list[str]]
+    retention_days: int
+    terms_url: str
+    voice_fallback: NotRequired[Literal['DENY', 'COMMUNITY', 'USER', 'APPLICATION_VOICE'] | str]
+    window: NotRequired[dict[str, Any]]
+
+
+class MiniAppState(TypedDict):
+    instance_id: str
+    state: Any
+    updated_at: str
+    updated_by: dict[str, Any]
+    version: str
+
+
 class Modal(TypedDict):
     components: list[dict[str, Any]]
     custom_id: str
@@ -457,6 +547,7 @@ class Modal(TypedDict):
 
 
 class OAuthConsent(TypedDict):
+    access_manifest: NotRequired[dict[str, Any]]
     application: dict[str, Any]
     community_id: str | None
     consent_id: str
@@ -655,6 +746,20 @@ class UploadInput(TypedDict):
     size: str
     spoiler: NotRequired[bool]
     thread_id: NotRequired[str]
+
+
+class UserVoiceState(TypedDict):
+    channel_id: str
+    community_id: str
+    user_id: str
+
+
+class VoiceConnection(TypedDict):
+    audio: dict[str, Any]
+    connection_id: str
+    expires_at: str
+    media_token: str
+    media_web_socket_url: str
 
 
 class VoicePolicy(TypedDict):
