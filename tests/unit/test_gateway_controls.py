@@ -3,18 +3,17 @@ from typing import Any
 
 import pytest
 
-from voiceroute import Activity, Game, Intent, Intents, Presence, Status
-from voiceroute.errors import IntentNotEnabled, PrivilegedIntentRequired
+from voiceroute import Activity, Capabilities, Capability, Game, Presence, Status
+from voiceroute.errors import InstallationGrantRequired
 from voiceroute.gateway import GatewayClient
 from voiceroute.models import GatewayDiscovery, GatewaySessionStartLimit
 
 
-def test_intents_default_and_all_are_deterministic() -> None:
-    defaults = Intents.default()
+def test_capabilities_default_and_all_are_deterministic() -> None:
+    defaults = Capabilities.default()
 
-    assert Intent.MESSAGES in defaults
-    assert Intent.MEMBERS not in defaults
-    assert set(Intents.all().values) == {intent.value for intent in Intent}
+    assert len(defaults) == 0
+    assert set(Capabilities.all().values) == {capability.value for capability in Capability}
 
 
 def test_presence_validates_protocol_limits() -> None:
@@ -28,7 +27,7 @@ def test_presence_validates_protocol_limits() -> None:
         Presence(Status.INVISIBLE, (Game("hidden"),))
 
 
-class PrivilegedPlatform:
+class InstallationPlatform:
     async def gateway(self) -> GatewayDiscovery:
         return GatewayDiscovery(
             "wss://voiceroute.cc/api/v1/gateway/socket?v=1&encoding=json",
@@ -37,45 +36,45 @@ class PrivilegedPlatform:
         )
 
     async def capabilities(self) -> Any:
-        return SimpleNamespace(intents={"members": SimpleNamespace(privileged=True)})
+        return SimpleNamespace(event_capabilities=("members",))
 
     async def current_application(self) -> Any:
-        return SimpleNamespace(requested_intents=("members",), approved_intents=())
+        return SimpleNamespace(granted_capabilities=())
 
 
-async def test_gateway_rejects_unapproved_privileged_intent() -> None:
+async def test_gateway_rejects_missing_installation_grant() -> None:
     client = GatewayClient(
         token="vrb_test",
-        platform_api=PrivilegedPlatform(),  # type: ignore[arg-type]
+        platform_api=InstallationPlatform(),  # type: ignore[arg-type]
         base_url="https://voiceroute.cc",
-        intents=Intents(members=True),
+        capabilities=Capabilities(members=True),
     )
 
     async def ignore(event: Any) -> None:
         return None
 
-    with pytest.raises(PrivilegedIntentRequired) as captured:
+    with pytest.raises(InstallationGrantRequired) as captured:
         await client.run_once(ignore)
     assert captured.value.intents == ("members",)
 
 
-async def test_gateway_rejects_intent_not_enabled_for_application() -> None:
-    platform = PrivilegedPlatform()
+async def test_gateway_rejects_capability_not_granted_for_application() -> None:
+    platform = InstallationPlatform()
     platform.current_application = lambda: _application(())  # type: ignore[method-assign]
     client = GatewayClient(
         token="vrb_test",
         platform_api=platform,  # type: ignore[arg-type]
         base_url="https://voiceroute.cc",
-        intents=Intents(members=True),
+        capabilities=Capabilities(members=True),
     )
 
     async def ignore(event: Any) -> None:
         return None
 
-    with pytest.raises(IntentNotEnabled) as captured:
+    with pytest.raises(InstallationGrantRequired) as captured:
         await client.run_once(ignore)
     assert captured.value.intents == ("members",)
 
 
-async def _application(requested: tuple[str, ...]) -> Any:
-    return SimpleNamespace(requested_intents=requested, approved_intents=())
+async def _application(granted: tuple[str, ...]) -> Any:
+    return SimpleNamespace(granted_capabilities=granted)

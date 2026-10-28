@@ -106,15 +106,15 @@ def test_config_reads_optional_values_and_requires_token() -> None:
     assert config.channel_id is None
     assert config.command_prefix == "/"
     assert config.sync_application_commands is True
-    assert config.gateway_intents == ("messages",)
+    assert config.gateway_capabilities == ("messages",)
 
     configured = CommunityAssistantConfig.from_env(
         {
             "VOICEROUTE_BOT_TOKEN": "token",
-            "VOICEROUTE_GATEWAY_INTENTS": "communities, messages",
+            "VOICEROUTE_GATEWAY_CAPABILITIES": "members, messages",
         }
     )
-    assert configured.gateway_intents == ("communities", "messages")
+    assert configured.gateway_capabilities == ("members", "messages")
 
     with pytest.raises(ValueError, match="VOICEROUTE_BOT_TOKEN"):
         CommunityAssistantConfig.from_env({})

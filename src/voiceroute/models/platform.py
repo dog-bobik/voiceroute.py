@@ -9,10 +9,10 @@ from typing import Any, Self
 
 
 @dataclass(frozen=True, slots=True)
-class IntentCapability:
-    """One Gateway intent advertised by the connected deployment."""
-
-    privileged: bool
+class BotAccessCapabilities:
+    catalog_version: int
+    manifest_schema_version: int
+    installation_schema_version: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -126,7 +126,9 @@ class PlatformCapabilities:
     oauth2: OAuthCapabilities
     features: Mapping[str, bool]
     events: tuple[str, ...]
-    intents: Mapping[str, IntentCapability]
+    event_capabilities: tuple[str, ...]
+    automatic_event_families: tuple[str, ...]
+    bot_access: BotAccessCapabilities
     legacy: LegacyCapabilities
     raw: Mapping[str, Any]
 
@@ -146,16 +148,6 @@ class PlatformCapabilities:
             if isinstance(raw_features, dict)
             else {}
         )
-        raw_intents = data.get("intents")
-        intents = (
-            {
-                str(key): IntentCapability(privileged=bool(value.get("privileged", False)))
-                for key, value in raw_intents.items()
-                if isinstance(key, str) and isinstance(value, dict)
-            }
-            if isinstance(raw_intents, dict)
-            else {}
-        )
         legacy_value = data.get("legacy")
         raw_legacy: dict[str, Any] = legacy_value if isinstance(legacy_value, dict) else {}
         environment_value = data.get("environment")
@@ -169,6 +161,7 @@ class PlatformCapabilities:
         raw_files = _object(data.get("files"))
         raw_commands = _object(data.get("commands"))
         raw_oauth = _object(data.get("oauth2"))
+        raw_bot_access = _object(data.get("botAccess"))
         return cls(
             api_version=str(data.get("apiVersion", "")),
             maturity=str(data.get("maturity", "unknown")),
@@ -236,7 +229,13 @@ class PlatformCapabilities:
             ),
             features=MappingProxyType(features),
             events=tuple(str(item) for item in data.get("events", ())),
-            intents=MappingProxyType(intents),
+            event_capabilities=_strings(data.get("eventCapabilities")),
+            automatic_event_families=_strings(data.get("automaticEventFamilies")),
+            bot_access=BotAccessCapabilities(
+                catalog_version=int(raw_bot_access.get("catalogVersion", 0)),
+                manifest_schema_version=int(raw_bot_access.get("manifestSchemaVersion", 0)),
+                installation_schema_version=int(raw_bot_access.get("installationSchemaVersion", 0)),
+            ),
             legacy=LegacyCapabilities(
                 rest=bool(raw_legacy.get("rest", False)),
                 sse=bool(raw_legacy.get("sse", False)),
@@ -331,6 +330,62 @@ class PlatformBotIdentity:
 
 
 @dataclass(frozen=True, slots=True)
+class AccessManifest:
+    schema_version: int
+    catalog_version: int
+    version: str
+    hash: str
+    permissions: tuple[str, ...]
+    capabilities: tuple[str, ...]
+    scopes: tuple[str, ...]
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
+        return cls(
+            schema_version=int(data.get("schemaVersion", 0)),
+            catalog_version=int(data.get("catalogVersion", 0)),
+            version=str(data.get("version", "")),
+            hash=str(data.get("hash", "")),
+            permissions=_strings(data.get("permissions")),
+            capabilities=_strings(data.get("capabilities")),
+            scopes=_strings(data.get("scopes")),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class InstallationSnapshot:
+    schema_version: int
+    id: str
+    application_id: str
+    community_id: str
+    granted_permissions: tuple[str, ...]
+    granted_capabilities: tuple[str, ...]
+    scopes: tuple[str, ...]
+    catalog_version: int
+    manifest_hash: str
+    manifest_version: str
+    installed_by: str
+    installed_at: str
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
+        return cls(
+            schema_version=int(data.get("schemaVersion", 0)),
+            id=str(data.get("id", "")),
+            application_id=str(data.get("applicationId", "")),
+            community_id=str(data.get("communityId", "")),
+            granted_permissions=_strings(data.get("grantedPermissions")),
+            granted_capabilities=_strings(data.get("grantedCapabilities")),
+            scopes=_strings(data.get("scopes")),
+            catalog_version=int(data.get("catalogVersion", 0)),
+            manifest_hash=str(data.get("manifestHash", "")),
+            manifest_version=str(data.get("manifestVersion", "")),
+            installed_by=str(data.get("installedBy", "")),
+            installed_at=str(data.get("installedAt", "")),
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class CurrentApplication:
     """Application and bot identity associated with the current credential."""
 
@@ -340,8 +395,18 @@ class CurrentApplication:
     public: bool
     permissions: tuple[str, ...]
     bot: PlatformBotIdentity
-    requested_intents: tuple[str, ...]
-    approved_intents: tuple[str, ...]
+    access_manifest: AccessManifest
+    installations: tuple[InstallationSnapshot, ...]
+
+    @property
+    def granted_capabilities(self) -> tuple[str, ...]:
+        return tuple(
+            dict.fromkeys(
+                capability
+                for installation in self.installations
+                for capability in installation.granted_capabilities
+            )
+        )
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
@@ -357,8 +422,12 @@ class CurrentApplication:
                 username=str(bot["username"]),
                 display_name=str(bot["displayName"]),
             ),
-            requested_intents=tuple(str(item) for item in data.get("requestedIntents", ())),
-            approved_intents=tuple(str(item) for item in data.get("approvedIntents", ())),
+            access_manifest=AccessManifest.from_dict(_object(data.get("accessManifest"))),
+            installations=tuple(
+                InstallationSnapshot.from_dict(item)
+                for item in data.get("installations", ())
+                if isinstance(item, Mapping)
+            ),
         )
 
 
@@ -369,9 +438,9 @@ class StartupDiagnostics:
     api_version: str
     environment: str
     service_status: str
-    requested_intents: tuple[str, ...]
-    approved_intents: tuple[str, ...]
-    unavailable_intents: tuple[str, ...]
+    manifest_capabilities: tuple[str, ...]
+    granted_capabilities: tuple[str, ...]
+    unavailable_capabilities: tuple[str, ...]
     enabled_features: tuple[str, ...]
 
 

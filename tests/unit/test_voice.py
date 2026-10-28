@@ -21,6 +21,7 @@ class FakePlatform:
 
 
 class FakeGateway:
+    capabilities = ("voiceStates",)
     intents = ("voiceStates",)
     platform = FakePlatform()
 

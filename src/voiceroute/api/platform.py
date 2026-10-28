@@ -102,17 +102,19 @@ class PlatformAPI:
             self.current_application(),
             self.status(),
         )
-        approved = frozenset(application.approved_intents)
+        granted = frozenset(application.granted_capabilities)
         return StartupDiagnostics(
             application_id=application.id,
             bot_id=application.bot.id,
             api_version=capabilities.api_version,
             environment=capabilities.environment,
             service_status=status.status,
-            requested_intents=application.requested_intents,
-            approved_intents=application.approved_intents,
-            unavailable_intents=tuple(
-                intent for intent in application.requested_intents if intent not in approved
+            manifest_capabilities=application.access_manifest.capabilities,
+            granted_capabilities=application.granted_capabilities,
+            unavailable_capabilities=tuple(
+                capability
+                for capability in application.access_manifest.capabilities
+                if capability not in granted
             ),
             enabled_features=tuple(
                 sorted(name for name, enabled in capabilities.features.items() if enabled)

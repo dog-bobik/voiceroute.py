@@ -55,7 +55,7 @@ from voiceroute.events import (
 )
 from voiceroute.events.transport import ChannelTarget
 from voiceroute.extensions import Extension, extension_command, listener_name
-from voiceroute.gateway import GatewayCheckpointStore, GatewayClient, Intents
+from voiceroute.gateway import Capabilities, GatewayCheckpointStore, GatewayClient, Intents
 from voiceroute.models import (
     ApplicationCommand,
     BotIdentity,
@@ -104,6 +104,7 @@ class Bot:
         cursor_store: CursorStore | None = None,
         event_transport: EventTransport | Literal["auto", "gateway", "sse"] | None = None,
         interaction_event_transport: InteractionEventTransport | None = None,
+        capabilities: Capabilities | None = None,
         intents: Intents | None = None,
         gateway_store: GatewayCheckpointStore | None = None,
         gateway_client: GatewayClient | None = None,
@@ -150,7 +151,10 @@ class Bot:
         else:
             self._event_transport_mode = "custom"
             self.event_transport = event_transport
-        self.intents = Intents.default() if intents is None else intents
+        if capabilities is not None and intents is not None:
+            raise ValueError("pass capabilities or the legacy intents alias, not both")
+        self.capabilities = capabilities or intents or Capabilities.default()
+        self.intents = self.capabilities
         self.gateway_store = gateway_store
         self.gateway = gateway_client
         self.cache = cache or StateCache(cache_policy or CachePolicy())
@@ -858,7 +862,10 @@ class Bot:
 
     async def _start_gateway(self) -> None:
         if self.gateway is None:
-            self.gateway = self.client.gateway(intents=self.intents, store=self.gateway_store)
+            self.gateway = self.client.gateway(
+                capabilities=self.capabilities,
+                store=self.gateway_store,
+            )
         self.gateway.on_session_invalidated = self._reconcile_state
 
         async def dispatch(event: PlatformEvent) -> None:

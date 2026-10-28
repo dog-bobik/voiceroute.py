@@ -11,7 +11,7 @@ from typing import Any, Protocol
 from urllib.parse import urlparse
 
 from voiceroute.errors import VoiceRouteError
-from voiceroute.gateway import GatewayClient, Intent
+from voiceroute.gateway import Capability, GatewayClient
 from voiceroute.models.voice import VoiceServerGrant
 
 
@@ -142,8 +142,11 @@ class VoiceSession:
     ) -> VoiceServerGrant:
         if self._closed:
             raise VoiceError("voice session is closed")
-        if Intent.VOICE_STATES.value not in self.gateway.intents:
-            raise VoiceAccessDenied("Gateway voiceStates intent is required")
+        capabilities = getattr(self.gateway, "capabilities", None)
+        if capabilities is None:
+            capabilities = self.gateway.intents
+        if Capability.VOICE_STATES.value not in capabilities:
+            raise VoiceAccessDenied("Gateway voiceStates capability is required")
         await self.gateway.platform.require("voiceTransport")
         await self.disconnect()
         request_id = str(uuid.uuid4())

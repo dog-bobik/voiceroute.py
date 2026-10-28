@@ -11,8 +11,8 @@ from examples.community_assistant.extensions.native import register_native_comma
 from voiceroute import (
     Bot,
     CachePolicy,
+    Capabilities,
     FileGatewayCheckpointStore,
-    Intents,
     SQLiteCursorStore,
 )
 
@@ -27,7 +27,7 @@ class CommunityAssistantBot(Bot):
 
 
 def create_bot(config: CommunityAssistantConfig) -> CommunityAssistantBot:
-    intents = Intents.from_values(config.gateway_intents)
+    capabilities = Capabilities.from_values(config.gateway_capabilities)
     return CommunityAssistantBot(
         token=config.token,
         base_url=config.base_url,
@@ -36,7 +36,7 @@ def create_bot(config: CommunityAssistantConfig) -> CommunityAssistantBot:
         command_prefix=config.command_prefix,
         cursor_store=SQLiteCursorStore(config.cursor_path),
         gateway_store=FileGatewayCheckpointStore(config.gateway_path),
-        intents=intents,
+        capabilities=capabilities,
         cache_policy=CachePolicy(messages=True, max_messages=500),
         sync_application_commands=config.sync_application_commands,
         component_secret=config.component_secret,

@@ -8,7 +8,7 @@ from voiceroute import FileGatewayCheckpointStore, VoiceRouteClient
 
 client = VoiceRouteClient(token="...")
 gateway = client.gateway(
-    intents=("messages", "members"),
+    capabilities=("messages", "members"),
     store=FileGatewayCheckpointStore(".data/gateway.json"),
 )
 
@@ -18,7 +18,8 @@ async def handle(event):
 await gateway.run(handle)
 ```
 
-Клиент выполняет discovery, проверяет capability `gateway`, отправляет Identify или
+Клиент выполняет discovery, проверяет feature `gateway`, сверяет запрошенные event
+capabilities с grants установок, отправляет Identify или
 Resume, поддерживает heartbeat и переподключается с ограниченной экспоненциальной
 задержкой. Checkpoint сохраняется только после успешного завершения `handle`, поэтому
 ошибка бизнес-логики не подтверждает необработанное событие.

@@ -2,7 +2,7 @@
 
 Voice transport доступен только на deployment, который объявляет
 `features.voiceTransport=true`. Приложению нужны scopes `bot`, `voice.connect`,
-`voice.transmit`, одобренный privileged intent `voiceStates` и права канала
+`voice.transmit`, выданная при установке capability `voiceStates` и права канала
 `viewChannel`, `connect`, `speak`.
 
 Установите optional media runtime:
@@ -11,14 +11,14 @@ Voice transport доступен только на deployment, который о
 python -m pip install 'voiceroute.py[voice]'
 ```
 
-Gateway должен быть запущен с voice intent. Состояние участника можно найти через REST,
+Gateway должен быть запущен с capability `voiceStates`. Состояние участника можно найти через REST,
 после чего `VoiceSession` выполнит opcode 4, проверит media origin и подключится к LiveKit:
 
 ```python
-from voiceroute import Intents, VoiceSession
+from voiceroute import Capabilities, VoiceSession
 
-intents = Intents(communities=True, messages=True, voice_states=True)
-gateway = client.gateway(intents=intents)
+capabilities = Capabilities(voice_states=True)
+gateway = client.gateway(capabilities=capabilities)
 
 channel_id = await client.voice.find_member_channel(community_id, user_id)
 if channel_id is None:

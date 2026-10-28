@@ -23,7 +23,13 @@ CAPABILITIES = {
     },
     "features": {"gateway": True, "voice": False},
     "events": ["READY", "MESSAGE_CREATE"],
-    "intents": {"MESSAGES": {"privileged": False}},
+    "eventCapabilities": ["messages", "messageContent"],
+    "automaticEventFamilies": ["interactions"],
+    "botAccess": {
+        "catalogVersion": 1,
+        "manifestSchemaVersion": 1,
+        "installationSchemaVersion": 1,
+    },
     "legacy": {"rest": True, "sse": True, "sunsetAt": None},
 }
 
@@ -42,7 +48,9 @@ async def test_capabilities_are_typed_and_cached() -> None:
 
     assert first is second
     assert first.gateway.shard_counts == (1, 2)
-    assert first.intents["MESSAGES"].privileged is False
+    assert first.event_capabilities == ("messages", "messageContent")
+    assert first.automatic_event_families == ("interactions",)
+    assert first.bot_access.catalog_version == 1
     assert first.supports("gateway") is True
     assert route.call_count == 1
 
@@ -77,8 +85,31 @@ async def test_current_application_parses_bot_identity() -> None:
                     "displayName": "Helper Bot",
                     "bot": True,
                 },
-                "requestedIntents": ["MESSAGES"],
-                "approvedIntents": ["MESSAGES"],
+                "accessManifest": {
+                    "schemaVersion": 1,
+                    "catalogVersion": 1,
+                    "version": "1",
+                    "hash": "manifest-hash",
+                    "permissions": ["SEND_MESSAGES"],
+                    "capabilities": ["messages"],
+                    "scopes": ["bot"],
+                },
+                "installations": [
+                    {
+                        "schemaVersion": 1,
+                        "id": "installation-1",
+                        "applicationId": "app-1",
+                        "communityId": "community-1",
+                        "grantedPermissions": ["SEND_MESSAGES"],
+                        "grantedCapabilities": ["messages"],
+                        "scopes": ["bot"],
+                        "catalogVersion": 1,
+                        "manifestHash": "manifest-hash",
+                        "manifestVersion": "1",
+                        "installedBy": "user-1",
+                        "installedAt": "2026-10-28T00:00:00Z",
+                    }
+                ],
             },
         )
     )
@@ -87,7 +118,8 @@ async def test_current_application_parses_bot_identity() -> None:
     await transport.close()
 
     assert application.bot.id == "9007199254740993"
-    assert application.approved_intents == ("MESSAGES",)
+    assert application.access_manifest.capabilities == ("messages",)
+    assert application.granted_capabilities == ("messages",)
 
 
 @respx.mock
@@ -152,7 +184,7 @@ async def test_status_specs_and_explicit_refresh() -> None:
 
 
 @respx.mock
-async def test_safe_diagnostics_reports_unapproved_intents_without_token() -> None:
+async def test_safe_diagnostics_reports_unavailable_capabilities_without_token() -> None:
     respx.get("https://voiceroute.cc/api/v1/capabilities").mock(
         return_value=httpx.Response(200, json=CAPABILITIES)
     )
@@ -176,8 +208,31 @@ async def test_safe_diagnostics_reports_unapproved_intents_without_token() -> No
                 "description": "",
                 "public": False,
                 "bot": {"id": "1", "username": "bot", "displayName": "Bot"},
-                "requestedIntents": ["messages", "messageContent"],
-                "approvedIntents": ["messages"],
+                "accessManifest": {
+                    "schemaVersion": 1,
+                    "catalogVersion": 1,
+                    "version": "1",
+                    "hash": "manifest-hash",
+                    "permissions": [],
+                    "capabilities": ["messages", "messageContent"],
+                    "scopes": ["bot"],
+                },
+                "installations": [
+                    {
+                        "schemaVersion": 1,
+                        "id": "installation-1",
+                        "applicationId": "app",
+                        "communityId": "community-1",
+                        "grantedPermissions": [],
+                        "grantedCapabilities": ["messages"],
+                        "scopes": ["bot"],
+                        "catalogVersion": 1,
+                        "manifestHash": "manifest-hash",
+                        "manifestVersion": "1",
+                        "installedBy": "user-1",
+                        "installedAt": "2026-10-28T00:00:00Z",
+                    }
+                ],
             },
         )
     )
@@ -185,5 +240,5 @@ async def test_safe_diagnostics_reports_unapproved_intents_without_token() -> No
     diagnostics = await PlatformAPI(transport).diagnostics()
     await transport.close()
 
-    assert diagnostics.unavailable_intents == ("messageContent",)
+    assert diagnostics.unavailable_capabilities == ("messageContent",)
     assert "vrb_secret" not in repr(diagnostics)

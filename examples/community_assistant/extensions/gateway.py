@@ -29,7 +29,7 @@ class GatewayFeatures(Extension):
     @listener("on_stream_unavailable")
     async def stream_unavailable(self, *args: object) -> None:
         logger.warning(
-            "Message stream is unavailable; enable the required privileged intents "
+            "Message stream is unavailable; grant the required installation capabilities "
             "to use prefix commands"
         )
 

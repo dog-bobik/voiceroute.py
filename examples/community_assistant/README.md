@@ -1,9 +1,9 @@
 # Community Assistant Bot
 
 Демонстрационный бот показывает актуальный Gateway-first сценарий `voiceroute.py`:
-extensions, нативные slash-команды, Gateway events, intents, presence, локальный cache,
+extensions, нативные slash-команды, Gateway events, capabilities, presence, локальный cache,
 interactions, permissions, content API и восстановление checkpoints. Пример не зависит
-от legacy message SSE и не требует privileged intent `messageContent` для запуска.
+от legacy message SSE и не запрашивает capability `messageContent` для запуска.
 Пример не является частью публичного API библиотеки.
 
 ## Установка
@@ -27,7 +27,7 @@ VOICEROUTE_COMMUNITY_ID=
 VOICEROUTE_CHANNEL_ID=
 VOICEROUTE_COMMAND_PREFIX=/
 VOICEROUTE_SYNC_APPLICATION_COMMANDS=true
-VOICEROUTE_GATEWAY_INTENTS=messages
+VOICEROUTE_GATEWAY_CAPABILITIES=messages
 VOICEROUTE_COMPONENT_SECRET=replace-with-at-least-16-random-bytes
 VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 ```
@@ -37,20 +37,19 @@ VOICEROUTE_GATEWAY_PATH=.voiceroute/community-assistant-gateway.json
 только вместе с `VOICEROUTE_COMMUNITY_ID`. Путь SQLite при необходимости меняется
 через `VOICEROUTE_CURSOR_PATH`.
 
-По умолчанию пример запрашивает только обычный intent `messages`, который нужно включить
-в настройках приложения. Нативные команды приходят через interaction transport. Чтобы
-получать дополнительные domain events, сначала включите intents в настройках приложения,
-а затем перечислите те же значения через запятую, например:
+По умолчанию пример запрашивает capability `messages`. Она должна присутствовать в
+access manifest приложения и быть выдана при установке бота. Нативные команды относятся
+к автоматическому семейству `interactions` и отдельной capability не требуют. Чтобы
+получать дополнительные domain events, добавьте capabilities в manifest, переустановите
+бота и перечислите те же значения через запятую, например:
 
 ```ini
-VOICEROUTE_GATEWAY_INTENTS=communities,messages,interactions
+VOICEROUTE_GATEWAY_CAPABILITIES=members,messages
 ```
 
 Не добавляйте `messageContent`: актуальная версия примера не использует prefix-команды.
-Для `MEMBER_JOINED`, presence других участников и Gateway message content требуется
-отдельное approval соответствующих privileged intents. Одного чекбокса недостаточно.
-SDK проверяет настройки до подключения и завершает запуск понятной ошибкой, если
-запрошенный intent не включён или ещё не одобрен.
+Grants установки неизменяемы: чтобы расширить их, удалите бота с сервера и установите
+снова, подтвердив новый полный список. SDK проверяет manifest и установки до подключения.
 
 `VOICEROUTE_COMPONENT_SECRET` включает демонстрационную `/panel` с подписанной кнопкой.
 Секрет должен быть одинаковым на всех экземплярах бота и не должен попадать в Git.

@@ -1,14 +1,14 @@
-# Intents, shards и presence
+# Capabilities, shards и presence
 
-Gateway получает только те категории событий, которые бот запросил через `Intents`.
-Привилегированные intents дополнительно сверяются с approval приложения до подключения.
+Gateway получает только категории событий, запрошенные через `Capabilities` и выданные
+при установке бота. Grants установки неизменяемы; для расширения бот переустанавливается.
 
 ```python
-from voiceroute import Game, Intents, Status, VoiceRouteClient
+from voiceroute import Capabilities, Game, Status, VoiceRouteClient
 
 client = VoiceRouteClient(token="...")
 gateway = client.gateway(
-    intents=Intents(messages=True, message_content=True, members=True),
+    capabilities=Capabilities(messages=True, message_content=True, members=True),
 )
 
 await gateway.change_presence(status=Status.ONLINE, activities=[Game("/help")])

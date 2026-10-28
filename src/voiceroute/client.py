@@ -19,6 +19,7 @@ from voiceroute.api import (
 )
 from voiceroute.config import APIVersion, ClientConfig
 from voiceroute.gateway import (
+    Capabilities,
     GatewayCheckpointCoordinator,
     GatewayCheckpointStore,
     GatewayClient,
@@ -87,7 +88,8 @@ class VoiceRouteClient:
     def gateway(
         self,
         *,
-        intents: Intents | tuple[str, ...] = (),
+        capabilities: Capabilities | tuple[str, ...] | None = None,
+        intents: Intents | tuple[str, ...] | None = None,
         shard: tuple[int, int] = (0, 1),
         store: GatewayCheckpointStore | None = None,
         coordinator: GatewayCheckpointCoordinator | None = None,
@@ -100,6 +102,7 @@ class VoiceRouteClient:
             token=self._token,
             platform_api=self.platform,
             base_url=self._base_url,
+            capabilities=capabilities,
             intents=intents,
             shard=shard,
             store=store,
@@ -113,7 +116,8 @@ class VoiceRouteClient:
         self,
         shard_count: int,
         *,
-        intents: Intents | tuple[str, ...] = (),
+        capabilities: Capabilities | tuple[str, ...] | None = None,
+        intents: Intents | tuple[str, ...] | None = None,
         shard_ids: tuple[int, ...] | None = None,
         store: GatewayCheckpointStore | None = None,
         identify_interval: float = 5.0,
@@ -126,6 +130,7 @@ class VoiceRouteClient:
         selected = shard_ids if shard_ids is not None else tuple(range(shard_count))
         clients = tuple(
             self.gateway(
+                capabilities=capabilities,
                 intents=intents,
                 shard=(shard_id, shard_count),
                 store=store,

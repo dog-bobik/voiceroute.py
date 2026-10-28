@@ -24,10 +24,9 @@ from voiceroute.errors import (
     GatewayClosed,
     GatewayError,
     GatewayProtocolError,
-    IntentNotEnabled,
-    PrivilegedIntentRequired,
+    InstallationGrantRequired,
 )
-from voiceroute.gateway.intents import Intents
+from voiceroute.gateway.intents import Capabilities, Intents
 from voiceroute.gateway.presence import Activity, Presence, Status
 from voiceroute.gateway.store import (
     GatewayCheckpoint,
@@ -78,7 +77,8 @@ class GatewayClient:
         token: str,
         platform_api: PlatformAPI,
         base_url: str,
-        intents: Intents | Sequence[str] = (),
+        capabilities: Capabilities | Sequence[str] | None = None,
+        intents: Intents | Sequence[str] | None = None,
         shard: tuple[int, int] = (0, 1),
         store: GatewayCheckpointStore | None = None,
         connector: GatewayConnector = _default_connector,
@@ -93,9 +93,14 @@ class GatewayClient:
         shard_id, shard_count = shard
         if shard_count not in {1, 2, 4, 8, 16} or not 0 <= shard_id < shard_count:
             raise ValueError("invalid Gateway shard")
-        intent_values = intents.values if isinstance(intents, Intents) else tuple(intents)
-        if len(set(intent_values)) != len(intent_values):
-            raise ValueError("Gateway intents must be unique")
+        if capabilities is not None and intents is not None:
+            raise ValueError("pass capabilities or the legacy intents alias, not both")
+        selected = capabilities if capabilities is not None else intents
+        capability_values = (
+            selected.values if isinstance(selected, Capabilities) else tuple(selected or ())
+        )
+        if len(set(capability_values)) != len(capability_values):
+            raise ValueError("Gateway capabilities must be unique")
         if dispatch_queue_size <= 0:
             raise ValueError("dispatch_queue_size must be positive")
         if max_reconnect_delay <= 0:
@@ -107,7 +112,7 @@ class GatewayClient:
         self._token = token
         self._platform = platform_api
         self._base_url = base_url
-        self.intents = tuple(intent_values)
+        self.capabilities = tuple(capability_values)
         self.shard = shard
         self._store = store or MemoryGatewayCheckpointStore()
         self._connector = connector
@@ -133,10 +138,15 @@ class GatewayClient:
     def platform(self) -> PlatformAPI:
         return self._platform
 
+    @property
+    def intents(self) -> tuple[str, ...]:
+        """Compatibility alias for the pre-grants experimental API."""
+        return self.capabilities
+
     async def run_once(self, handler: GatewayHandler) -> None:
         """Run one connection until it closes, committing only handled events."""
         discovery = await self._platform.gateway()
-        await self._validate_intents()
+        await self._validate_capabilities()
         if discovery.recommended_shards > self.shard[1]:
             raise GatewayError("VoiceRoute requires more Gateway shards")
         checkpoint = await self._valid_checkpoint()
@@ -306,7 +316,7 @@ class GatewayClient:
             try:
                 await self.run_once(handler)
                 attempt = 0
-            except (IntentNotEnabled, PrivilegedIntentRequired):
+            except InstallationGrantRequired:
                 raise
             except GatewayClosed:
                 raise
@@ -388,8 +398,8 @@ class GatewayClient:
         purpose: str = "LISTENING",
     ) -> str:
         """Join, update, or leave one application voice session using Gateway opcode 4."""
-        if "voiceStates" not in self.intents:
-            raise GatewayError("Gateway voiceStates intent is required")
+        if "voiceStates" not in self.capabilities:
+            raise GatewayError("Gateway voiceStates capability is required")
         if purpose not in {"LISTENING", "RECORDING", "TRANSCRIPTION"}:
             raise ValueError("invalid voice purpose")
         _validate_uuid(community_id, "community_id")
@@ -430,30 +440,26 @@ class GatewayClient:
             except Exception:
                 logger.exception("Voice control handler failed")
 
-    async def _validate_intents(self) -> None:
-        if not self.intents:
+    async def _validate_capabilities(self) -> None:
+        if not self.capabilities:
             return
-        capabilities = await self._platform.capabilities()
-        unknown = tuple(intent for intent in self.intents if intent not in capabilities.intents)
+        discovery = await self._platform.capabilities()
+        unknown = tuple(
+            capability
+            for capability in self.capabilities
+            if capability not in discovery.event_capabilities
+        )
         if unknown:
             names = ", ".join(unknown)
-            raise GatewayError(f"VoiceRoute does not advertise Gateway intents: {names}")
-        privileged = tuple(
-            intent for intent in self.intents if capabilities.intents[intent].privileged
-        )
+            raise GatewayError(f"VoiceRoute does not advertise Gateway capabilities: {names}")
         application = await self._platform.current_application()
-        disabled = tuple(
-            intent for intent in self.intents if intent not in application.requested_intents
-        )
-        if disabled:
-            raise IntentNotEnabled(disabled)
-        if not privileged:
-            return
         missing = tuple(
-            intent for intent in privileged if intent not in application.approved_intents
+            capability
+            for capability in self.capabilities
+            if capability not in application.granted_capabilities
         )
         if missing:
-            raise PrivilegedIntentRequired(missing)
+            raise InstallationGrantRequired(missing)
 
     async def _valid_checkpoint(self) -> GatewayCheckpoint | None:
         checkpoint = await self._store.load(*self.shard)
@@ -469,7 +475,7 @@ class GatewayClient:
             "op": 2,
             "data": {
                 "token": self._token,
-                "intents": list(self.intents),
+                "capabilities": list(self.capabilities),
                 "shard": list(self.shard),
                 "properties": {
                     "os": platform.system().lower(),

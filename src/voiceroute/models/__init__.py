@@ -46,6 +46,8 @@ from voiceroute.models.moderation import (
 )
 from voiceroute.models.permissions import ALL_PERMISSIONS, Permission, Permissions
 from voiceroute.models.platform import (
+    AccessManifest,
+    BotAccessCapabilities,
     CommandCapabilities,
     CurrentApplication,
     FileCapabilities,
@@ -53,7 +55,7 @@ from voiceroute.models.platform import (
     GatewayDiscovery,
     GatewaySessionStartLimit,
     HTTPCapabilities,
-    IntentCapability,
+    InstallationSnapshot,
     LegacyCapabilities,
     OAuthCapabilities,
     PlatformBotIdentity,
@@ -84,6 +86,7 @@ from voiceroute.models.wire import (
 __all__ = [
     "ALL_PERMISSIONS",
     "UNSET",
+    "AccessManifest",
     "ActionRow",
     "ApplicationCommand",
     "ApplicationSummary",
@@ -94,6 +97,7 @@ __all__ = [
     "AuditTarget",
     "AutoModConfig",
     "Ban",
+    "BotAccessCapabilities",
     "BotIdentity",
     "ButtonStyle",
     "Channel",
@@ -115,7 +119,7 @@ __all__ = [
     "GatewayDiscovery",
     "GatewaySessionStartLimit",
     "HTTPCapabilities",
-    "IntentCapability",
+    "InstallationSnapshot",
     "Interaction",
     "InteractionCallbackType",
     "InteractionCommand",

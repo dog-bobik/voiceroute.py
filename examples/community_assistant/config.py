@@ -20,7 +20,7 @@ class CommunityAssistantConfig:
     cursor_path: Path = Path(".voiceroute/community-assistant.sqlite3")
     gateway_path: Path = Path(".voiceroute/community-assistant-gateway.json")
     sync_application_commands: bool = True
-    gateway_intents: tuple[str, ...] = ("messages",)
+    gateway_capabilities: tuple[str, ...] = ("messages",)
     component_secret: str | None = None
 
     @classmethod
@@ -60,9 +60,12 @@ class CommunityAssistantConfig:
             sync_application_commands=_boolean(
                 values.get("VOICEROUTE_SYNC_APPLICATION_COMMANDS", "true")
             ),
-            gateway_intents=tuple(
+            gateway_capabilities=tuple(
                 item.strip()
-                for item in values.get("VOICEROUTE_GATEWAY_INTENTS", "messages").split(",")
+                for item in values.get(
+                    "VOICEROUTE_GATEWAY_CAPABILITIES",
+                    values.get("VOICEROUTE_GATEWAY_INTENTS", "messages"),
+                ).split(",")
                 if item.strip()
             ),
             component_secret=_optional(values.get("VOICEROUTE_COMPONENT_SECRET")),

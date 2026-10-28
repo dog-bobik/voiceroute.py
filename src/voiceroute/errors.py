@@ -110,25 +110,26 @@ class GatewayProtocolError(GatewayError):
     """The Gateway sent a malformed or unsupported required frame."""
 
 
-class PrivilegedIntentRequired(GatewayError):
-    """A requested privileged intent has not been approved for the application."""
+class InstallationGrantRequired(GatewayError):
+    """No active installation granted one or more requested capabilities."""
 
-    def __init__(self, intents: tuple[str, ...]) -> None:
-        self.intents = intents
+    def __init__(self, capabilities: tuple[str, ...]) -> None:
+        self.capabilities = capabilities
         super().__init__(
-            "privileged Gateway intents were requested but are not approved by a VoiceRoute "
-            f"operator: {', '.join(intents)}; channel permissions do not grant intent approval"
+            "Gateway capabilities require an active installation grant: "
+            + ", ".join(capabilities)
+            + "; remove and reinstall the bot to change installation grants"
         )
 
+    @property
+    def intents(self) -> tuple[str, ...]:
+        """Compatibility alias for the pre-grants experimental API."""
+        return self.capabilities
 
-class IntentNotEnabled(GatewayError):
-    """Requested Gateway intents are not enabled for the application."""
 
-    def __init__(self, intents: tuple[str, ...]) -> None:
-        self.intents = intents
-        super().__init__(
-            "Gateway intents must be enabled in the application settings: " + ", ".join(intents)
-        )
+# Compatibility aliases for callers of the pre-grants experimental API.
+IntentNotEnabled = InstallationGrantRequired
+PrivilegedIntentRequired = InstallationGrantRequired
 
 
 class ValidationError(HTTPError):

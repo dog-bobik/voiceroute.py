@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from voiceroute.errors import GatewayError, PrivilegedIntentRequired
+from voiceroute.errors import GatewayError, InstallationGrantRequired
 from voiceroute.gateway import GatewayCheckpoint, GatewayClient, MemoryGatewayCheckpointStore
 from voiceroute.models import GatewayDiscovery, GatewaySessionStartLimit, PlatformEvent
 
@@ -21,17 +21,10 @@ class FakePlatformAPI:
         )
 
     async def capabilities(self) -> Any:
-        return SimpleNamespace(
-            intents={
-                "messages": SimpleNamespace(privileged=False),
-                "members": SimpleNamespace(privileged=True),
-            }
-        )
+        return SimpleNamespace(event_capabilities=("messages", "members", "voiceStates"))
 
     async def current_application(self) -> Any:
-        return SimpleNamespace(
-            requested_intents=("messages", "members"), approved_intents=("members",)
-        )
+        return SimpleNamespace(granted_capabilities=("messages", "members"))
 
 
 class FakeSocket:
@@ -96,7 +89,7 @@ async def test_gateway_identifies_handles_and_commits_dispatch() -> None:
         token="vrb_test",
         platform_api=FakePlatformAPI(),  # type: ignore[arg-type]
         base_url="https://voiceroute.cc",
-        intents=("messages",),
+        capabilities=("messages",),
         store=store,
         connector=connector,
     )
@@ -104,7 +97,7 @@ async def test_gateway_identifies_handles_and_commits_dispatch() -> None:
 
     checkpoint = await store.load(0, 1)
     assert socket.sent[0]["op"] == 2
-    assert socket.sent[0]["data"]["intents"] == ["messages"]
+    assert socket.sent[0]["data"]["capabilities"] == ["messages"]
     assert [event.name for event in handled] == ["MESSAGE_CREATED"]
     assert checkpoint is not None
     assert checkpoint.sequence == "2"
@@ -230,16 +223,13 @@ async def test_gateway_routes_voice_control_frames_without_dispatching_them() ->
     assert dispatched == []
 
 
-async def test_gateway_does_not_retry_unapproved_privileged_intent() -> None:
+async def test_gateway_does_not_retry_missing_installation_grant() -> None:
     class UnapprovedPlatform(FakePlatformAPI):
         async def capabilities(self) -> Any:
-            return SimpleNamespace(intents={"voiceStates": SimpleNamespace(privileged=True)})
+            return SimpleNamespace(event_capabilities=("voiceStates",))
 
         async def current_application(self) -> Any:
-            return SimpleNamespace(
-                requested_intents=("voiceStates",),
-                approved_intents=(),
-            )
+            return SimpleNamespace(granted_capabilities=())
 
     connections = 0
 
@@ -255,11 +245,11 @@ async def test_gateway_does_not_retry_unapproved_privileged_intent() -> None:
         token="vrb_test",
         platform_api=UnapprovedPlatform(),  # type: ignore[arg-type]
         base_url="https://voiceroute.cc",
-        intents=("voiceStates",),
+        capabilities=("voiceStates",),
         connector=connector,
     )
 
-    with pytest.raises(PrivilegedIntentRequired, match="voiceStates"):
+    with pytest.raises(InstallationGrantRequired, match="voiceStates"):
         await client.run(ignore)
 
     assert connections == 0
