@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import uuid
+
 import httpx
 import pytest
 import respx
@@ -91,3 +93,5 @@ async def test_v1_callback_and_followup_use_interaction_token() -> None:
     assert created.message_seq == "8"
     assert b'"type":"MESSAGE"' in callback.calls.last.request.content
     assert b'"content":"Next"' in followup.calls.last.request.content
+    assert uuid.UUID(callback.calls.last.request.headers["Idempotency-Key"])
+    assert uuid.UUID(followup.calls.last.request.headers["Idempotency-Key"])

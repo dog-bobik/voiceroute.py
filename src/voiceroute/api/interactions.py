@@ -32,7 +32,7 @@ class InteractionsAPI:
             "POST",
             f"/api/v1/communities/{community_id}/channels/{channel_id}/interactions",
             json={"commandId": command_id, "version": version, "options": options or {}},
-            retryable=True,
+            generate_idempotency_key=True,
         )
         if payload is None:
             raise RuntimeError("VoiceRoute returned no interaction")
@@ -60,7 +60,7 @@ class InteractionsAPI:
             "POST",
             f"/api/v1/applications/{application_id}/private-interactions",
             json={"commandId": command_id, "version": version, "options": options or {}},
-            retryable=True,
+            generate_idempotency_key=True,
         )
         if payload is None:
             raise RuntimeError("VoiceRoute returned no private interaction")
@@ -86,7 +86,7 @@ class InteractionsAPI:
             "POST",
             f"/api/v1/interactions/{interaction_id}/{token}/callback",
             json={"type": str(callback_type), **({"data": data} if data is not None else {})},
-            retryable=True,
+            generate_idempotency_key=True,
         )
         if payload is None:
             return None
@@ -172,7 +172,7 @@ class InteractionsAPI:
             "POST",
             f"/api/v1/webhooks/{application_id}/{token}",
             json=message.to_dict(),
-            retryable=True,
+            generate_idempotency_key=True,
         )
         if payload is None:
             raise RuntimeError("VoiceRoute returned no follow-up message")
@@ -199,7 +199,7 @@ class InteractionsAPI:
             "PATCH",
             f"/api/v1/webhooks/{application_id}/{token}/messages/{message_id}",
             json=message.to_dict(),
-            retryable=True,
+            generate_idempotency_key=True,
         )
         if payload is None:
             raise RuntimeError("VoiceRoute returned no edited interaction message")
@@ -209,7 +209,7 @@ class InteractionsAPI:
         await self._transport.request(
             "DELETE",
             f"/api/v1/webhooks/{application_id}/{token}/messages/{message_id}",
-            retryable=True,
+            generate_idempotency_key=True,
         )
 
     async def submit_modal(
@@ -225,7 +225,7 @@ class InteractionsAPI:
             f"/api/v1/communities/{community_id}/channels/{channel_id}"
             f"/interactions/{interaction_id}/modal",
             json={"customId": custom_id, "values": values},
-            retryable=True,
+            generate_idempotency_key=True,
         )
 
     async def submit_private_modal(
@@ -239,5 +239,5 @@ class InteractionsAPI:
             "POST",
             f"/api/v1/applications/{application_id}/private-interactions/{interaction_id}/modal",
             json={"customId": custom_id, "values": values},
-            retryable=True,
+            generate_idempotency_key=True,
         )
