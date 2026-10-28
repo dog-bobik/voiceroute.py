@@ -51,8 +51,11 @@ VOICEROUTE_GATEWAY_CAPABILITIES=members,messages
 Grants установки неизменяемы: чтобы расширить их, удалите бота с сервера и установите
 снова, подтвердив новый полный список. SDK проверяет manifest и установки до подключения.
 
-`VOICEROUTE_COMPONENT_SECRET` включает демонстрационную `/panel` с подписанной кнопкой.
-Секрет должен быть одинаковым на всех экземплярах бота и не должен попадать в Git.
+Демонстрационная `/panel` с подписанной кнопкой включена всегда. Если
+`VOICEROUTE_COMPONENT_SECRET` не задан, ExampleBot детерминированно выводит отдельный
+ключ подписи из bot token. Явный секрет рекомендуется при нескольких экземплярах или
+ротации bot token: он должен быть одинаковым на всех экземплярах и не должен попадать
+в Git.
 
 При `VOICEROUTE_SYNC_APPLICATION_COMMANDS=true` бот во время запуска полностью заменяет
 удалённый реестр slash-команд из примера. Установите `false`, если
@@ -73,9 +76,8 @@ python -m examples.community_assistant.bot
 - `/whoami` — приватно показывает member snapshot, роли и presence;
 - `/capabilities` — показывает effective permissions бота; доступна пользователям с
   `manageMessages`.
-- `/panel` — демонстрирует persistent signed button, если задан
-  `VOICEROUTE_COMPONENT_SECRET`: при каждом клике исходное сообщение обновляется через
-  `UPDATE_MESSAGE`, а состояние и оформление кнопки переключаются.
+- `/panel` — демонстрирует persistent signed button: при каждом клике исходное сообщение
+  обновляется через `UPDATE_MESSAGE`, а состояние и оформление кнопки переключаются.
 
 Runtime также публикует presence при `on_ready`, логирует подключение, вступление
 участников, изменения ролей и неизвестные Gateway events. Кнопка `/panel` вызывает

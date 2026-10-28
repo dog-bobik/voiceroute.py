@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock
 from uuid import UUID
 
 import pytest
+from examples.community_assistant.bot import create_bot
 from examples.community_assistant.config import CommunityAssistantConfig
 from examples.community_assistant.extensions.diagnostics import Diagnostics
 from examples.community_assistant.extensions.general import General
@@ -126,6 +127,12 @@ def test_config_reads_optional_values_and_requires_token() -> None:
         CommunityAssistantConfig.from_env(
             {"VOICEROUTE_BOT_TOKEN": "token", "VOICEROUTE_CHANNEL_ID": "channel"}
         )
+
+
+def test_example_bot_enables_components_without_explicit_secret() -> None:
+    bot = create_bot(CommunityAssistantConfig(token="vrb_test"))
+
+    assert bot.components is not None
     with pytest.raises(ValueError, match="must be true or false"):
         CommunityAssistantConfig.from_env(
             {
