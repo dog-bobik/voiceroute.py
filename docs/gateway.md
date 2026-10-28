@@ -39,4 +39,6 @@ URL из discovery проверяется до отправки токена: SD
 
 `Bot` в режиме `auto` использует Gateway, когда сервер объявляет capability. Совместимые
 SSE-потоки запускаются параллельно только для зарегистрированных старых prefix- и
-application-command handlers, пока их полные payload не перенесены на v1.
+message handlers. Нативные `INTERACTION_CREATED` обрабатываются непосредственно из
+Gateway: SDK сохраняет interaction token и поддерживает defer, follow-up и изменение
+исходного ответа без legacy interaction SSE.

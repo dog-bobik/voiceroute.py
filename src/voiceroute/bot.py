@@ -64,6 +64,7 @@ from voiceroute.models import (
     CommandOption,
     CommandType,
     Community,
+    Interaction,
     Member,
     Message,
     PlatformEvent,
@@ -896,13 +897,6 @@ class Bot:
                 )
                 for target in self.listening_channels
             )
-        if self._needs_interaction_stream():
-            self._consumer_tasks.add(
-                asyncio.create_task(
-                    self._supervise_interactions(),
-                    name="voiceroute:legacy-interactions",
-                )
-            )
         await self._dispatch("on_connect")
         self.state = RuntimeState.RUNNING
         self._ready.set()
@@ -914,6 +908,11 @@ class Bot:
 
     async def _handle_platform_event(self, event: PlatformEvent) -> None:
         await self._dispatch("on_raw_event", event)
+        if event.name == "INTERACTION_CREATED":
+            await self._handle_interaction(
+                InteractionCreated(Interaction.from_dict(dict(event.data)), event.sequence)
+            )
+            return
         definition = event_definition(event.name)
         handlers = (
             definition.handlers if definition is not None else (f"on_{event.name.casefold()}",)

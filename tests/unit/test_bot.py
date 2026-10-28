@@ -7,6 +7,7 @@ from voiceroute import (
     Bot,
     Context,
     Intents,
+    InteractionContext,
     MemoryCursorStore,
     NoChannelsAvailable,
     PlatformEvent,
@@ -117,6 +118,46 @@ async def test_listen_registers_additional_named_listener() -> None:
     await runtime.close()
 
     assert seen == ["PlatformEvent"]
+
+
+async def test_gateway_interaction_invokes_native_command_with_token() -> None:
+    runtime = Bot(token="vrb_secret")
+    captured: list[InteractionContext] = []
+
+    @runtime.slash_command("ping", description="Check latency")
+    async def ping(context: InteractionContext) -> None:
+        captured.append(context)
+
+    await runtime._handle_platform_event(
+        PlatformEvent.from_gateway_frame(
+            {
+                "event": "INTERACTION_CREATED",
+                "sequence": "19",
+                "deliveryId": "delivery-id",
+                "data": {
+                    "id": "interaction-id",
+                    "applicationId": "application-id",
+                    "communityId": "community-id",
+                    "channelId": "channel-id",
+                    "user": {
+                        "id": "42",
+                        "username": "member",
+                        "displayName": "Member",
+                    },
+                    "command": {
+                        "id": "command-id",
+                        "name": "ping",
+                        "version": "1",
+                    },
+                    "token": "interaction-token",
+                },
+            }
+        )
+    )
+    await runtime.close()
+
+    assert len(captured) == 1
+    assert captured[0].interaction.token == "interaction-token"
 
 
 async def test_discovers_text_channels_across_communities() -> None:
