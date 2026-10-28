@@ -151,3 +151,24 @@ async def test_non_component_cannot_update_source_message() -> None:
         assert str(error) == "only a message component can update its source message"
     else:
         raise AssertionError("application command unexpectedly updated a source message")
+
+
+async def test_edit_original_can_attach_components() -> None:
+    interactions = AsyncMock()
+    context = InteractionContext(
+        replace(interaction(), token="interaction-token"),
+        interactions,
+    )
+    row = ActionRow((Component(type="BUTTON", custom_id="pause", label="Pause"),))
+
+    await context.edit_original("Playing", components=(row,))
+
+    interactions.edit_response.assert_awaited_once()
+    application_id, token, message_id, message = interactions.edit_response.await_args.args
+    assert (application_id, token, message_id) == (
+        "application-id",
+        "interaction-token",
+        "@original",
+    )
+    assert message.content == "Playing"
+    assert message.components == (row,)

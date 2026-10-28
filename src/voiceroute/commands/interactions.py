@@ -132,13 +132,17 @@ class InteractionContext:
         await self._interactions.defer_update(self.interaction.id, self._token())
 
     async def edit_original(
-        self, body: str, *, message_id: str = "@original"
+        self,
+        body: str,
+        *,
+        message_id: str = "@original",
+        components: Sequence[ActionRow] = (),
     ) -> InteractionResponse:
         return await self._interactions.edit_response(
             self.interaction.application_id,
             self._token(),
             message_id,
-            InteractionMessage(content=body),
+            InteractionMessage(content=body, components=tuple(components)),
         )
 
     async def delete_original(self, *, message_id: str = "@original") -> None:
