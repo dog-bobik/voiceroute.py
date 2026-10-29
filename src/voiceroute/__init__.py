@@ -1,6 +1,6 @@
 """Async Python SDK and bot framework for VoiceRoute."""
 
-from voiceroute.api import CommandSyncDiff
+from voiceroute.api import CommandSyncDiff, MiniAppsAPI, MiniAppState
 from voiceroute.bot import Bot
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands import (
@@ -370,6 +370,8 @@ __all__ = [
     "MessagePage",
     "MessageUpserted",
     "Middleware",
+    "MiniAppState",
+    "MiniAppsAPI",
     "MissingPermission",
     "MissingRequiredArgument",
     "Modal",
