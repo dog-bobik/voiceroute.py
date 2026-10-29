@@ -64,7 +64,11 @@ VoiceFrameHandler = Callable[[Mapping[str, Any]], None]
 
 
 async def _default_connector(url: str) -> GatewaySocket:
-    ssl_context = ssl.create_default_context(cafile=certifi.where())
+    ssl_context = (
+        ssl.create_default_context(cafile=certifi.where())
+        if urlparse(url).scheme == "wss"
+        else None
+    )
     return await connect(url, max_size=1_048_576, compression=None, ssl=ssl_context)
 
 

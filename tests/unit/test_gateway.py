@@ -9,7 +9,28 @@ import pytest
 
 from voiceroute.errors import GatewayError, InstallationGrantRequired
 from voiceroute.gateway import GatewayCheckpoint, GatewayClient, MemoryGatewayCheckpointStore
+from voiceroute.gateway import client as gateway_client_module
 from voiceroute.models import GatewayDiscovery, GatewaySessionStartLimit, PlatformEvent
+
+
+async def test_default_gateway_connector_uses_tls_only_for_wss(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[str, object]] = []
+
+    async def fake_connect(url: str, **kwargs: Any) -> Any:
+        calls.append((url, kwargs["ssl"]))
+        return object()
+
+    monkeypatch.setattr(gateway_client_module, "connect", fake_connect)
+
+    await gateway_client_module._default_connector("ws://localhost:3000/api/v1/gateway/socket")
+    await gateway_client_module._default_connector(
+        "wss://voiceroute.cc/api/v1/gateway/socket"
+    )
+
+    assert calls[0][1] is None
+    assert calls[1][1] is not None
 
 
 class FakePlatformAPI:
