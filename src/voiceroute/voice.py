@@ -28,9 +28,6 @@ class VoiceAccessDenied(VoiceError):
 
 
 class VoiceMediaTransport(Protocol):
-    @property
-    def connected(self) -> bool: ...
-
     async def connect(self, grant: VoiceServerGrant) -> None: ...
 
     async def write_pcm(self, samples: Sequence[int]) -> None: ...
