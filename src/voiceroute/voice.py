@@ -28,6 +28,9 @@ class VoiceAccessDenied(VoiceError):
 
 
 class VoiceMediaTransport(Protocol):
+    @property
+    def connected(self) -> bool: ...
+
     async def connect(self, grant: VoiceServerGrant) -> None: ...
 
     async def write_pcm(self, samples: Sequence[int]) -> None: ...
@@ -51,6 +54,16 @@ class LiveKitMediaTransport:
         self._room: Any = None
         self._source: Any = None
         self._track: Any = None
+
+    @property
+    def connected(self) -> bool:
+        room, rtc = self._room, self._rtc
+        if room is None or rtc is None:
+            return False
+        try:
+            return room.connection_state == rtc.ConnectionState.CONN_CONNECTED
+        except (AttributeError, RuntimeError):
+            return False
 
     async def connect(self, grant: VoiceServerGrant) -> None:
         try:
@@ -131,7 +144,11 @@ class VoiceSession:
 
     @property
     def connected(self) -> bool:
-        return self._grant is not None and self._transport is not None
+        if self._grant is None or self._transport is None:
+            return False
+        # Keep compatibility with third-party test transports that predate the
+        # health property, while using the real LiveKit room state in production.
+        return bool(getattr(self._transport, "connected", True))
 
     @property
     def state(self) -> VoiceServerGrant | None:
@@ -188,8 +205,9 @@ class VoiceSession:
         return grant
 
     async def write_pcm(self, samples: Sequence[int]) -> None:
-        if self._transport is None or self._grant is None:
+        if not self.connected:
             raise VoiceError("voice session is not connected")
+        assert self._transport is not None and self._grant is not None
         if not self._grant.transmit:
             raise VoiceAccessDenied("VoiceRoute did not grant voice transmit access")
         if len(samples) != self.FRAME_SAMPLES:
@@ -199,8 +217,10 @@ class VoiceSession:
         await self._transport.write_pcm(samples)
 
     async def drain(self) -> None:
-        if self._transport is not None:
-            await self._transport.drain()
+        if not self.connected:
+            raise VoiceError("voice session is not connected")
+        assert self._transport is not None
+        await self._transport.drain()
 
     async def disconnect(self) -> None:
         grant, transport = self._grant, self._transport
