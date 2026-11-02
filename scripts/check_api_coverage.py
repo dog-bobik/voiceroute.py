@@ -42,6 +42,7 @@ RESOURCE_MODULES = {
     "polls": "polls",
     "uploads": "uploads",
     "stickers": "stickers",
+    "emojis": "expressions",
     "webhooks": "webhooks",
     "application-dms": "private_messages",
     "applications": "private_messages",
