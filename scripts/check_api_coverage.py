@@ -129,6 +129,7 @@ def main() -> int:
     events = capabilities.get("events", [])
     event_map = event_inventory(events)
     report = {
+        "source_revision": load(CONTRACTS / "manifest.json").get("source_revision"),
         "source": {
             "openapi": args.openapi.name,
             "asyncapi": args.asyncapi.name,
