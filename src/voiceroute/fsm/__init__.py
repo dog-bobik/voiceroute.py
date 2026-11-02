@@ -9,13 +9,16 @@ from voiceroute.fsm.core import (
     State,
     StatesGroup,
 )
+from voiceroute.fsm.middleware import FSMKeyFactory, fsm_middleware
 
 __all__ = [
     "FSMContext",
     "FSMKey",
+    "FSMKeyFactory",
     "FSMStorage",
     "MemoryStorage",
     "RedisStorage",
     "State",
     "StatesGroup",
+    "fsm_middleware",
 ]

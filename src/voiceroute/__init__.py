@@ -126,11 +126,13 @@ from voiceroute.extensions import Extension, ExtensionCommand, command, listener
 from voiceroute.fsm import (
     FSMContext,
     FSMKey,
+    FSMKeyFactory,
     FSMStorage,
     MemoryStorage,
     RedisStorage,
     State,
     StatesGroup,
+    fsm_middleware,
 )
 from voiceroute.gateway import (
     PRIVILEGED_INTENTS,
@@ -377,6 +379,7 @@ __all__ = [
     "ExtensionSetupError",
     "FSMContext",
     "FSMKey",
+    "FSMKeyFactory",
     "FSMStorage",
     "FakeGatewaySocket",
     "FakeTransport",
@@ -538,6 +541,7 @@ __all__ = [
     "check",
     "command",
     "cooldown",
+    "fsm_middleware",
     "has_permissions",
     "is_owner",
     "listener",

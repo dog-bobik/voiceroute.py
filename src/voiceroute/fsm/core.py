@@ -7,7 +7,7 @@ import base64
 import json
 import time
 from collections.abc import AsyncIterator, Mapping
-from contextlib import asynccontextmanager
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from dataclasses import dataclass
 from typing import Any, Protocol
 
@@ -44,7 +44,7 @@ class FSMStorage(Protocol):
 
     async def clear(self, key: FSMKey) -> None: ...
 
-    def isolate(self, key: FSMKey) -> AsyncIterator[None]: ...
+    def isolate(self, key: FSMKey) -> AbstractAsyncContextManager[None]: ...
 
 
 class RedisStorage:
@@ -242,7 +242,7 @@ class FSMContext:
     async def clear(self) -> None:
         await self.storage.clear(self.key)
 
-    def isolate(self) -> AsyncIterator[None]:
+    def isolate(self) -> AbstractAsyncContextManager[None]:
         """Serialize a multi-step read/modify/write handler for this key."""
         return self.storage.isolate(self.key)
 
