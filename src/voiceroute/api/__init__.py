@@ -14,6 +14,7 @@ from voiceroute.api.mini_apps import MiniAppsAPI, MiniAppState
 from voiceroute.api.moderation import ModerationAPI
 from voiceroute.api.platform import PlatformAPI
 from voiceroute.api.polls import PollsAPI
+from voiceroute.api.private_messages import PrivateMessagesAPI
 from voiceroute.api.roles import RolesAPI
 from voiceroute.api.subscriptions import SubscriptionsAPI
 from voiceroute.api.threads import ThreadsAPI
@@ -40,6 +41,7 @@ __all__ = [
     "ModerationAPI",
     "PlatformAPI",
     "PollsAPI",
+    "PrivateMessagesAPI",
     "RolesAPI",
     "SubscriptionsAPI",
     "ThreadsAPI",

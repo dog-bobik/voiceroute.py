@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 from typing import Any, Protocol
 from urllib.parse import urlencode
 
+from voiceroute.api.private_messages import PrivateMessagesAPI
 from voiceroute.transport import AuthStrategy, BasicAuth, BearerAuth, HTTPTransport
 
 
@@ -170,6 +171,13 @@ class OAuthClient:
             await transport.close()
         return payload or {}
 
+    def private_messages(self, access_token: str) -> PrivateMessagesAPI:
+        """Create a separately bearer-authenticated DM API for granted scopes."""
+        transport = HTTPTransport(
+            auth=BearerAuth(access_token), base_url=self._base_url, timeout=self._timeout
+        )
+        return _OwnedPrivateMessagesAPI(transport, self.application_id)
+
     async def close(self) -> None:
         await self._transport.close()
 
@@ -184,3 +192,14 @@ def _required_payload(payload: dict[str, Any] | None) -> dict[str, Any]:
     if payload is None:
         raise RuntimeError("VoiceRoute returned no OAuth token payload")
     return payload
+
+
+class _OwnedPrivateMessagesAPI(PrivateMessagesAPI):
+    async def close(self) -> None:
+        await self._transport.close()
+
+    async def __aenter__(self) -> _OwnedPrivateMessagesAPI:
+        return self
+
+    async def __aexit__(self, *exc: object) -> None:
+        await self.close()
