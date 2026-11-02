@@ -48,6 +48,22 @@ RESOURCE_MODULES = {
     "voice": "voice",
 }
 
+# Hand-verified operation bindings. Unlisted operations remain missing instead of
+# being guessed from their URL or operationId. Contract tests are tracked separately.
+OPERATION_BINDINGS: dict[str, tuple[str, str | None, str | None]] = {
+    "listCommunityMembers": ("MembersAPI.list_page", None, "MemberPage"),
+    "getCommunityMember": ("MembersAPI.get", None, "Member"),
+    "searchCommunityMembers": ("MembersAPI.search", None, "MemberPage"),
+    "updateCommunityMember": ("MembersAPI.update_v1", None, "Member"),
+    "getEffectiveMemberPermissions": (
+        "RolesAPI.effective_permissions",
+        None,
+        "EffectivePermissions",
+    ),
+    "addCommunityMemberRole": ("RolesAPI.add_member_role_v1", None, None),
+    "removeCommunityMemberRole": ("RolesAPI.remove_member_role_v1", None, None),
+}
+
 
 def candidate_module(path: str) -> str | None:
     """Map contract paths to their most specific SDK resource module candidate."""
@@ -117,6 +133,9 @@ def operations(document: dict[str, Any]) -> list[dict[str, str]]:
                 status = "excluded"
             else:
                 status = "missing"
+            binding = OPERATION_BINDINGS.get(str(operation["operationId"]))
+            if status != "excluded" and binding is not None:
+                status = "partial"
             resource = candidate_module(path)
             result.append(
                 {
@@ -125,9 +144,9 @@ def operations(document: dict[str, Any]) -> list[dict[str, str]]:
                     "path": path,
                     "auth_surfaces": clauses or [["public"]],
                     "candidate_module": resource,
-                    "sdk_method": None,
-                    "request_dto": None,
-                    "response_dto": None,
+                    "sdk_method": binding[0] if binding else None,
+                    "request_dto": binding[1] if binding else None,
+                    "response_dto": binding[2] if binding else None,
                     "contract_test": None,
                     "status": status,
                 }
@@ -173,7 +192,9 @@ def main() -> int:
         "events": event_map,
         "asyncapi_channels": sorted(asyncapi.get("channels", {})),
         "classification_note": (
-            "missing means this inventory has no verified method/model/test mapping yet"
+            "partial means a hand-verified SDK method binding exists, but full DTO and "
+            "contract-test coverage is not established; missing means no verified "
+            "method mapping exists"
         ),
     }
     if args.json:

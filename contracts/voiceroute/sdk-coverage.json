@@ -2,7 +2,7 @@
   "asyncapi_channels": [
     "gateway"
   ],
-  "classification_note": "missing means this inventory has no verified method/model/test mapping yet",
+  "classification_note": "partial means a hand-verified SDK method binding exists, but full DTO and contract-test coverage is not established; missing means no verified method mapping exists",
   "counts": {
     "bot_candidate": 138,
     "events": 83,
@@ -3047,9 +3047,9 @@
       "operationId": "listCommunityMembers",
       "path": "/communities/{communityId}/members",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "MemberPage",
+      "sdk_method": "MembersAPI.list_page",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3069,9 +3069,9 @@
       "operationId": "searchCommunityMembers",
       "path": "/communities/{communityId}/members/search",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "MemberPage",
+      "sdk_method": "MembersAPI.search",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3091,9 +3091,9 @@
       "operationId": "getCommunityMember",
       "path": "/communities/{communityId}/members/{userId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Member",
+      "sdk_method": "MembersAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3110,9 +3110,9 @@
       "operationId": "updateCommunityMember",
       "path": "/communities/{communityId}/members/{userId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Member",
+      "sdk_method": "MembersAPI.update_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3132,9 +3132,9 @@
       "operationId": "getEffectiveMemberPermissions",
       "path": "/communities/{communityId}/members/{userId}/permissions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "EffectivePermissions",
+      "sdk_method": "RolesAPI.effective_permissions",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3152,8 +3152,8 @@
       "path": "/communities/{communityId}/members/{userId}/roles/{roleId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "RolesAPI.remove_member_role_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3171,8 +3171,8 @@
       "path": "/communities/{communityId}/members/{userId}/roles/{roleId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "RolesAPI.add_member_role_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
