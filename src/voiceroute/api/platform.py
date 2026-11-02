@@ -2,9 +2,9 @@
 
 import asyncio
 import time
-from collections.abc import Callable, Mapping
+from collections.abc import AsyncIterator, Callable, Mapping
 from types import MappingProxyType
-from typing import Any
+from typing import Any, cast
 
 from voiceroute.errors import FeatureUnavailable
 from voiceroute.models import (
@@ -15,6 +15,7 @@ from voiceroute.models import (
     StartupDiagnostics,
     VerificationKeySet,
 )
+from voiceroute.models.generated.platform_wire import ApplicationProfile
 from voiceroute.transport import Transport
 
 
@@ -88,6 +89,36 @@ class PlatformAPI:
         if payload is None:
             raise RuntimeError("VoiceRoute returned no current application")
         return CurrentApplication.from_dict(payload)
+
+    async def application_profile(self, application_id: str) -> ApplicationProfile:
+        """Fetch the public metadata profile for an application."""
+        payload = await self._transport.request(
+            "GET", f"/api/v1/applications/{application_id}/profile"
+        )
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no application profile")
+        return cast(ApplicationProfile, payload)
+
+    async def branding_asset(
+        self, application_id: str, kind: str, *, version: str | None = None
+    ) -> AsyncIterator[bytes]:
+        """Stream an application's scanned icon or banner asset."""
+        if kind not in {"icon", "banner"}:
+            raise ValueError("kind must be 'icon' or 'banner'")
+        async with self._transport.stream(
+            f"/api/v1/applications/{application_id}/assets/{kind}",
+            params={"v": version},
+        ) as response:
+            response.raise_for_status()
+            async for chunk in response.aiter_bytes():
+                yield chunk
+
+    async def embed_image(self, image_id: str) -> AsyncIterator[bytes]:
+        """Stream an authorized embed image without exposing its source URL."""
+        async with self._transport.stream(f"/api/v1/media/images/{image_id}") as response:
+            response.raise_for_status()
+            async for chunk in response.aiter_bytes():
+                yield chunk
 
     async def verification_keys(self, application_id: str) -> VerificationKeySet:
         """Fetch public webhook signing keys from this client's configured origin."""
