@@ -256,6 +256,7 @@ from voiceroute.state_models import (
     CachedRole,
 )
 from voiceroute.tasks import BoundLoop, Loop, loop
+from voiceroute.testing import FakeGatewaySocket, FakeTransport, RecordedRequest
 from voiceroute.transport import RateLimiter, Transport
 from voiceroute.ui import View
 from voiceroute.voice import (
@@ -367,6 +368,8 @@ __all__ = [
     "FSMContext",
     "FSMKey",
     "FSMStorage",
+    "FakeGatewaySocket",
+    "FakeTransport",
     "FeatureUnavailable",
     "FieldError",
     "FileCapabilities",
@@ -461,6 +464,7 @@ __all__ = [
     "PrivilegedIntentRequired",
     "RateLimited",
     "RateLimiter",
+    "RecordedRequest",
     "RedisCursorStore",
     "RedisGatewayCheckpointCoordinator",
     "RedisGatewayCheckpointStore",

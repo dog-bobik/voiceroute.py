@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import copy
 from collections import deque
 from collections.abc import AsyncIterator, Mapping
@@ -134,3 +135,40 @@ class FakeTransport:
     def _ensure_open(self) -> None:
         if self.closed:
             raise RuntimeError("fake transport is closed")
+
+
+class FakeGatewaySocket:
+    """Deterministic Gateway socket for connector injection and frame assertions."""
+
+    def __init__(self, frames: tuple[str | bytes, ...] = ()) -> None:
+        self._frames: asyncio.Queue[str | bytes | None] = asyncio.Queue()
+        for frame in frames:
+            self._frames.put_nowait(frame)
+        self.sent: list[str] = []
+        self.close_code: int | None = None
+        self.close_reason = ""
+
+    def __aiter__(self) -> FakeGatewaySocket:
+        return self
+
+    async def __anext__(self) -> str | bytes:
+        frame = await self._frames.get()
+        if frame is None:
+            raise StopAsyncIteration
+        return frame
+
+    async def send(self, message: str) -> None:
+        if self.close_code is not None:
+            raise RuntimeError("fake Gateway socket is closed")
+        self.sent.append(message)
+
+    async def close(self, code: int = 1000, reason: str = "") -> None:
+        self.close_code = code
+        self.close_reason = reason
+        self._frames.put_nowait(None)
+
+    def push(self, frame: str | bytes) -> None:
+        """Queue a frame after connection setup."""
+        if self.close_code is not None:
+            raise RuntimeError("fake Gateway socket is closed")
+        self._frames.put_nowait(frame)
