@@ -66,6 +66,7 @@ from voiceroute.models.platform import (
     VoiceCapabilities,
 )
 from voiceroute.models.platform_event import PlatformEvent
+from voiceroute.models.rich_message import RichMessage, RichMessagePage
 from voiceroute.models.role import (
     ChannelPermissionSnapshot,
     PermissionOverride,
@@ -147,6 +148,8 @@ __all__ = [
     "PlatformEventType",
     "PlatformServiceStatus",
     "PresenceStatus",
+    "RichMessage",
+    "RichMessagePage",
     "Role",
     "SelectOption",
     "ServiceIncident",
