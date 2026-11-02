@@ -275,6 +275,72 @@ class Bot:
 
         return decorator
 
+    def hybrid_command(
+        self,
+        name: str,
+        *,
+        description: str,
+        options: Sequence[CommandOption] = (),
+        aliases: Sequence[str] = (),
+        contexts: Sequence[CommandContext] = (CommandContext.COMMUNITY,),
+        default_member_permissions: Sequence[str] = (),
+        community_id: str | None = None,
+    ) -> Callable[[HandlerT], HandlerT]:
+        """Register one compatible callback for prefix and native command inputs."""
+        if not name or len(name.split()) != 1:
+            raise ValueError("hybrid command names must be a single word")
+
+        def decorator(handler: HandlerT) -> HandlerT:
+            self._ensure_async(handler)
+            command = Command.from_callback(
+                handler,
+                name=name,
+                aliases=aliases,
+                description=description,
+            )
+            parameter_names = {parameter.name for parameter in command.parameters}
+            option_names = {option.name for option in options}
+            if parameter_names != option_names:
+                raise ValueError(
+                    "hybrid command parameters and application options must have matching names"
+                )
+            self.command_registry.add(command)
+
+            async def interaction_handler(context: InteractionContext) -> None:
+                supplied = [
+                    index
+                    for index, parameter in enumerate(command.parameters)
+                    if parameter.name in context.options
+                ]
+                last_supplied = max(supplied, default=-1)
+                raw_values = [
+                    str(context.options[parameter.name])
+                    if parameter.name in context.options
+                    else str(parameter.default)
+                    for parameter in command.parameters[: last_supplied + 1]
+                ]
+                converted = command.convert_arguments(raw_values)
+                await handler(context, *converted)
+
+            try:
+                self.application_command_registry.add(
+                    application_command(
+                        name=name,
+                        description=description,
+                        callback=interaction_handler,
+                        options=options,
+                        contexts=contexts,
+                        default_member_permissions=default_member_permissions,
+                        community_id=community_id,
+                    )
+                )
+            except BaseException:
+                self.command_registry.remove(command)
+                raise
+            return handler
+
+        return decorator
+
     def component(self, route: str) -> Callable[[ComponentCallback], ComponentCallback]:
         """Register a persistent signed component route."""
 
