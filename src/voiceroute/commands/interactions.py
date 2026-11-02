@@ -40,6 +40,11 @@ class InteractionContext:
         return self.interaction.options
 
     @property
+    def idempotency_key(self) -> str:
+        """Stable interaction ID for idempotent business mutations on redelivery."""
+        return self.interaction.id
+
+    @property
     def user_id(self) -> int:
         return self.interaction.user.id
 
