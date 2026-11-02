@@ -17,6 +17,12 @@ class MiniAppState:
     version: str
     state: dict[str, Any]
 
+    @property
+    def etag(self) -> str:
+        if not self.version:
+            raise RuntimeError("Mini App state version is missing")
+        return f'"state-{self.version}"'
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> MiniAppState:
         raw_state = data.get("state")
