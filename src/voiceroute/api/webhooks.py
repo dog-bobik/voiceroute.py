@@ -178,16 +178,37 @@ class MessageWebhookClient:
         *,
         if_match: str,
         content: str | None = None,
+        embeds: Sequence[Mapping[str, object]] | None = None,
+        attachments: Sequence[Mapping[str, object]] | None = None,
+        components: Sequence[Mapping[str, object]] | None = None,
+        allowed_mentions: Mapping[str, object] | None = None,
         idempotency_key: str | uuid.UUID | None = None,
     ) -> RichMessage:
-        if content is None:
-            raise ValueError("content must be supplied")
-        if len(content) > 4000:
+        if content is not None and len(content) > 4000:
             raise ValueError("message content cannot exceed 4000 characters")
+        body: dict[str, object] = {}
+        if content is not None:
+            body["content"] = content
+        if embeds is not None:
+            if len(embeds) > 10:
+                raise ValueError("a message cannot contain more than 10 embeds")
+            body["embeds"] = [dict(embed) for embed in embeds]
+        if attachments is not None:
+            if len(attachments) > 10:
+                raise ValueError("a message cannot contain more than 10 attachments")
+            body["attachments"] = [dict(attachment) for attachment in attachments]
+        if components is not None:
+            if len(components) > 5:
+                raise ValueError("a message cannot contain more than 5 component rows")
+            body["components"] = [dict(component) for component in components]
+        if allowed_mentions is not None:
+            body["allowedMentions"] = dict(allowed_mentions)
+        if not body:
+            raise ValueError("at least one message field must be supplied")
         payload = await self._transport.request(
             "PATCH",
             f"{self._path()}/messages/{message_id}",
-            json={"content": content},
+            json=body,
             idempotency_key=str(idempotency_key or uuid.uuid4()),
             if_match=if_match,
         )
