@@ -89,7 +89,7 @@ from voiceroute.models.role import (
     Role,
     RolePage,
 )
-from voiceroute.models.sticker import Sticker
+from voiceroute.models.sticker import CommunityExpression, Sticker
 from voiceroute.models.threads import Thread, ThreadMember, ThreadMemberPage, ThreadPage
 from voiceroute.models.user import User
 from voiceroute.models.voice import VoiceServerGrant, VoiceState, VoiceStatePage, VoiceTrack
@@ -135,6 +135,7 @@ __all__ = [
     "CommandPermissions",
     "CommandType",
     "Community",
+    "CommunityExpression",
     "Component",
     "CurrentApplication",
     "DeliveryAttempt",

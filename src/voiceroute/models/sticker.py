@@ -7,9 +7,10 @@ from typing import Any, Self
 
 
 @dataclass(frozen=True, slots=True)
-class Sticker:
+class CommunityExpression:
     id: str
     community_id: str
+    kind: str
     name: str
     description: str
     tag: str
@@ -28,6 +29,7 @@ class Sticker:
         return cls(
             id=str(data["id"]),
             community_id=str(data["communityId"]),
+            kind=str(data.get("kind", "sticker")),
             name=str(data["name"]),
             description=str(data.get("description", "")),
             tag=str(data.get("tag", "")),
@@ -44,4 +46,9 @@ class Sticker:
 
     @property
     def etag(self) -> str:
-        return f'"sticker-{self.version}"'
+        if not self.version:
+            raise RuntimeError("expression version is missing from the response")
+        return f'"{self.kind}-{self.version}"'
+
+
+Sticker = CommunityExpression

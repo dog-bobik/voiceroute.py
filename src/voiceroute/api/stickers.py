@@ -10,6 +10,8 @@ from voiceroute.transport import Transport
 
 
 class StickersAPI:
+    resource_name = "stickers"
+
     def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
@@ -19,7 +21,9 @@ class StickersAPI:
         _validate_limit(limit)
         payload = (
             await self._transport.request(
-                "GET", _collection(community_id), params={"cursor": cursor, "limit": limit}
+                "GET",
+                _collection(self.resource_name, community_id),
+                params={"cursor": cursor, "limit": limit},
             )
             or {}
         )
@@ -27,7 +31,9 @@ class StickersAPI:
         return tuple(Sticker.from_dict(item) for item in values if isinstance(item, dict))
 
     async def get(self, community_id: str, sticker_id: str) -> Sticker:
-        payload = await self._transport.request("GET", _resource(community_id, sticker_id))
+        payload = await self._transport.request(
+            "GET", _resource(self.resource_name, community_id, sticker_id)
+        )
         return Sticker.from_dict(_required(payload, "sticker lookup"))
 
     async def create(
@@ -46,7 +52,7 @@ class StickersAPI:
         _validate_fields(name, description, tag, role_ids)
         payload = await self._transport.request(
             "POST",
-            _collection(community_id),
+            _collection(self.resource_name, community_id),
             json={
                 "name": name,
                 "description": description,
@@ -97,7 +103,7 @@ class StickersAPI:
             raise ValueError("at least one sticker field must be supplied")
         payload = await self._transport.request(
             "PATCH",
-            _resource(community_id, sticker_id),
+            _resource(self.resource_name, community_id, sticker_id),
             json=body,
             headers=_audit_headers(audit_reason),
             if_match=if_match,
@@ -116,7 +122,7 @@ class StickersAPI:
     ) -> None:
         await self._transport.request(
             "DELETE",
-            _resource(community_id, sticker_id),
+            _resource(self.resource_name, community_id, sticker_id),
             headers=_audit_headers(audit_reason),
             if_match=if_match,
             idempotency_key=str(idempotency_key or uuid.uuid4()),
@@ -124,12 +130,18 @@ class StickersAPI:
         )
 
 
-def _collection(community_id: str) -> str:
-    return f"/api/v1/communities/{community_id}/stickers"
+class ExpressionsAPI(StickersAPI):
+    """Manage community emoji expressions through the upload-backed lifecycle."""
+
+    resource_name = "emojis"
 
 
-def _resource(community_id: str, sticker_id: str) -> str:
-    return f"{_collection(community_id)}/{sticker_id}"
+def _collection(resource_name: str, community_id: str) -> str:
+    return f"/api/v1/communities/{community_id}/{resource_name}"
+
+
+def _resource(resource_name: str, community_id: str, expression_id: str) -> str:
+    return f"{_collection(resource_name, community_id)}/{expression_id}"
 
 
 def _required(payload: dict[str, object] | None, operation: str) -> dict[str, object]:

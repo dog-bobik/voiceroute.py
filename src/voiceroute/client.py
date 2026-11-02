@@ -12,6 +12,7 @@ from voiceroute.api import (
     ChannelsAPI,
     CommunitiesAPI,
     EventsAPI,
+    ExpressionsAPI,
     InteractionsAPI,
     MembersAPI,
     MessagesAPI,
@@ -107,6 +108,7 @@ class VoiceRouteClient:
         self.webhooks = WebhooksAPI(self._transport)
         self.subscriptions = SubscriptionsAPI(self._transport)
         self.stickers = StickersAPI(self._transport)
+        self.expressions = ExpressionsAPI(self._transport)
         self.channels = ChannelsAPI(self._transport)
         self.categories = CategoriesAPI(self._transport)
 
