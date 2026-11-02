@@ -51,6 +51,120 @@ RESOURCE_MODULES = {
 # Hand-verified operation bindings. Unlisted operations remain missing instead of
 # being guessed from their URL or operationId. Contract tests are tracked separately.
 OPERATION_BINDINGS: dict[str, tuple[str, str | None, str | None]] = {
+    "listApplicationDmMessages": ("OAuthPrivateMessagesAPI.history", None, "dict[]"),
+    "createApplicationDmMessage": ("OAuthPrivateMessagesAPI.send", None, "dict"),
+    "deleteApplicationDmMessage": ("OAuthPrivateMessagesAPI.delete", None, None),
+    "editApplicationDmMessage": ("OAuthPrivateMessagesAPI.edit", None, "dict"),
+    "getApplicationDm": ("OAuthPrivateMessagesAPI.get", None, "dict"),
+    "openApplicationDm": ("OAuthPrivateMessagesAPI.open", None, "dict"),
+    "listGlobalCommands": ("ApplicationCommandsAPI.list", None, "ApplicationCommand[]"),
+    "createGlobalCommand": ("ApplicationCommandsAPI.create", None, "ApplicationCommand"),
+    "syncGlobalCommands": ("ApplicationCommandsAPI.sync", None, "CommandSyncDiff"),
+    "deleteGlobalCommand": ("ApplicationCommandsAPI.delete", None, None),
+    "getGlobalCommand": ("ApplicationCommandsAPI.get", None, "ApplicationCommand"),
+    "updateGlobalCommand": ("ApplicationCommandsAPI.update", None, "ApplicationCommand"),
+    "listCommunityCommands": ("ApplicationCommandsAPI.list", None, "ApplicationCommand[]"),
+    "createCommunityCommand": ("ApplicationCommandsAPI.create", None, "ApplicationCommand"),
+    "syncCommunityCommands": ("ApplicationCommandsAPI.sync", None, "CommandSyncDiff"),
+    "deleteCommunityCommand": ("ApplicationCommandsAPI.delete", None, None),
+    "getCommunityCommand": ("ApplicationCommandsAPI.get", None, "ApplicationCommand"),
+    "updateCommunityCommand": ("ApplicationCommandsAPI.update", None, "ApplicationCommand"),
+    "listEventSubscriptions": ("SubscriptionsAPI.list", None, "EventSubscription[]"),
+    "createEventSubscription": ("SubscriptionsAPI.create", None, "EventSubscription"),
+    "deleteEventSubscription": ("SubscriptionsAPI.delete", None, None),
+    "getEventSubscription": ("SubscriptionsAPI.get", None, "EventSubscription"),
+    "updateEventSubscription": ("SubscriptionsAPI.update", None, "EventSubscription"),
+    "listSubscriptionDeliveries": ("SubscriptionsAPI.deliveries", None, "DeliveryLogPage"),
+    "getSubscriptionDelivery": ("SubscriptionsAPI.get_delivery", None, "DeliveryDetails"),
+    "acknowledgeSubscriptionDelivery": ("SubscriptionsAPI.acknowledge", None, None),
+    "replaySubscriptionDelivery": ("SubscriptionsAPI.replay", None, None),
+    "pullSubscriptionDeliveries": ("SubscriptionsAPI.pull", None, "DeliveryLease[]"),
+    "getApplicationDeliveryStatus": ("SubscriptionsAPI.delivery_status", None, "dict"),
+    "getCurrentBotApplication": ("PlatformAPI.current_application", None, "CurrentApplication"),
+    "getGateway": ("PlatformAPI.gateway", None, "GatewayDiscovery"),
+    "acknowledgeMiniAppAction": ("MiniAppsAPI.acknowledge_action", None, None),
+    "completeMiniAppAction": ("MiniAppsAPI.complete_action", None, None),
+    "rejectMiniAppAction": ("MiniAppsAPI.reject_action", None, None),
+    "getApplicationMiniAppState": ("MiniAppsAPI.get_state", None, "MiniAppState"),
+    "publishMiniAppState": ("MiniAppsAPI.publish_state", None, "MiniAppState"),
+    "resolveApplicationMiniAppInstance": ("MiniAppsAPI.resolve_instance", None, "str"),
+    "listAutoModActions": ("AutoModAPI.actions", None, "dict[]"),
+    "listAutoModRules": ("AutoModAPI.list_rules", None, "AutoModRule[]"),
+    "createAutoModRule": ("AutoModAPI.create_rule", None, "AutoModRule"),
+    "deleteAutoModRule": ("AutoModAPI.delete_rule", None, None),
+    "getAutoModRule": ("AutoModAPI.get_rule", None, "AutoModRule"),
+    "updateAutoModRule": ("AutoModAPI.update_rule", None, "AutoModRule"),
+    "listCommunityCategories": ("CategoriesAPI.list", None, "Category[]"),
+    "createCommunityCategory": ("CategoriesAPI.create", None, "Category"),
+    "reorderCommunityCategories": ("CategoriesAPI.reorder", None, "Category[]"),
+    "deleteCommunityCategory": ("CategoriesAPI.delete", None, None),
+    "getCommunityCategory": ("CategoriesAPI.get", None, "Category"),
+    "updateCommunityCategory": ("CategoriesAPI.update", None, "Category"),
+    "listCommunityChannels": ("ChannelsAPI.list", None, "Channel[]"),
+    "createCommunityChannel": ("ChannelsAPI.create", None, "Channel"),
+    "reorderCommunityChannels": ("ChannelsAPI.reorder", None, "Channel[]"),
+    "deleteCommunityChannel": ("ChannelsAPI.delete", None, None),
+    "getCommunityChannel": ("ChannelsAPI.get", None, "Channel"),
+    "updateCommunityChannel": ("ChannelsAPI.update", None, "Channel"),
+    "startTyping": ("ChannelsAPI.start_typing", None, None),
+    "listTyping": ("ChannelsAPI.typing", None, "TypingIndicator[]"),
+    "cloneCommunityChannel": ("ChannelsAPI.clone", None, "Channel"),
+    "listMessages": ("MessagesAPI.history_v1", None, "RichMessagePage"),
+    "createMessage": ("MessagesAPI.send_rich", None, "RichMessage"),
+    "deleteMessage": ("MessagesAPI.delete_v1", None, None),
+    "getMessage": ("MessagesAPI.get_v1", None, "RichMessage"),
+    "updateMessage": ("MessagesAPI.edit_rich", None, "RichMessage"),
+    "clearMessageReactions": ("MessagesAPI.clear_reactions_v1", None, None),
+    "bulkDeleteMessages": ("MessagesAPI.bulk_delete_v1", None, None),
+    "createPoll": ("PollsAPI.create", None, "PollCreation"),
+    "getPoll": ("PollsAPI.get", None, "Poll"),
+    "closePoll": ("PollsAPI.close", None, "Poll"),
+    "listPollVoters": ("PollsAPI.voters", None, "PollVoterPage"),
+    "listChannelThreads": ("ThreadsAPI.list", None, "ThreadPage"),
+    "createChannelThread": ("ThreadsAPI.create", None, "Thread"),
+    "getChannelAutoModAlerts": ("AutoModAPI.alerts", None, "dict[]"),
+    "listCommunityEmojis": ("ExpressionsAPI.list", None, "Expression[]"),
+    "createCommunityEmoji": ("ExpressionsAPI.create", None, "Expression"),
+    "deleteCommunityEmoji": ("ExpressionsAPI.delete", None, None),
+    "getCommunityEmoji": ("ExpressionsAPI.get", None, "Expression"),
+    "updateCommunityEmoji": ("ExpressionsAPI.update", None, "Expression"),
+    "simulateCommunityPermissions": ("RolesAPI.simulate_permissions", None, "PermissionSimulation"),
+    "listCommunityRoles": ("RolesAPI.list_page_v1", None, "RolePage"),
+    "createCommunityRole": ("RolesAPI.create_v1", None, "Role"),
+    "reorderCommunityRoles": ("RolesAPI.reorder_v1", None, "Role[]"),
+    "deleteCommunityRole": ("RolesAPI.delete_v1", None, None),
+    "getCommunityRole": ("RolesAPI.get_v1", None, "Role"),
+    "updateCommunityRole": ("RolesAPI.update_v1", None, "Role"),
+    "listCommunityStickers": ("StickersAPI.list", None, "Sticker[]"),
+    "createCommunitySticker": ("StickersAPI.create", None, "Sticker"),
+    "deleteCommunitySticker": ("StickersAPI.delete", None, None),
+    "getCommunitySticker": ("StickersAPI.get", None, "Sticker"),
+    "updateCommunitySticker": ("StickersAPI.update", None, "Sticker"),
+    "deleteCommunityThread": ("ThreadsAPI.delete", None, None),
+    "getCommunityThread": ("ThreadsAPI.get", None, "Thread"),
+    "updateCommunityThread": ("ThreadsAPI.update", None, "Thread"),
+    "listThreadMembers": ("ThreadsAPI.members", None, "ThreadMemberPage"),
+    "leaveThread": ("ThreadsAPI.leave", None, None),
+    "joinThread": ("ThreadsAPI.join", None, None),
+    "removeThreadMember": ("ThreadsAPI.remove_member", None, None),
+    "addThreadMember": ("ThreadsAPI.add_member", None, None),
+    "listMessagesInThread": ("ThreadsAPI.history", None, "RichMessagePage"),
+    "createMessageInThread": ("ThreadsAPI.send", None, "RichMessage"),
+    "listCommunityVoiceStates": ("VoiceAPI.list_states", None, "VoiceStatePage"),
+    "getCommunityUserVoiceState": ("VoiceAPI.get_state", None, "VoiceState"),
+    "listMessageWebhooks": ("WebhooksAPI.list", None, "Webhook[]"),
+    "createMessageWebhook": ("WebhooksAPI.create", None, "Webhook"),
+    "deleteMessageWebhook": ("WebhooksAPI.delete", None, None),
+    "getMessageWebhook": ("WebhooksAPI.get", None, "Webhook"),
+    "updateMessageWebhook": ("WebhooksAPI.update", None, "Webhook"),
+    "rotateMessageWebhookSecret": ("WebhooksAPI.rotate", None, None),
+    "getFile": ("FilesAPI.get", None, "FileResource"),
+    "downloadFile": ("FilesAPI.download", None, "AsyncIterator[bytes]"),
+    "createUpload": ("UploadsAPI.create", None, "Upload"),
+    "cancelUpload": ("UploadsAPI.cancel", None, None),
+    "getUpload": ("UploadsAPI.get", None, "Upload"),
+    "completeUpload": ("UploadsAPI.complete", None, "Upload"),
+    "putUploadPart": ("UploadsAPI.put_part", None, None),
     "listCommunityMembers": ("MembersAPI.list_page", None, "MemberPage"),
     "getCommunityMember": ("MembersAPI.get", None, "Member"),
     "searchCommunityMembers": ("MembersAPI.search", None, "MemberPage"),
@@ -62,11 +176,36 @@ OPERATION_BINDINGS: dict[str, tuple[str, str | None, str | None]] = {
     ),
     "addCommunityMemberRole": ("RolesAPI.add_member_role_v1", None, None),
     "removeCommunityMemberRole": ("RolesAPI.remove_member_role_v1", None, None),
+    "getCategoryOverrides": ("RolesAPI.category_permissions_v1", None, "PermissionOverride[]"),
+    "replaceCategoryOverrides": (
+        "RolesAPI.replace_category_overrides_v1",
+        None,
+        "PermissionOverride[]",
+    ),
+    "getChannelOverrides": ("RolesAPI.channel_permissions_v1", None, "ChannelPermissionSnapshot"),
+    "replaceChannelOverrides": (
+        "RolesAPI.replace_channel_overrides_v1",
+        None,
+        "ChannelPermissionSnapshot",
+    ),
+    "syncChannelOverrides": (
+        "RolesAPI.sync_channel_overrides_v1",
+        None,
+        "ChannelPermissionSnapshot",
+    ),
 }
 
 
 def candidate_module(path: str) -> str | None:
     """Map contract paths to their most specific SDK resource module candidate."""
+    if path == "/applications/@me" or path == "/gateway":
+        return "voiceroute.api.platform"
+    if path.startswith("/files/"):
+        return "voiceroute.api.files"
+    if "/polls" in path:
+        return "voiceroute.api.polls"
+    if "/threads" in path:
+        return "voiceroute.api.threads"
     if "/event-subscriptions" in path or "/event-delivery-status" in path:
         return "voiceroute.api.subscriptions"
     if "/application-dms/" in path or path.endswith("/dm"):
@@ -79,16 +218,14 @@ def candidate_module(path: str) -> str | None:
         return "voiceroute.api.mini_apps"
     if "/voice-" in path or path.endswith("/voice-policy"):
         return "voiceroute.api.voice"
-    if "/commands" not in path and (
-        "/permissions" in path or ("/members/" in path and "/roles" in path)
-    ):
+    if "/commands" not in path and "/permissions" in path:
         return "voiceroute.api.roles"
     if "/commands" in path or "/application-commands" in path:
         return "voiceroute.api.application_commands"
     for segment, module in RESOURCE_MODULES.items():
         if f"/{segment}/" in f"{path}/" or path.endswith(f"/{segment}"):
             return f"voiceroute.api.{module}"
-    if path in {"/gateway", "/capabilities", "/status", "/openapi.json", "/asyncapi.json"}:
+    if path in {"/capabilities", "/status", "/openapi.json", "/asyncapi.json"}:
         return "voiceroute.api.platform"
     return None
 
@@ -185,6 +322,8 @@ def main() -> int:
             "operations": len(ops),
             "bot_candidate": sum(item["status"] != "excluded" for item in ops),
             "excluded_auth": sum(item["status"] == "excluded" for item in ops),
+            "partial_mapping": sum(item["status"] == "partial" for item in ops),
+            "missing_mapping": sum(item["status"] == "missing" for item in ops),
             "events": len(events),
             "public_resource_modules": len(RESOURCE_MODULES),
         },
@@ -212,10 +351,14 @@ def main() -> int:
     assert isinstance(counts, dict)
     for name, value in counts.items():
         print(f"{name}: {value}")
-    print("\nBot candidate operations requiring manual method/model/test mapping:")
+    print("\nBot candidate operations without full contract coverage:")
     for item in ops:
         if item["status"] != "excluded":
-            print(f"{item['method']:6} {item['path']:75} {item['operationId']}")
+            binding = f" -> {item['sdk_method']}" if item["sdk_method"] else ""
+            print(
+                f"{item['status']:7} {item['method']:6} {item['path']:75} "
+                f"{item['operationId']}{binding}"
+            )
     print("\nEvents:")
     events_report = report["events"]
     assert isinstance(events_report, list)

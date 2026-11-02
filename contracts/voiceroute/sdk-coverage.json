@@ -7,7 +7,9 @@
     "bot_candidate": 138,
     "events": 83,
     "excluded_auth": 102,
+    "missing_mapping": 12,
     "operations": 240,
+    "partial_mapping": 126,
     "public_resource_modules": 24
   },
   "events": [
@@ -993,9 +995,9 @@
       "operationId": "listApplicationDmMessages",
       "path": "/application-dms/{channelId}/messages",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict[]",
+      "sdk_method": "OAuthPrivateMessagesAPI.history",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1015,9 +1017,9 @@
       "operationId": "createApplicationDmMessage",
       "path": "/application-dms/{channelId}/messages",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict",
+      "sdk_method": "OAuthPrivateMessagesAPI.send",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1038,8 +1040,8 @@
       "path": "/application-dms/{channelId}/messages/{messageId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "OAuthPrivateMessagesAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1081,9 +1083,9 @@
       "operationId": "editApplicationDmMessage",
       "path": "/application-dms/{channelId}/messages/{messageId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict",
+      "sdk_method": "OAuthPrivateMessagesAPI.edit",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1091,15 +1093,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCurrentBotApplication",
       "path": "/applications/@me",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "CurrentApplication",
+      "sdk_method": "PlatformAPI.current_application",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1158,9 +1160,9 @@
       "operationId": "listGlobalCommands",
       "path": "/applications/{applicationId}/commands",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand[]",
+      "sdk_method": "ApplicationCommandsAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1180,9 +1182,9 @@
       "operationId": "createGlobalCommand",
       "path": "/applications/{applicationId}/commands",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand",
+      "sdk_method": "ApplicationCommandsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1202,9 +1204,9 @@
       "operationId": "syncGlobalCommands",
       "path": "/applications/{applicationId}/commands",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "CommandSyncDiff",
+      "sdk_method": "ApplicationCommandsAPI.sync",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1225,8 +1227,8 @@
       "path": "/applications/{applicationId}/commands/{commandId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ApplicationCommandsAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1246,9 +1248,9 @@
       "operationId": "getGlobalCommand",
       "path": "/applications/{applicationId}/commands/{commandId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand",
+      "sdk_method": "ApplicationCommandsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1268,9 +1270,9 @@
       "operationId": "updateGlobalCommand",
       "path": "/applications/{applicationId}/commands/{commandId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand",
+      "sdk_method": "ApplicationCommandsAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1306,9 +1308,9 @@
       "operationId": "listCommunityCommands",
       "path": "/applications/{applicationId}/communities/{communityId}/commands",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand[]",
+      "sdk_method": "ApplicationCommandsAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1328,9 +1330,9 @@
       "operationId": "createCommunityCommand",
       "path": "/applications/{applicationId}/communities/{communityId}/commands",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand",
+      "sdk_method": "ApplicationCommandsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1350,9 +1352,9 @@
       "operationId": "syncCommunityCommands",
       "path": "/applications/{applicationId}/communities/{communityId}/commands",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "CommandSyncDiff",
+      "sdk_method": "ApplicationCommandsAPI.sync",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1373,8 +1375,8 @@
       "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ApplicationCommandsAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1394,9 +1396,9 @@
       "operationId": "getCommunityCommand",
       "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand",
+      "sdk_method": "ApplicationCommandsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1416,9 +1418,9 @@
       "operationId": "updateCommunityCommand",
       "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationCommand",
+      "sdk_method": "ApplicationCommandsAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1467,9 +1469,9 @@
       "operationId": "getApplicationDeliveryStatus",
       "path": "/applications/{applicationId}/event-delivery-status",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict",
+      "sdk_method": "SubscriptionsAPI.delivery_status",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1486,9 +1488,9 @@
       "operationId": "listEventSubscriptions",
       "path": "/applications/{applicationId}/event-subscriptions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "EventSubscription[]",
+      "sdk_method": "SubscriptionsAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1505,9 +1507,9 @@
       "operationId": "createEventSubscription",
       "path": "/applications/{applicationId}/event-subscriptions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "EventSubscription",
+      "sdk_method": "SubscriptionsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1525,8 +1527,8 @@
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "SubscriptionsAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1543,9 +1545,9 @@
       "operationId": "getEventSubscription",
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "EventSubscription",
+      "sdk_method": "SubscriptionsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1562,9 +1564,9 @@
       "operationId": "updateEventSubscription",
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "EventSubscription",
+      "sdk_method": "SubscriptionsAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1581,9 +1583,9 @@
       "operationId": "listSubscriptionDeliveries",
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "DeliveryLogPage",
+      "sdk_method": "SubscriptionsAPI.deliveries",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1600,9 +1602,9 @@
       "operationId": "getSubscriptionDelivery",
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries/{deliveryId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "DeliveryDetails",
+      "sdk_method": "SubscriptionsAPI.get_delivery",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1617,8 +1619,8 @@
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries/{deliveryId}/ack",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "SubscriptionsAPI.acknowledge",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1636,8 +1638,8 @@
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries/{deliveryId}/replay",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "SubscriptionsAPI.replay",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1651,9 +1653,9 @@
       "operationId": "pullSubscriptionDeliveries",
       "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/pull",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "DeliveryLease[]",
+      "sdk_method": "SubscriptionsAPI.pull",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1684,8 +1686,8 @@
       "path": "/applications/{applicationId}/mini-app/actions/{actionId}/ack",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "MiniAppsAPI.acknowledge_action",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1700,8 +1702,8 @@
       "path": "/applications/{applicationId}/mini-app/actions/{actionId}/complete",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "MiniAppsAPI.complete_action",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1716,8 +1718,8 @@
       "path": "/applications/{applicationId}/mini-app/actions/{actionId}/reject",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "MiniAppsAPI.reject_action",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1731,9 +1733,9 @@
       "operationId": "resolveApplicationMiniAppInstance",
       "path": "/applications/{applicationId}/mini-app/instances/resolve",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "str",
+      "sdk_method": "MiniAppsAPI.resolve_instance",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1747,9 +1749,9 @@
       "operationId": "getApplicationMiniAppState",
       "path": "/applications/{applicationId}/mini-app/instances/{instanceId}/state",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "MiniAppState",
+      "sdk_method": "MiniAppsAPI.get_state",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1763,9 +1765,9 @@
       "operationId": "publishMiniAppState",
       "path": "/applications/{applicationId}/mini-app/instances/{instanceId}/state",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "MiniAppState",
+      "sdk_method": "MiniAppsAPI.publish_state",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1971,9 +1973,9 @@
       "operationId": "getApplicationDm",
       "path": "/applications/{applicationId}/users/{userId}/dm",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict",
+      "sdk_method": "OAuthPrivateMessagesAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1996,9 +1998,9 @@
       "operationId": "openApplicationDm",
       "path": "/applications/{applicationId}/users/{userId}/dm",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict",
+      "sdk_method": "OAuthPrivateMessagesAPI.open",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2079,9 +2081,9 @@
       "operationId": "listAutoModActions",
       "path": "/communities/{communityId}/automod/actions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict[]",
+      "sdk_method": "AutoModAPI.actions",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2098,9 +2100,9 @@
       "operationId": "listAutoModRules",
       "path": "/communities/{communityId}/automod/rules",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "AutoModRule[]",
+      "sdk_method": "AutoModAPI.list_rules",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2117,9 +2119,9 @@
       "operationId": "createAutoModRule",
       "path": "/communities/{communityId}/automod/rules",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "AutoModRule",
+      "sdk_method": "AutoModAPI.create_rule",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2137,8 +2139,8 @@
       "path": "/communities/{communityId}/automod/rules/{ruleId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "AutoModAPI.delete_rule",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2155,9 +2157,9 @@
       "operationId": "getAutoModRule",
       "path": "/communities/{communityId}/automod/rules/{ruleId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "AutoModRule",
+      "sdk_method": "AutoModAPI.get_rule",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2174,9 +2176,9 @@
       "operationId": "updateAutoModRule",
       "path": "/communities/{communityId}/automod/rules/{ruleId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "AutoModRule",
+      "sdk_method": "AutoModAPI.update_rule",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2209,9 +2211,9 @@
       "operationId": "listCommunityCategories",
       "path": "/communities/{communityId}/categories",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Category[]",
+      "sdk_method": "CategoriesAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2228,9 +2230,9 @@
       "operationId": "createCommunityCategory",
       "path": "/communities/{communityId}/categories",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Category",
+      "sdk_method": "CategoriesAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2247,9 +2249,9 @@
       "operationId": "reorderCommunityCategories",
       "path": "/communities/{communityId}/categories/order",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Category[]",
+      "sdk_method": "CategoriesAPI.reorder",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2267,8 +2269,8 @@
       "path": "/communities/{communityId}/categories/{categoryId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "CategoriesAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2285,9 +2287,9 @@
       "operationId": "getCommunityCategory",
       "path": "/communities/{communityId}/categories/{categoryId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Category",
+      "sdk_method": "CategoriesAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2304,9 +2306,9 @@
       "operationId": "updateCommunityCategory",
       "path": "/communities/{communityId}/categories/{categoryId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Category",
+      "sdk_method": "CategoriesAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2323,9 +2325,9 @@
       "operationId": "getCategoryOverrides",
       "path": "/communities/{communityId}/categories/{categoryId}/permissions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "PermissionOverride[]",
+      "sdk_method": "RolesAPI.category_permissions_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2342,9 +2344,9 @@
       "operationId": "replaceCategoryOverrides",
       "path": "/communities/{communityId}/categories/{categoryId}/permissions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "PermissionOverride[]",
+      "sdk_method": "RolesAPI.replace_category_overrides_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2361,9 +2363,9 @@
       "operationId": "listCommunityChannels",
       "path": "/communities/{communityId}/channels",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Channel[]",
+      "sdk_method": "ChannelsAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2380,9 +2382,9 @@
       "operationId": "createCommunityChannel",
       "path": "/communities/{communityId}/channels",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Channel",
+      "sdk_method": "ChannelsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2399,9 +2401,9 @@
       "operationId": "reorderCommunityChannels",
       "path": "/communities/{communityId}/channels/order",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Channel[]",
+      "sdk_method": "ChannelsAPI.reorder",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2419,8 +2421,8 @@
       "path": "/communities/{communityId}/channels/{channelId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ChannelsAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2437,9 +2439,9 @@
       "operationId": "getCommunityChannel",
       "path": "/communities/{communityId}/channels/{channelId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Channel",
+      "sdk_method": "ChannelsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2456,9 +2458,9 @@
       "operationId": "updateCommunityChannel",
       "path": "/communities/{communityId}/channels/{channelId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Channel",
+      "sdk_method": "ChannelsAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2491,9 +2493,9 @@
       "operationId": "getChannelAutoModAlerts",
       "path": "/communities/{communityId}/channels/{channelId}/automod/alerts",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict[]",
+      "sdk_method": "AutoModAPI.alerts",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2510,9 +2512,9 @@
       "operationId": "cloneCommunityChannel",
       "path": "/communities/{communityId}/channels/{channelId}/clone",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Channel",
+      "sdk_method": "ChannelsAPI.clone",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2593,9 +2595,9 @@
       "operationId": "listMessages",
       "path": "/communities/{communityId}/channels/{channelId}/messages",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessagePage",
+      "sdk_method": "MessagesAPI.history_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2609,9 +2611,9 @@
       "operationId": "createMessage",
       "path": "/communities/{communityId}/channels/{channelId}/messages",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessage",
+      "sdk_method": "MessagesAPI.send_rich",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2626,8 +2628,8 @@
       "path": "/communities/{communityId}/channels/{channelId}/messages/bulk-delete",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "MessagesAPI.bulk_delete_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2642,8 +2644,8 @@
       "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "MessagesAPI.delete_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2660,9 +2662,9 @@
       "operationId": "getMessage",
       "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessage",
+      "sdk_method": "MessagesAPI.get_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2676,9 +2678,9 @@
       "operationId": "updateMessage",
       "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessage",
+      "sdk_method": "MessagesAPI.edit_rich",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2696,8 +2698,8 @@
       "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}/reactions",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "MessagesAPI.clear_reactions_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2714,9 +2716,9 @@
       "operationId": "getChannelOverrides",
       "path": "/communities/{communityId}/channels/{channelId}/permissions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ChannelPermissionSnapshot",
+      "sdk_method": "RolesAPI.channel_permissions_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2733,9 +2735,9 @@
       "operationId": "replaceChannelOverrides",
       "path": "/communities/{communityId}/channels/{channelId}/permissions",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ChannelPermissionSnapshot",
+      "sdk_method": "RolesAPI.replace_channel_overrides_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2752,9 +2754,9 @@
       "operationId": "syncChannelOverrides",
       "path": "/communities/{communityId}/channels/{channelId}/permissions/sync",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ChannelPermissionSnapshot",
+      "sdk_method": "RolesAPI.sync_channel_overrides_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2762,15 +2764,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.polls",
       "contract_test": null,
       "method": "POST",
       "operationId": "createPoll",
       "path": "/communities/{communityId}/channels/{channelId}/polls",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "PollCreation",
+      "sdk_method": "PollsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2781,15 +2783,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.polls",
       "contract_test": null,
       "method": "GET",
       "operationId": "getPoll",
       "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Poll",
+      "sdk_method": "PollsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2800,15 +2802,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.polls",
       "contract_test": null,
       "method": "POST",
       "operationId": "closePoll",
       "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}/close",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Poll",
+      "sdk_method": "PollsAPI.close",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2819,15 +2821,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.polls",
       "contract_test": null,
       "method": "GET",
       "operationId": "listPollVoters",
       "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}/voters",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "PollVoterPage",
+      "sdk_method": "PollsAPI.voters",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2835,7 +2837,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.polls",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "removePollBallot",
@@ -2851,7 +2853,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.polls",
       "contract_test": null,
       "method": "PUT",
       "operationId": "setPollBallot",
@@ -2870,15 +2872,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "GET",
       "operationId": "listChannelThreads",
       "path": "/communities/{communityId}/channels/{channelId}/threads",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ThreadPage",
+      "sdk_method": "ThreadsAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2889,15 +2891,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.channels",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "POST",
       "operationId": "createChannelThread",
       "path": "/communities/{communityId}/channels/{channelId}/threads",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Thread",
+      "sdk_method": "ThreadsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2914,9 +2916,9 @@
       "operationId": "listTyping",
       "path": "/communities/{communityId}/channels/{channelId}/typing",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "TypingIndicator[]",
+      "sdk_method": "ChannelsAPI.typing",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2934,8 +2936,8 @@
       "path": "/communities/{communityId}/channels/{channelId}/typing",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ChannelsAPI.start_typing",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2952,9 +2954,9 @@
       "operationId": "listCommunityEmojis",
       "path": "/communities/{communityId}/emojis",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Expression[]",
+      "sdk_method": "ExpressionsAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2968,9 +2970,9 @@
       "operationId": "createCommunityEmoji",
       "path": "/communities/{communityId}/emojis",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Expression",
+      "sdk_method": "ExpressionsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -2988,8 +2990,8 @@
       "path": "/communities/{communityId}/emojis/{expressionId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ExpressionsAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3006,9 +3008,9 @@
       "operationId": "getCommunityEmoji",
       "path": "/communities/{communityId}/emojis/{expressionId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Expression",
+      "sdk_method": "ExpressionsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3025,9 +3027,9 @@
       "operationId": "updateCommunityEmoji",
       "path": "/communities/{communityId}/emojis/{expressionId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Expression",
+      "sdk_method": "ExpressionsAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3145,7 +3147,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.roles",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "removeCommunityMemberRole",
@@ -3164,7 +3166,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.roles",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "PUT",
       "operationId": "addCommunityMemberRole",
@@ -3189,9 +3191,9 @@
       "operationId": "simulateCommunityPermissions",
       "path": "/communities/{communityId}/permissions/simulate",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "PermissionSimulation",
+      "sdk_method": "RolesAPI.simulate_permissions",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3208,9 +3210,9 @@
       "operationId": "listCommunityRoles",
       "path": "/communities/{communityId}/roles",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RolePage",
+      "sdk_method": "RolesAPI.list_page_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3227,9 +3229,9 @@
       "operationId": "createCommunityRole",
       "path": "/communities/{communityId}/roles",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Role",
+      "sdk_method": "RolesAPI.create_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3246,9 +3248,9 @@
       "operationId": "reorderCommunityRoles",
       "path": "/communities/{communityId}/roles/order",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Role[]",
+      "sdk_method": "RolesAPI.reorder_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3266,8 +3268,8 @@
       "path": "/communities/{communityId}/roles/{roleId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "RolesAPI.delete_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3284,9 +3286,9 @@
       "operationId": "getCommunityRole",
       "path": "/communities/{communityId}/roles/{roleId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Role",
+      "sdk_method": "RolesAPI.get_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3303,9 +3305,9 @@
       "operationId": "updateCommunityRole",
       "path": "/communities/{communityId}/roles/{roleId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Role",
+      "sdk_method": "RolesAPI.update_v1",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3322,9 +3324,9 @@
       "operationId": "listCommunityStickers",
       "path": "/communities/{communityId}/stickers",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Sticker[]",
+      "sdk_method": "StickersAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3338,9 +3340,9 @@
       "operationId": "createCommunitySticker",
       "path": "/communities/{communityId}/stickers",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Sticker",
+      "sdk_method": "StickersAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3358,8 +3360,8 @@
       "path": "/communities/{communityId}/stickers/{expressionId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "StickersAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3376,9 +3378,9 @@
       "operationId": "getCommunitySticker",
       "path": "/communities/{communityId}/stickers/{expressionId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Sticker",
+      "sdk_method": "StickersAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3395,9 +3397,9 @@
       "operationId": "updateCommunitySticker",
       "path": "/communities/{communityId}/stickers/{expressionId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Sticker",
+      "sdk_method": "StickersAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3415,8 +3417,8 @@
       "path": "/communities/{communityId}/threads/{threadId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ThreadsAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3433,9 +3435,9 @@
       "operationId": "getCommunityThread",
       "path": "/communities/{communityId}/threads/{threadId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Thread",
+      "sdk_method": "ThreadsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3452,9 +3454,9 @@
       "operationId": "updateCommunityThread",
       "path": "/communities/{communityId}/threads/{threadId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Thread",
+      "sdk_method": "ThreadsAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3465,15 +3467,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.members",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "GET",
       "operationId": "listThreadMembers",
       "path": "/communities/{communityId}/threads/{threadId}/members",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ThreadMemberPage",
+      "sdk_method": "ThreadsAPI.members",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3484,15 +3486,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.members",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "leaveThread",
       "path": "/communities/{communityId}/threads/{threadId}/members/@me",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ThreadsAPI.leave",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3503,7 +3505,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.members",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "GET",
       "operationId": "getOwnThreadMembership",
@@ -3522,15 +3524,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.members",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "PUT",
       "operationId": "joinThread",
       "path": "/communities/{communityId}/threads/{threadId}/members/@me",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ThreadsAPI.join",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3541,15 +3543,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.members",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "removeThreadMember",
       "path": "/communities/{communityId}/threads/{threadId}/members/{userId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ThreadsAPI.remove_member",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3560,15 +3562,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.members",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "PUT",
       "operationId": "addThreadMember",
       "path": "/communities/{communityId}/threads/{threadId}/members/{userId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ThreadsAPI.add_member",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3579,15 +3581,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "GET",
       "operationId": "listMessagesInThread",
       "path": "/communities/{communityId}/threads/{threadId}/messages",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessagePage",
+      "sdk_method": "ThreadsAPI.history",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3595,15 +3597,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "POST",
       "operationId": "createMessageInThread",
       "path": "/communities/{communityId}/threads/{threadId}/messages",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessage",
+      "sdk_method": "ThreadsAPI.send",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3611,7 +3613,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "POST",
       "operationId": "bulkDeleteMessagesInThread",
@@ -3627,7 +3629,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteMessageInThread",
@@ -3646,7 +3648,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMessageInThread",
@@ -3662,7 +3664,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateMessageInThread",
@@ -3754,9 +3756,9 @@
       "operationId": "listCommunityVoiceStates",
       "path": "/communities/{communityId}/voice-states",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "VoiceStatePage",
+      "sdk_method": "VoiceAPI.list_states",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3770,9 +3772,9 @@
       "operationId": "getCommunityUserVoiceState",
       "path": "/communities/{communityId}/voice-states/{userId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "VoiceState",
+      "sdk_method": "VoiceAPI.get_state",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3789,9 +3791,9 @@
       "operationId": "listMessageWebhooks",
       "path": "/communities/{communityId}/webhooks",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Webhook[]",
+      "sdk_method": "WebhooksAPI.list",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3808,9 +3810,9 @@
       "operationId": "createMessageWebhook",
       "path": "/communities/{communityId}/webhooks",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Webhook",
+      "sdk_method": "WebhooksAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3828,8 +3830,8 @@
       "path": "/communities/{communityId}/webhooks/{webhookId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "WebhooksAPI.delete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3846,9 +3848,9 @@
       "operationId": "getMessageWebhook",
       "path": "/communities/{communityId}/webhooks/{webhookId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Webhook",
+      "sdk_method": "WebhooksAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3865,9 +3867,9 @@
       "operationId": "updateMessageWebhook",
       "path": "/communities/{communityId}/webhooks/{webhookId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Webhook",
+      "sdk_method": "WebhooksAPI.update",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3885,8 +3887,8 @@
       "path": "/communities/{communityId}/webhooks/{webhookId}/rotate",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "WebhooksAPI.rotate",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4425,15 +4427,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.files",
       "contract_test": null,
       "method": "GET",
       "operationId": "getFile",
       "path": "/files/{fileId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "FileResource",
+      "sdk_method": "FilesAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4444,15 +4446,15 @@
           "humanSession"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.files",
       "contract_test": null,
       "method": "GET",
       "operationId": "downloadFile",
       "path": "/files/{fileId}/content",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "AsyncIterator[bytes]",
+      "sdk_method": "FilesAPI.download",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4466,9 +4468,9 @@
       "operationId": "getGateway",
       "path": "/gateway",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "GatewayDiscovery",
+      "sdk_method": "PlatformAPI.gateway",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4840,9 +4842,9 @@
       "operationId": "createUpload",
       "path": "/uploads",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Upload",
+      "sdk_method": "UploadsAPI.create",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4857,8 +4859,8 @@
       "path": "/uploads/{uploadId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "UploadsAPI.cancel",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4872,9 +4874,9 @@
       "operationId": "getUpload",
       "path": "/uploads/{uploadId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Upload",
+      "sdk_method": "UploadsAPI.get",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4888,9 +4890,9 @@
       "operationId": "completeUpload",
       "path": "/uploads/{uploadId}/complete",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "Upload",
+      "sdk_method": "UploadsAPI.complete",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4905,8 +4907,8 @@
       "path": "/uploads/{uploadId}/parts/{partNumber}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "UploadsAPI.put_part",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
