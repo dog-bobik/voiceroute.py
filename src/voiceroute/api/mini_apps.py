@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from dataclasses import dataclass
 from typing import Any
 
@@ -42,6 +43,32 @@ class MiniAppsAPI:
         )
         if payload is None:
             raise RuntimeError("VoiceRoute returned no Mini App state")
+        return MiniAppState.from_dict(payload)
+
+    async def publish_state(
+        self,
+        application_id: str,
+        instance_id: str,
+        state: dict[str, Any],
+        *,
+        if_match: str,
+        caused_by_action_id: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> MiniAppState:
+        if not if_match:
+            raise ValueError("if_match is required for Mini App state updates")
+        body: dict[str, Any] = {"state": state}
+        if caused_by_action_id is not None:
+            body["causedByActionId"] = caused_by_action_id
+        payload = await self._transport.request(
+            "PUT",
+            f"{self._base(application_id)}/instances/{instance_id}/state",
+            json=body,
+            if_match=if_match,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no Mini App state after update")
         return MiniAppState.from_dict(payload)
 
     async def acknowledge_action(
