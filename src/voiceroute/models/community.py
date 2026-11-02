@@ -41,6 +41,7 @@ class Channel:
     community_id: str | None = None
     category_id: str | None = None
     position: int | None = None
+    version: str | None = None
     permissions: Permissions = field(default_factory=Permissions)
     extra: MappingProxyType[str, Any] = field(default_factory=lambda: MappingProxyType({}))
 
@@ -48,6 +49,12 @@ class Channel:
     def type(self) -> str:
         """Compatibility alias for the channel kind."""
         return self.kind
+
+    @property
+    def etag(self) -> str:
+        if self.version is None:
+            raise RuntimeError("channel version is missing from the response")
+        return f'"channel-{self.version}"'
 
     @classmethod
     def from_dict(cls, data: dict[str, Any], *, community_id: str | None = None) -> Self:
@@ -60,6 +67,7 @@ class Channel:
             "communityId",
             "categoryId",
             "position",
+            "version",
             "permissions",
         }
         raw_kind = data.get("kind", data.get("type"))
@@ -72,7 +80,34 @@ class Channel:
             community_id=community_id or _optional_string(data.get("communityId")),
             category_id=_optional_string(data.get("categoryId")),
             position=int(raw_position) if raw_position is not None else None,
+            version=_optional_string(data.get("version")),
             permissions=Permissions(str(value) for value in data.get("permissions", ())),
+            extra=_extra_fields(data, known),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class Category:
+    id: str
+    community_id: str
+    name: str
+    position: int
+    version: str
+    extra: MappingProxyType[str, Any] = field(default_factory=lambda: MappingProxyType({}))
+
+    @property
+    def etag(self) -> str:
+        return f'"category-{self.version}"'
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        known = {"id", "communityId", "name", "position", "version"}
+        return cls(
+            id=str(data["id"]),
+            community_id=str(data["communityId"]),
+            name=str(data["name"]),
+            position=int(data.get("position", 0)),
+            version=str(data.get("version", "")),
             extra=_extra_fields(data, known),
         )
 

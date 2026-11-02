@@ -1,6 +1,8 @@
 """Async Python SDK and bot framework for VoiceRoute."""
 
 from voiceroute.api import (
+    CategoriesAPI,
+    ChannelsAPI,
     CommandSyncDiff,
     MessageWebhookClient,
     MiniAppsAPI,
@@ -160,6 +162,7 @@ from voiceroute.models import (
     BotAccessCapabilities,
     BotIdentity,
     ButtonStyle,
+    Category,
     Channel,
     ChannelPermissionSnapshot,
     CommandCapabilities,
@@ -300,8 +303,11 @@ __all__ = [
     "CachedRole",
     "Capabilities",
     "Capability",
+    "CategoriesAPI",
+    "Category",
     "Channel",
     "ChannelPermissionSnapshot",
+    "ChannelsAPI",
     "Check",
     "CheckFailure",
     "Command",

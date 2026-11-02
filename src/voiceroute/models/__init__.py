@@ -21,7 +21,7 @@ from voiceroute.models.audit import (
 )
 from voiceroute.models.automod import AutoModConfig
 from voiceroute.models.bot import BotIdentity
-from voiceroute.models.community import Channel, Community
+from voiceroute.models.community import Category, Channel, Community
 from voiceroute.models.delivery import DeliveryLease, EventSubscription
 from voiceroute.models.generated_events import PlatformEventType
 from voiceroute.models.interaction import (
@@ -105,6 +105,7 @@ __all__ = [
     "BotAccessCapabilities",
     "BotIdentity",
     "ButtonStyle",
+    "Category",
     "Channel",
     "ChannelPermissionSnapshot",
     "CommandCapabilities",
