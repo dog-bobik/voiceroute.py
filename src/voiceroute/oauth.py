@@ -171,12 +171,12 @@ class OAuthClient:
             await transport.close()
         return payload or {}
 
-    def private_messages(self, access_token: str) -> PrivateMessagesAPI:
+    def private_messages(self, access_token: str) -> OAuthPrivateMessagesAPI:
         """Create a separately bearer-authenticated DM API for granted scopes."""
         transport = HTTPTransport(
             auth=BearerAuth(access_token), base_url=self._base_url, timeout=self._timeout
         )
-        return _OwnedPrivateMessagesAPI(transport, self.application_id)
+        return OAuthPrivateMessagesAPI(transport, self.application_id)
 
     async def close(self) -> None:
         await self._transport.close()
@@ -194,11 +194,13 @@ def _required_payload(payload: dict[str, Any] | None) -> dict[str, Any]:
     return payload
 
 
-class _OwnedPrivateMessagesAPI(PrivateMessagesAPI):
+class OAuthPrivateMessagesAPI(PrivateMessagesAPI):
+    """Bearer-authenticated private messaging API that owns its transport."""
+
     async def close(self) -> None:
         await self._transport.close()
 
-    async def __aenter__(self) -> _OwnedPrivateMessagesAPI:
+    async def __aenter__(self) -> OAuthPrivateMessagesAPI:
         return self
 
     async def __aexit__(self, *exc: object) -> None:

@@ -243,7 +243,13 @@ from voiceroute.models import (
     VoiceTrack,
     Webhook,
 )
-from voiceroute.oauth import AuthorizationRequest, OAuthClient, OAuthTokens, OAuthTokenStore
+from voiceroute.oauth import (
+    AuthorizationRequest,
+    OAuthClient,
+    OAuthPrivateMessagesAPI,
+    OAuthTokens,
+    OAuthTokenStore,
+)
 from voiceroute.runtime import RuntimeState
 from voiceroute.state import CacheChange, CachePolicy, StateCache
 from voiceroute.state_models import (
@@ -439,6 +445,7 @@ __all__ = [
     "NotFound",
     "OAuthCapabilities",
     "OAuthClient",
+    "OAuthPrivateMessagesAPI",
     "OAuthTokenStore",
     "OAuthTokens",
     "PayloadTooLarge",
