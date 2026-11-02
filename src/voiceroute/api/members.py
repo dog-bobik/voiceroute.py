@@ -37,6 +37,17 @@ class MembersAPI:
         *,
         channel_id: str | None = None,
     ) -> builtins.list[Member]:
+        """Fetch all visible members, following v1 cursors when available."""
+        version = (
+            await self._resolve_api_version()
+            if self._api_version is APIVersion.AUTO
+            else self._api_version
+        )
+        if version is APIVersion.V1 and channel_id is None:
+            members: builtins.list[Member] = []
+            async for member in self.iter_members(community_id):
+                members.append(member)
+            return members
         payload = await self._transport.request(
             "GET",
             f"/api/communities/{community_id}/members",
@@ -47,6 +58,47 @@ class MembersAPI:
         return [
             Member.from_dict(item, community_id=community_id) for item in payload.get("items", [])
         ]
+
+    async def list_page(
+        self,
+        community_id: str,
+        *,
+        cursor: str | None = None,
+        limit: int = 50,
+    ) -> MemberPage:
+        """Fetch one page from the v1 member collection."""
+        version = (
+            await self._resolve_api_version()
+            if self._api_version is APIVersion.AUTO
+            else self._api_version
+        )
+        if version is APIVersion.LEGACY:
+            raise RuntimeError("member pagination requires the VoiceRoute v1 API")
+        if not 1 <= limit <= 100:
+            raise ValueError("limit must be between 1 and 100")
+        payload = await self._transport.request(
+            "GET",
+            f"/api/v1/communities/{community_id}/members",
+            params={"cursor": cursor, "limit": limit},
+        )
+        data = payload or {}
+        return MemberPage(
+            tuple(
+                Member.from_dict(item, community_id=community_id) for item in data.get("items", ())
+            ),
+            str(data["nextCursor"]) if data.get("nextCursor") is not None else None,
+        )
+
+    async def iter_members(self, community_id: str, *, limit: int = 50) -> AsyncIterator[Member]:
+        """Iterate through v1 member pages without retaining the full collection."""
+        cursor = None
+        while True:
+            page = await self.list_page(community_id, cursor=cursor, limit=limit)
+            for member in page.items:
+                yield member
+            if page.next_cursor is None:
+                break
+            cursor = page.next_cursor
 
     async def get(
         self,
