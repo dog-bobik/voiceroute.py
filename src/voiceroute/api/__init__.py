@@ -14,6 +14,7 @@ from voiceroute.api.moderation import ModerationAPI
 from voiceroute.api.platform import PlatformAPI
 from voiceroute.api.polls import PollsAPI
 from voiceroute.api.roles import RolesAPI
+from voiceroute.api.subscriptions import SubscriptionsAPI
 from voiceroute.api.threads import ThreadsAPI
 from voiceroute.api.uploads import Upload, UploadsAPI
 from voiceroute.api.voice import VoiceAPI
@@ -37,6 +38,7 @@ __all__ = [
     "PlatformAPI",
     "PollsAPI",
     "RolesAPI",
+    "SubscriptionsAPI",
     "ThreadsAPI",
     "Upload",
     "UploadsAPI",

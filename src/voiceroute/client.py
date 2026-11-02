@@ -18,6 +18,7 @@ from voiceroute.api import (
     PlatformAPI,
     PollsAPI,
     RolesAPI,
+    SubscriptionsAPI,
     ThreadsAPI,
     UploadsAPI,
     VoiceAPI,
@@ -101,6 +102,7 @@ class VoiceRouteClient:
         self.threads = ThreadsAPI(self._transport)
         self.polls = PollsAPI(self._transport)
         self.webhooks = WebhooksAPI(self._transport)
+        self.subscriptions = SubscriptionsAPI(self._transport)
 
     async def resolve_api_version(self) -> APIVersion:
         """Resolve and cache the deployment's API version for this client."""
