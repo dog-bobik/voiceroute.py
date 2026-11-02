@@ -68,6 +68,9 @@ class Member:
     highest_role_position: int
     presence: MemberPresence | None = None
     permissions: Permissions | None = None
+    nickname: str | None = None
+    pending: bool = False
+    version: str | None = None
 
     @property
     def id(self) -> int:
@@ -103,6 +106,9 @@ class Member:
                 if isinstance(data.get("permissions"), list)
                 else None
             ),
+            nickname=_optional_string(data.get("nickname")),
+            pending=bool(data.get("pending", False)),
+            version=_optional_string(data.get("version")),
         )
 
 
