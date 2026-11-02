@@ -125,6 +125,7 @@ class Bot:
         interaction_deduplication_size: int = 1024,
         max_consumer_backoff: float = 30.0,
         component_secret: str | bytes | None = None,
+        component_previous_secrets: tuple[str | bytes, ...] = (),
     ) -> None:
         prefixes = (command_prefix,) if isinstance(command_prefix, str) else tuple(command_prefix)
         self.command_adapter = PrefixCommandAdapter(prefixes)
@@ -138,6 +139,8 @@ class Bot:
             raise ValueError("interaction_deduplication_size must be positive")
         if cache is not None and cache_policy is not None:
             raise ValueError("cache and cache_policy cannot be provided together")
+        if component_secret is None and component_previous_secrets:
+            raise ValueError("component_previous_secrets require component_secret")
         if client is None and token is None:
             raise ValueError("token is required when client is not provided")
         self.client = client or VoiceRouteClient(token=token or "", base_url=base_url)
@@ -184,7 +187,12 @@ class Bot:
         self.application_command_registry = ApplicationCommandRegistry()
         self.command_pipeline = CommandPipeline()
         self.components = (
-            ComponentRouter(component_secret) if component_secret is not None else None
+            ComponentRouter(
+                component_secret,
+                previous_secrets=component_previous_secrets,
+            )
+            if component_secret is not None
+            else None
         )
         self._events: dict[str, list[AsyncHandler]] = {}
         self.dispatcher = EventDispatcher(
