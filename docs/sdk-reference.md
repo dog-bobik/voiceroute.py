@@ -28,7 +28,7 @@ bot.include_router(router)
 
 ## REST resources
 
-The SDK exposes resources through `VoiceRouteClient` and the `voiceroute.api` namespace. The current additions include v1 channels/categories, rich messages, file uploads, threads, polls, webhooks, durable event subscriptions, and application private messages. Mutations that support optimistic concurrency accept `if_match`; retryable writes accept an idempotency key. Opaque cursors and version values remain strings.
+The SDK exposes resources through `VoiceRouteClient` and the `voiceroute.api` namespace. The current additions include v1 channels/categories, roles and permission simulation, stickers and emoji expressions, rich messages, file uploads, threads, polls, AutoMod rules, webhooks, durable event subscriptions, and application private messages. Mutations that support optimistic concurrency accept `if_match`; retryable writes accept an idempotency key. Opaque cursors and version values remain strings.
 
 Private application messages require a separately consented OAuth bearer client. They do not use or inherit the Bot token:
 
@@ -45,6 +45,8 @@ async with oauth.private_messages(access_token) as dms:
 ## Events and state
 
 Use Gateway for live bot events and `SubscriptionsAPI` for durable pull delivery with explicit acknowledgements. These cursors are independent. FSM storage is opt-in; `MemoryStorage` is process-local and `RedisStorage` requires the `redis` extra.
+
+For HTTPS event callbacks, fetch application keys using `client.platform.verification_keys()` from the configured VoiceRoute origin. Pass the trusted key ID to `verify_signed_delivery()` with the original request bytes and an atomic replay store. Ed25519 verification requires the `webhooks` extra; unknown keys fail closed and should trigger a key refresh from the configured origin.
 
 ## Testing and optional dependencies
 
