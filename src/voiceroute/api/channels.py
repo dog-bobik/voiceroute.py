@@ -4,9 +4,22 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 
 from voiceroute.models import Category, Channel
 from voiceroute.transport import Transport
+
+
+@dataclass(frozen=True, slots=True)
+class TypingIndicator:
+    """An active, short-lived typing lease in a channel."""
+
+    user_id: str
+    expires_at: str
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, object]) -> TypingIndicator:
+        return cls(user_id=str(data["userId"]), expires_at=str(data["expiresAt"]))
 
 
 class ChannelsAPI:
@@ -27,6 +40,20 @@ class ChannelsAPI:
         return Channel.from_dict(
             _required_object(payload, "channel lookup"), community_id=community_id
         )
+
+    async def start_typing(self, community_id: str, channel_id: str) -> None:
+        """Start or refresh the bot's ephemeral typing lease."""
+        await self._transport.request(
+            "POST", f"{_channel_path(community_id, channel_id)}/typing", json={}
+        )
+
+    async def typing(self, community_id: str, channel_id: str) -> tuple[TypingIndicator, ...]:
+        """List currently active typing leases in a channel."""
+        payload = await self._transport.request(
+            "GET", f"{_channel_path(community_id, channel_id)}/typing"
+        )
+        items = (payload or {}).get("items", ())
+        return tuple(TypingIndicator.from_dict(item) for item in items if isinstance(item, Mapping))
 
     async def create(
         self,

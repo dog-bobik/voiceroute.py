@@ -4,7 +4,7 @@ from voiceroute.api.application_commands import ApplicationCommandsAPI, CommandS
 from voiceroute.api.audit import AuditAPI
 from voiceroute.api.automod import AutoModAPI
 from voiceroute.api.bots import BotsAPI
-from voiceroute.api.channels import CategoriesAPI, ChannelsAPI
+from voiceroute.api.channels import CategoriesAPI, ChannelsAPI, TypingIndicator
 from voiceroute.api.communities import CommunitiesAPI
 from voiceroute.api.events import EventsAPI
 from voiceroute.api.interactions import InteractionsAPI
@@ -48,6 +48,7 @@ __all__ = [
     "StickersAPI",
     "SubscriptionsAPI",
     "ThreadsAPI",
+    "TypingIndicator",
     "Upload",
     "UploadsAPI",
     "VoiceAPI",
