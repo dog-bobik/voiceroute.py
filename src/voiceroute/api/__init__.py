@@ -13,6 +13,7 @@ from voiceroute.api.mini_apps import MiniAppsAPI, MiniAppState
 from voiceroute.api.moderation import ModerationAPI
 from voiceroute.api.platform import PlatformAPI
 from voiceroute.api.roles import RolesAPI
+from voiceroute.api.uploads import Upload, UploadsAPI
 from voiceroute.api.voice import VoiceAPI
 
 __all__ = [
@@ -31,5 +32,7 @@ __all__ = [
     "ModerationAPI",
     "PlatformAPI",
     "RolesAPI",
+    "Upload",
+    "UploadsAPI",
     "VoiceAPI",
 ]

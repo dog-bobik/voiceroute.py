@@ -137,6 +137,7 @@ class HTTPTransport:
         *,
         params: Mapping[str, str | int | None] | None = None,
         json: Any = None,
+        content: bytes | None = None,
         retryable: bool | None = None,
         idempotency_key: str | None = None,
         if_match: str | None = None,
@@ -150,6 +151,7 @@ class HTTPTransport:
             path,
             params=params,
             json=json,
+            content=content,
             retryable=retryable,
             idempotency_key=idempotency_key,
             if_match=if_match,
@@ -166,6 +168,7 @@ class HTTPTransport:
         *,
         params: Mapping[str, str | int | None] | None = None,
         json: Any = None,
+        content: bytes | None = None,
         retryable: bool | None = None,
         idempotency_key: str | None = None,
         if_match: str | None = None,
@@ -176,6 +179,8 @@ class HTTPTransport:
         """Return JSON and version, request, ETag, and rate-limit metadata."""
         if self._closed:
             raise ClientClosedError("the VoiceRoute client is closed")
+        if json is not None and content is not None:
+            raise ValueError("pass either json or raw content, not both")
 
         method = method.upper()
         if generate_idempotency_key:
@@ -207,6 +212,7 @@ class HTTPTransport:
                         path,
                         params=self._clean_params(params),
                         json=json,
+                        content=content,
                         headers=request_headers or None,
                     )
             except httpx.HTTPError as exc:
@@ -258,10 +264,11 @@ class HTTPTransport:
         *,
         params: Mapping[str, str | int] | None,
         json: Any,
+        content: bytes | None,
         headers: Mapping[str, str] | None,
     ) -> httpx.Response:
         request = self._client.build_request(
-            method, path, params=params, json=json, headers=headers
+            method, path, params=params, json=json, content=content, headers=headers
         )
         response = await self._client.send(request, stream=True)
         content_length = _optional_int(response.headers.get("Content-Length"))

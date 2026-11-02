@@ -1,6 +1,6 @@
 """Async Python SDK and bot framework for VoiceRoute."""
 
-from voiceroute.api import CommandSyncDiff, MiniAppsAPI, MiniAppState
+from voiceroute.api import CommandSyncDiff, MiniAppsAPI, MiniAppState, Upload, UploadsAPI
 from voiceroute.bot import Bot
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands import (
@@ -423,6 +423,8 @@ __all__ = [
     "Unauthorized",
     "UnexpectedRedirect",
     "UnsupportedCommandParameter",
+    "Upload",
+    "UploadsAPI",
     "User",
     "ValidationError",
     "VersionConflict",
