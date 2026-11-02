@@ -13,6 +13,7 @@ from voiceroute import (
     PlatformEvent,
 )
 from voiceroute.bot import ChannelTarget
+from voiceroute.client import VoiceRouteClient
 from voiceroute.events import MessageUpserted
 from voiceroute.models import Channel, Community, Message, MessagePage, User
 
@@ -32,6 +33,28 @@ def test_explicit_empty_intents_are_preserved() -> None:
     runtime = Bot(token="vrb_secret", intents=Intents())
 
     assert runtime.intents.values == ()
+
+
+async def test_injected_client_is_not_closed_by_default() -> None:
+    client = VoiceRouteClient(token="vrb_secret")
+    close = AsyncMock()
+    client.close = close
+    runtime = Bot(client=client)
+
+    await runtime.close()
+
+    close.assert_not_awaited()
+
+
+async def test_injected_client_can_transfer_ownership() -> None:
+    client = VoiceRouteClient(token="vrb_secret")
+    close = AsyncMock()
+    client.close = close
+    runtime = Bot(client=client, owns_client=True)
+
+    await runtime.close()
+
+    close.assert_awaited_once()
 
 
 async def test_command_receives_parsed_arguments() -> None:

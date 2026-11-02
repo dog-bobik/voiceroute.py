@@ -95,7 +95,9 @@ class Bot:
     def __init__(
         self,
         *,
-        token: str,
+        token: str | None = None,
+        client: VoiceRouteClient | None = None,
+        owns_client: bool | None = None,
         community_id: str | None = None,
         channel_id: str | None = None,
         command_prefix: str | Sequence[str] = ("/", "!"),
@@ -128,7 +130,10 @@ class Bot:
             raise ValueError("interaction_deduplication_size must be positive")
         if cache is not None and cache_policy is not None:
             raise ValueError("cache and cache_policy cannot be provided together")
-        self.client = VoiceRouteClient(token=token, base_url=base_url)
+        if client is None and token is None:
+            raise ValueError("token is required when client is not provided")
+        self.client = client or VoiceRouteClient(token=token or "", base_url=base_url)
+        self._owns_client = client is None if owns_client is None else owns_client
         self.community_id = community_id
         self.channel_id = channel_id
         self.command_prefixes = self.command_adapter.prefixes
@@ -521,7 +526,8 @@ class Bot:
                             extra={"name": name},
                         )
                 try:
-                    await self.client.close()
+                    if self._owns_client:
+                        await self.client.close()
                 finally:
                     self.state = RuntimeState.CLOSED
 
