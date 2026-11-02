@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import Any
 
 from voiceroute.models import (
     DeliveryAttempt,
@@ -20,6 +21,15 @@ class SubscriptionsAPI:
 
     def __init__(self, transport: Transport) -> None:
         self._transport = transport
+
+    async def delivery_status(self, application_id: str) -> dict[str, Any]:
+        """Read aggregate delivery health metrics for one application."""
+        payload = await self._transport.request(
+            "GET", f"/api/v1/applications/{application_id}/event-delivery-status"
+        )
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no delivery status")
+        return payload
 
     async def list(self, application_id: str) -> tuple[EventSubscription, ...]:
         payload = await self._transport.request("GET", _collection(application_id))
