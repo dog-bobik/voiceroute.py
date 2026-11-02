@@ -99,6 +99,7 @@ class MessagesAPI:
         attachments: Sequence[Mapping[str, object]] | None = None,
         allowed_mentions: Mapping[str, object] | None = None,
         flags: Sequence[str] | None = None,
+        components: Sequence[Mapping[str, object]] | None = None,
         idempotency_key: str | uuid.UUID | None = None,
     ) -> RichMessage:
         """Patch only supplied v1 fields with optimistic concurrency control."""
@@ -115,6 +116,10 @@ class MessagesAPI:
             body["allowedMentions"] = dict(allowed_mentions)
         if flags is not None:
             body["flags"] = list(flags)
+        if components is not None:
+            if len(components) > 5:
+                raise ValueError("a message cannot contain more than five component rows")
+            body["components"] = [dict(item) for item in components]
         if not body:
             raise ValueError("at least one message field must be supplied")
         payload = await self._transport.request(
