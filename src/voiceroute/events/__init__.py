@@ -11,6 +11,11 @@ from voiceroute.events.cursors import (
 )
 from voiceroute.events.dispatcher import EventDispatcher
 from voiceroute.events.models import AccessLost, BotEvent, InteractionCreated, MessageUpserted
+from voiceroute.events.signatures import (
+    DeliveryReplayStore,
+    InvalidDeliverySignature,
+    verify_signed_delivery,
+)
 from voiceroute.events.sse import SSEDecoder, SSEEvent
 from voiceroute.events.transport import (
     ChannelTarget,
@@ -29,6 +34,7 @@ __all__ = [
     "BotEvent",
     "ChannelTarget",
     "CursorStore",
+    "DeliveryReplayStore",
     "EventDefinition",
     "EventDelivery",
     "EventDispatcher",
@@ -39,6 +45,7 @@ __all__ = [
     "InteractionEventTransport",
     "InteractionSSETransport",
     "InteractionTarget",
+    "InvalidDeliverySignature",
     "LegacySSETransport",
     "MemoryCursorStore",
     "MessageUpserted",
@@ -48,4 +55,5 @@ __all__ = [
     "SSEEvent",
     "StreamCheckpoint",
     "event_definition",
+    "verify_signed_delivery",
 ]

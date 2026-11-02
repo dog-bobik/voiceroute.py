@@ -102,6 +102,7 @@ from voiceroute.events import (
     AccessLost,
     BotEvent,
     CursorStore,
+    DeliveryReplayStore,
     EventDefinition,
     EventDelivery,
     EventDispatcher,
@@ -112,12 +113,14 @@ from voiceroute.events import (
     InteractionEventTransport,
     InteractionSSETransport,
     InteractionTarget,
+    InvalidDeliverySignature,
     LegacySSETransport,
     MemoryCursorStore,
     MessageUpserted,
     RedisCursorStore,
     SQLiteCursorStore,
     StreamCheckpoint,
+    verify_signed_delivery,
 )
 from voiceroute.extensions import Extension, ExtensionCommand, command, listener
 from voiceroute.fsm import (
@@ -359,6 +362,7 @@ __all__ = [
     "CursorStore",
     "CursorStoreError",
     "DeliveryLease",
+    "DeliveryReplayStore",
     "EventDefinition",
     "EventDelivery",
     "EventDispatcher",
@@ -415,6 +419,7 @@ __all__ = [
     "InteractionResponse",
     "InteractionSSETransport",
     "InteractionTarget",
+    "InvalidDeliverySignature",
     "LegacyCapabilities",
     "LegacySSETransport",
     "LiveKitMediaTransport",
@@ -538,6 +543,7 @@ __all__ = [
     "listener",
     "loop",
     "max_concurrency",
+    "verify_signed_delivery",
 ]
 
 __version__ = "0.1.0.dev1"
