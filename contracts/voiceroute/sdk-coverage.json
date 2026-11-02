@@ -2,7 +2,7 @@
   "asyncapi_channels": [
     "gateway"
   ],
-  "classification_note": "review-required means auth permits botToken; it does not assert SDK coverage",
+  "classification_note": "missing means this inventory has no verified method/model/test mapping yet",
   "counts": {
     "bot_candidate": 138,
     "events": 83,
@@ -21,7 +21,7 @@
       "resource_ordering_fields": [
         "applicationId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "APPLICATION_USER_DATA_DELETION_REQUESTED",
@@ -32,7 +32,7 @@
       "resource_ordering_fields": [
         "applicationId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "ATTACHMENT_SCAN_COMPLETED",
@@ -41,7 +41,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "AUDIT_LOG_ENTRY_CREATED",
@@ -51,7 +51,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "AUTOMOD_ACTION_EXECUTED",
@@ -62,7 +62,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "AUTOMOD_RULE_CREATED",
@@ -72,7 +72,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "AUTOMOD_RULE_DELETED",
@@ -82,7 +82,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "AUTOMOD_RULE_UPDATED",
@@ -92,7 +92,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "BAN_CREATED",
@@ -102,7 +102,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "BAN_DELETED",
@@ -112,7 +112,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CATEGORY_CREATED",
@@ -125,7 +125,7 @@
         "communityId",
         "categoryId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CATEGORY_DELETED",
@@ -138,7 +138,7 @@
         "communityId",
         "categoryId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CATEGORY_ORDER_UPDATED",
@@ -151,7 +151,7 @@
         "communityId",
         "categoryId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CATEGORY_UPDATED",
@@ -164,7 +164,7 @@
         "communityId",
         "categoryId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CHANNEL_CREATED",
@@ -177,7 +177,7 @@
         "communityId",
         "channelId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CHANNEL_DELETED",
@@ -190,7 +190,7 @@
         "communityId",
         "channelId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CHANNEL_ORDER_UPDATED",
@@ -203,7 +203,7 @@
         "communityId",
         "channelId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CHANNEL_PERMISSIONS_UPDATED",
@@ -216,7 +216,7 @@
         "communityId",
         "channelId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "CHANNEL_UPDATED",
@@ -229,7 +229,7 @@
         "communityId",
         "channelId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "COMMUNITY_AVAILABLE",
@@ -240,7 +240,7 @@
       "resource_ordering_fields": [
         "communityId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "COMMUNITY_DELETED",
@@ -252,7 +252,7 @@
       "resource_ordering_fields": [
         "communityId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "COMMUNITY_UNAVAILABLE",
@@ -263,7 +263,7 @@
       "resource_ordering_fields": [
         "communityId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "COMMUNITY_UPDATED",
@@ -275,7 +275,7 @@
       "resource_ordering_fields": [
         "communityId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "DIRECT_MESSAGE_CREATED",
@@ -285,7 +285,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "DIRECT_MESSAGE_DELETED",
@@ -295,7 +295,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "DIRECT_MESSAGE_UPDATED",
@@ -305,7 +305,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "EXPRESSION_CREATED",
@@ -315,7 +315,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "EXPRESSION_DELETED",
@@ -325,7 +325,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "EXPRESSION_UPDATED",
@@ -335,7 +335,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "FORUM_UPDATED",
@@ -345,7 +345,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "INSTALLATION_CREATED",
@@ -357,7 +357,7 @@
       "resource_ordering_fields": [
         "installationId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "INSTALLATION_DELETED",
@@ -369,7 +369,7 @@
       "resource_ordering_fields": [
         "installationId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "INSTALLATION_UPDATED",
@@ -381,7 +381,7 @@
       "resource_ordering_fields": [
         "installationId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "INTERACTION_CREATED",
@@ -393,7 +393,7 @@
       "resource_ordering_fields": [
         "interactionId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "INVITE_CREATED",
@@ -403,7 +403,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "INVITE_DELETED",
@@ -413,7 +413,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MEMBERS_CHUNK",
@@ -422,7 +422,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MEMBER_JOINED",
@@ -435,7 +435,7 @@
         "communityId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MEMBER_LEFT",
@@ -449,7 +449,7 @@
         "communityId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MEMBER_UPDATED",
@@ -462,7 +462,7 @@
         "communityId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MESSAGES_BULK_DELETED",
@@ -472,7 +472,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MESSAGE_CREATED",
@@ -487,7 +487,7 @@
         "messageId",
         "messageSeq"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MESSAGE_DELETED",
@@ -502,7 +502,7 @@
         "messageId",
         "messageSeq"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MESSAGE_PINS_UPDATED",
@@ -517,7 +517,7 @@
         "messageId",
         "messageSeq"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MESSAGE_UPDATED",
@@ -532,56 +532,56 @@
         "messageId",
         "messageSeq"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "MINI_APP_ACCESS_REVOKED",
       "handler_aliases": [],
       "payload_model": null,
       "resource_ordering_fields": [],
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "event": "MINI_APP_ACTION_CANCELLED",
       "handler_aliases": [],
       "payload_model": null,
       "resource_ordering_fields": [],
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "event": "MINI_APP_ACTION_CREATED",
       "handler_aliases": [],
       "payload_model": null,
       "resource_ordering_fields": [],
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "event": "MINI_APP_POLICY_UPDATED",
       "handler_aliases": [],
       "payload_model": null,
       "resource_ordering_fields": [],
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "event": "MINI_APP_SESSION_CLOSED",
       "handler_aliases": [],
       "payload_model": null,
       "resource_ordering_fields": [],
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "event": "MINI_APP_SESSION_OPENED",
       "handler_aliases": [],
       "payload_model": null,
       "resource_ordering_fields": [],
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "event": "MINI_APP_STATE_UPDATED",
       "handler_aliases": [],
       "payload_model": null,
       "resource_ordering_fields": [],
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "event": "POLL_CLOSED",
@@ -595,7 +595,7 @@
         "channelId",
         "pollId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "POLL_CREATED",
@@ -609,7 +609,7 @@
         "channelId",
         "pollId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "POLL_VOTE_ADDED",
@@ -623,7 +623,7 @@
         "channelId",
         "pollId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "POLL_VOTE_REMOVED",
@@ -637,7 +637,7 @@
         "channelId",
         "pollId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "PRESENCE_UPDATED",
@@ -650,7 +650,7 @@
         "communityId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "REACTIONS_CLEARED",
@@ -659,7 +659,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "REACTION_ADDED",
@@ -674,7 +674,7 @@
         "messageId",
         "messageSeq"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "REACTION_REMOVED",
@@ -689,7 +689,7 @@
         "messageId",
         "messageSeq"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "ROLE_CREATED",
@@ -702,7 +702,7 @@
         "communityId",
         "roleId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "ROLE_DELETED",
@@ -715,7 +715,7 @@
         "communityId",
         "roleId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "ROLE_ORDER_UPDATED",
@@ -728,7 +728,7 @@
         "communityId",
         "roleId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "ROLE_UPDATED",
@@ -741,7 +741,7 @@
         "communityId",
         "roleId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "SOUNDBOARD_PLAYED",
@@ -751,7 +751,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "STAGE_UPDATED",
@@ -761,7 +761,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "THREAD_CREATED",
@@ -774,7 +774,7 @@
         "communityId",
         "threadId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "THREAD_DELETED",
@@ -787,7 +787,7 @@
         "communityId",
         "threadId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "THREAD_MEMBERS_UPDATED",
@@ -800,7 +800,7 @@
         "communityId",
         "threadId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "THREAD_MEMBER_UPDATED",
@@ -813,7 +813,7 @@
         "communityId",
         "threadId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "THREAD_UPDATED",
@@ -826,7 +826,7 @@
         "communityId",
         "threadId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "TIMEOUT_UPDATED",
@@ -836,7 +836,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "TYPING_STARTED",
@@ -846,7 +846,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "USER_INSTALLATION_CREATED",
@@ -859,7 +859,7 @@
         "installationId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "USER_INSTALLATION_DELETED",
@@ -872,7 +872,7 @@
         "installationId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "USER_INSTALLATION_UPDATED",
@@ -885,7 +885,7 @@
         "installationId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "VOICE_RECEIVE_STARTED",
@@ -899,7 +899,7 @@
         "channelId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "VOICE_RECEIVE_STOPPED",
@@ -913,7 +913,7 @@
         "channelId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "VOICE_SERVER_UPDATED",
@@ -927,7 +927,7 @@
         "channelId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "VOICE_STATE_UPDATED",
@@ -941,7 +941,7 @@
         "channelId",
         "userId"
       ],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "WEBHOOK_CREATED",
@@ -951,7 +951,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "WEBHOOK_DELETED",
@@ -961,7 +961,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     },
     {
       "event": "WEBHOOK_UPDATED",
@@ -971,7 +971,7 @@
       ],
       "payload_model": "voiceroute.models.PlatformEvent",
       "resource_ordering_fields": [],
-      "status": "generic-dispatch"
+      "status": "partial"
     }
   ],
   "operations": [
@@ -995,7 +995,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1017,7 +1017,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1039,7 +1039,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1061,7 +1061,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1083,7 +1083,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1099,7 +1099,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1115,7 +1115,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1138,7 +1138,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1160,7 +1160,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1182,7 +1182,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1204,7 +1204,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1226,7 +1226,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1248,7 +1248,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1270,7 +1270,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1286,7 +1286,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1308,7 +1308,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1330,7 +1330,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1352,7 +1352,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1374,7 +1374,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1396,7 +1396,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1418,7 +1418,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1434,7 +1434,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1450,7 +1450,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1469,7 +1469,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1488,7 +1488,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1507,7 +1507,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1526,7 +1526,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1545,7 +1545,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1564,7 +1564,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1583,7 +1583,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1602,7 +1602,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1618,7 +1618,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1637,7 +1637,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1653,7 +1653,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1669,7 +1669,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1685,7 +1685,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1701,7 +1701,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1717,7 +1717,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1733,7 +1733,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1749,7 +1749,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1765,7 +1765,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1781,7 +1781,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1797,7 +1797,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1813,7 +1813,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1829,7 +1829,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1845,7 +1845,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1861,7 +1861,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1877,7 +1877,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1893,7 +1893,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1909,7 +1909,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1925,7 +1925,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -1948,7 +1948,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1973,7 +1973,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -1998,7 +1998,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2014,7 +2014,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2030,7 +2030,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2046,7 +2046,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2062,7 +2062,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2081,7 +2081,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2100,7 +2100,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2119,7 +2119,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2138,7 +2138,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2157,7 +2157,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2176,7 +2176,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2192,7 +2192,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2211,7 +2211,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2230,7 +2230,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2249,7 +2249,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2268,7 +2268,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2287,7 +2287,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2306,7 +2306,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2325,7 +2325,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2344,7 +2344,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2363,7 +2363,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2382,7 +2382,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2401,7 +2401,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2420,7 +2420,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2439,7 +2439,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2458,7 +2458,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2474,7 +2474,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2493,7 +2493,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2512,7 +2512,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2528,7 +2528,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2544,7 +2544,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2560,7 +2560,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2576,7 +2576,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2595,7 +2595,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2611,7 +2611,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2627,7 +2627,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2643,7 +2643,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2662,7 +2662,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2678,7 +2678,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2697,7 +2697,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2716,7 +2716,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2735,7 +2735,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2754,7 +2754,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2770,7 +2770,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2789,7 +2789,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2808,7 +2808,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2827,7 +2827,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2843,7 +2843,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2859,7 +2859,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -2878,7 +2878,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2897,7 +2897,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2916,7 +2916,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2935,7 +2935,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2954,7 +2954,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2970,7 +2970,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -2989,7 +2989,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3008,7 +3008,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3027,7 +3027,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3049,7 +3049,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3071,7 +3071,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3093,7 +3093,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3112,7 +3112,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3134,7 +3134,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3153,7 +3153,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3172,7 +3172,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3191,7 +3191,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3210,7 +3210,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3229,7 +3229,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3248,7 +3248,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3267,7 +3267,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3286,7 +3286,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3305,7 +3305,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3324,7 +3324,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3340,7 +3340,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3359,7 +3359,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3378,7 +3378,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3397,7 +3397,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3416,7 +3416,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3435,7 +3435,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3454,7 +3454,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3473,7 +3473,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3492,7 +3492,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3511,7 +3511,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3530,7 +3530,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3549,7 +3549,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3568,7 +3568,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3587,7 +3587,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3603,7 +3603,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3619,7 +3619,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3635,7 +3635,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3654,7 +3654,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3670,7 +3670,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3686,7 +3686,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3702,7 +3702,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3721,7 +3721,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3737,7 +3737,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -3756,7 +3756,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3772,7 +3772,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3791,7 +3791,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3810,7 +3810,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3829,7 +3829,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3848,7 +3848,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3867,7 +3867,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3886,7 +3886,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -3902,7 +3902,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -3918,7 +3918,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -3934,7 +3934,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -3950,7 +3950,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -3966,7 +3966,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -3982,7 +3982,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -3998,7 +3998,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4014,7 +4014,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4030,7 +4030,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4046,7 +4046,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4062,7 +4062,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4078,7 +4078,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4094,7 +4094,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4110,7 +4110,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4126,7 +4126,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4142,7 +4142,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4158,7 +4158,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4174,7 +4174,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4190,7 +4190,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4206,7 +4206,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4222,7 +4222,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4238,7 +4238,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4254,7 +4254,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4270,7 +4270,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4286,7 +4286,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4302,7 +4302,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4318,7 +4318,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4334,7 +4334,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4350,7 +4350,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4366,7 +4366,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4382,7 +4382,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4398,7 +4398,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4414,7 +4414,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4433,7 +4433,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4452,7 +4452,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4468,7 +4468,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4484,7 +4484,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4503,7 +4503,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4519,7 +4519,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4535,7 +4535,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4551,7 +4551,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4567,7 +4567,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4583,7 +4583,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4599,7 +4599,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4615,7 +4615,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4631,7 +4631,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4647,7 +4647,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4663,7 +4663,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4679,7 +4679,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4695,7 +4695,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4711,7 +4711,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4727,7 +4727,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4744,7 +4744,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4761,7 +4761,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4778,7 +4778,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4794,7 +4794,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4810,7 +4810,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4826,7 +4826,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4842,7 +4842,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4858,7 +4858,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4874,7 +4874,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4890,7 +4890,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4906,7 +4906,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "unmapped"
+      "status": "missing"
     },
     {
       "auth_surfaces": [
@@ -4922,7 +4922,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4938,7 +4938,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4954,7 +4954,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4970,7 +4970,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -4986,7 +4986,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5002,7 +5002,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5018,7 +5018,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5034,7 +5034,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5050,7 +5050,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5066,7 +5066,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5082,7 +5082,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5098,7 +5098,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5114,7 +5114,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5130,7 +5130,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5146,7 +5146,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5162,7 +5162,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5178,7 +5178,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5194,7 +5194,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5210,7 +5210,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     },
     {
       "auth_surfaces": [
@@ -5226,7 +5226,7 @@
       "request_dto": null,
       "response_dto": null,
       "sdk_method": null,
-      "status": "excluded-auth"
+      "status": "excluded"
     }
   ],
   "source": {

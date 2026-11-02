@@ -69,7 +69,7 @@ def event_inventory(names: list[Any]) -> list[dict[str, Any]]:
                 "resource_ordering_fields": (
                     list(definition.ordering_fields) if definition else []
                 ),
-                "status": "generic-dispatch" if definition else "unmapped",
+                "status": "partial" if definition else "missing",
             }
         )
     return inventory
@@ -88,9 +88,9 @@ def operations(document: dict[str, Any]) -> list[dict[str, str]]:
             security = operation.get("security", document.get("security", []))
             clauses = [sorted(map(str, clause)) for clause in security]
             if not any("botToken" in clause for clause in clauses):
-                status = "excluded-auth"
+                status = "excluded"
             else:
-                status = "unmapped"
+                status = "missing"
             resource = next(
                 (module for segment, module in RESOURCE_MODULES.items() if segment in path), None
             )
@@ -140,8 +140,8 @@ def main() -> int:
         },
         "counts": {
             "operations": len(ops),
-            "bot_candidate": sum(item["status"] != "excluded-auth" for item in ops),
-            "excluded_auth": sum(item["status"] == "excluded-auth" for item in ops),
+            "bot_candidate": sum(item["status"] != "excluded" for item in ops),
+            "excluded_auth": sum(item["status"] == "excluded" for item in ops),
             "events": len(events),
             "public_resource_modules": len(RESOURCE_MODULES),
         },
@@ -149,7 +149,7 @@ def main() -> int:
         "events": event_map,
         "asyncapi_channels": sorted(asyncapi.get("channels", {})),
         "classification_note": (
-            "review-required means auth permits botToken; it does not assert SDK coverage"
+            "missing means this inventory has no verified method/model/test mapping yet"
         ),
     }
     if args.json:
@@ -169,7 +169,7 @@ def main() -> int:
         print(f"{name}: {value}")
     print("\nBot candidate operations requiring manual method/model/test mapping:")
     for item in ops:
-        if item["status"] != "excluded-auth":
+        if item["status"] != "excluded":
             print(f"{item['method']:6} {item['path']:75} {item['operationId']}")
     print("\nEvents:")
     events_report = report["events"]
