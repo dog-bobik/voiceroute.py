@@ -28,7 +28,7 @@ bot.include_router(router)
 
 ## REST resources
 
-The SDK exposes resources through `VoiceRouteClient` and the `voiceroute.api` namespace. The current additions include v1 channels/categories, roles and permission simulation, stickers and emoji expressions, rich messages, file uploads, threads, polls, AutoMod rules, webhooks, durable event subscriptions, and application private messages. Mutations that support optimistic concurrency accept `if_match`; retryable writes accept an idempotency key. Opaque cursors and version values remain strings.
+The SDK exposes resources through `VoiceRouteClient` and the `voiceroute.api` namespace. The current additions include v1 channels/categories, roles and permission simulation, stickers and emoji expressions, rich messages, file upload and streamed download, threads, polls, AutoMod rules, webhooks, durable event subscriptions, and application private messages. `client.members.iter_members()` and `client.members.iter_search()` consume cursor pages lazily; `client.channels.start_typing()` starts an ephemeral typing lease. Mutations that support optimistic concurrency accept `if_match`; retryable writes accept an idempotency key. Opaque cursors and version values remain strings.
 
 Private application messages require a separately consented OAuth bearer client. They do not use or inherit the Bot token:
 
