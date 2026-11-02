@@ -242,6 +242,7 @@ from voiceroute.models import (
     VoiceTrack,
     Webhook,
 )
+from voiceroute.oauth import AuthorizationRequest, OAuthClient, OAuthTokens, OAuthTokenStore
 from voiceroute.runtime import RuntimeState
 from voiceroute.state import CacheChange, CachePolicy, StateCache
 from voiceroute.state_models import (
@@ -286,6 +287,7 @@ __all__ = [
     "AuditPage",
     "AuditTarget",
     "AuthenticationRequired",
+    "AuthorizationRequest",
     "AutoModConfig",
     "BadArgument",
     "BadRequest",
@@ -432,6 +434,9 @@ __all__ = [
     "NoChannelsAvailable",
     "NotFound",
     "OAuthCapabilities",
+    "OAuthClient",
+    "OAuthTokenStore",
+    "OAuthTokens",
     "PayloadTooLarge",
     "Permission",
     "PermissionOverride",
