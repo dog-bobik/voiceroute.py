@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import inspect
 from collections.abc import Callable, Iterator, Sequence
 from dataclasses import replace
 from typing import TypeVar
 
 from voiceroute.commands.core import Command, CommandCallback, CommandRegistry
-from voiceroute.commands.pipeline import Check
+from voiceroute.commands.pipeline import Check, DependencyProvider, Middleware
 
 HandlerT = TypeVar("HandlerT", bound=CommandCallback)
 
@@ -24,6 +25,8 @@ class Router:
         self._commands: list[Command] = []
         self._routers: list[Router] = []
         self._filters: list[Check] = []
+        self._middleware: list[Middleware] = []
+        self._providers: dict[str, DependencyProvider] = {}
 
     @property
     def commands(self) -> tuple[Command, ...]:
@@ -34,18 +37,49 @@ class Router:
         """Iterate declarations depth-first in registration order."""
         yield from self._iter_commands(())
 
-    def _iter_commands(self, inherited_filters: tuple[Check, ...]) -> Iterator[Command]:
+    def _iter_commands(
+        self,
+        inherited_filters: tuple[Check, ...],
+        inherited_middleware: tuple[Middleware, ...] = (),
+        inherited_providers: tuple[tuple[str, DependencyProvider], ...] = (),
+    ) -> Iterator[Command]:
         active_filters = (*inherited_filters, *self._filters)
+        active_middleware = (*inherited_middleware, *self._middleware)
+        active_providers = dict(inherited_providers)
+        active_providers.update(self._providers)
         for command in self._commands:
-            yield replace(command, checks=(*active_filters, *command.checks))
+            yield replace(
+                command,
+                checks=(*active_filters, *command.checks),
+                middleware=(*active_middleware, *command.middleware),
+                dependency_providers=tuple(
+                    (*active_providers.items(), *command.dependency_providers)
+                ),
+            )
         for router in self._routers:
-            yield from router._iter_commands(active_filters)
+            yield from router._iter_commands(
+                active_filters, active_middleware, tuple(active_providers.items())
+            )
 
     def add_filter(self, predicate: Check) -> None:
         """Apply a check to every command declared in this router subtree."""
         if not callable(predicate):
             raise TypeError("router filter must be callable")
         self._filters.append(predicate)
+
+    def add_middleware(self, middleware: Middleware) -> None:
+        """Apply async middleware to all commands in this router subtree."""
+        if not inspect.iscoroutinefunction(middleware):
+            raise TypeError("router middleware must be an async function")
+        self._middleware.append(middleware)
+
+    def add_provider(self, name: str, provider: DependencyProvider) -> None:
+        """Inject a root or per-command dependency throughout this router subtree."""
+        if not name:
+            raise ValueError("dependency name cannot be empty")
+        if name in self._providers:
+            raise ValueError(f"router dependency provider is already registered: {name}")
+        self._providers[name] = provider
 
     def command(
         self,

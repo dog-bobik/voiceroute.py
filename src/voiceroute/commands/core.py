@@ -15,6 +15,8 @@ from voiceroute.commands.pipeline import (
     Check,
     ConcurrencyLimit,
     Cooldown,
+    DependencyProvider,
+    Middleware,
     command_checks,
     command_concurrency,
     command_cooldown,
@@ -66,6 +68,8 @@ class Command:
     checks: tuple[Check, ...] = ()
     cooldown: Cooldown | None = None
     concurrency: ConcurrencyLimit | None = None
+    middleware: tuple[Middleware, ...] = ()
+    dependency_providers: tuple[tuple[str, DependencyProvider], ...] = ()
 
     @property
     def name(self) -> str:

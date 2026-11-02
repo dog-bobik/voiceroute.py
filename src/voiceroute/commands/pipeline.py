@@ -121,14 +121,24 @@ class CommandPipeline:
         concurrency_key = await self._acquire_concurrency(command, context)
         try:
             async with AsyncExitStack() as stack:
-                await self._resolve_providers(context, stack)
-                await self._run_middleware(command, context, arguments)
+                providers = getattr(command, "dependency_providers", ())
+                await self._resolve_providers(context, stack, providers)
+                await self._run_middleware(
+                    command, context, arguments, getattr(command, "middleware", ())
+                )
         finally:
             if concurrency_key is not None:
                 await self._release_concurrency(concurrency_key)
 
-    async def _resolve_providers(self, context: Context, stack: AsyncExitStack) -> None:
-        for name, provider in self._providers.items():
+    async def _resolve_providers(
+        self,
+        context: Context,
+        stack: AsyncExitStack,
+        scoped: Sequence[tuple[str, DependencyProvider]],
+    ) -> None:
+        providers = dict(self._providers)
+        providers.update(scoped)
+        for name, provider in providers.items():
             value = provider(context) if callable(provider) else provider
             if inspect.isawaitable(value):
                 value = await value
@@ -193,9 +203,12 @@ class CommandPipeline:
         command: PipelineCommand,
         context: Context,
         arguments: Sequence[str],
+        scoped: Sequence[Middleware],
     ) -> None:
+        middleware_chain = (*self._middleware, *scoped)
+
         async def call_at(index: int) -> None:
-            if index == len(self._middleware):
+            if index == len(middleware_chain):
                 await command.invoke(context, arguments)
                 return
 
@@ -208,7 +221,7 @@ class CommandPipeline:
                 called = True
                 await call_at(index + 1)
 
-            await self._middleware[index](context, call_next)
+            await middleware_chain[index](context, call_next)
 
         await call_at(0)
 
