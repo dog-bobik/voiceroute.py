@@ -6,11 +6,13 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
+from voiceroute.api.channels import ChannelsAPI
 from voiceroute.api.communities import CommunitiesAPI
 from voiceroute.api.members import MembersAPI
 from voiceroute.api.messages import MessagesAPI
+from voiceroute.api.roles import RolesAPI
 from voiceroute.errors import Conflict
-from voiceroute.models import Member, Message, Permissions
+from voiceroute.models import Channel, Member, Message, Permissions, Role
 
 _REPLY_NAMESPACE = uuid.UUID("88769cac-916c-4a4a-a370-a1f971729e7b")
 
@@ -25,6 +27,8 @@ class Context:
     _messages: MessagesAPI = field(repr=False)
     _members: MembersAPI | None = field(default=None, repr=False)
     _communities: CommunitiesAPI | None = field(default=None, repr=False)
+    _channels: ChannelsAPI | None = field(default=None, repr=False)
+    _roles: RolesAPI | None = field(default=None, repr=False)
     invoked_with: str | None = None
     prefix: str | None = None
     data: dict[str, Any] = field(default_factory=dict)
@@ -61,16 +65,22 @@ class Context:
         return await self.fetch_message(self.replied_message_seq)
 
     async def fetch_member(self, user_id: int) -> Member | None:
-        """Fetch an active community member visible in this channel."""
+        """Fetch one active community member through the selected member adapter."""
         if user_id <= 0:
             raise ValueError("user_id must be positive")
         if self._members is None:
             raise RuntimeError("member API is unavailable in this context")
-        return await self._members.get(
-            self.message.community_id,
-            user_id,
-            channel_id=self.message.channel_id,
-        )
+        return await self._members.get(self.message.community_id, user_id)
+
+    async def fetch_channel(self, channel_id: str) -> Channel:
+        if self._channels is None:
+            raise RuntimeError("channel API is unavailable in this context")
+        return await self._channels.get(self.message.community_id, channel_id)
+
+    async def fetch_role(self, role_id: str) -> Role:
+        if self._roles is None:
+            raise RuntimeError("role API is unavailable in this context")
+        return await self._roles.get_v1(self.message.community_id, role_id)
 
     async def fetch_bot_permissions(self) -> Permissions | None:
         """Fetch the bot's effective permissions in the invoking channel."""

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import inspect
+import re
 import types
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
@@ -22,9 +23,11 @@ from voiceroute.errors import (
     BadArgument,
     CommandNotFound,
     MissingRequiredArgument,
+    NotFound,
     TooManyArguments,
     UnsupportedCommandParameter,
 )
+from voiceroute.models import Channel, Member, Role
 
 CommandCallback = Callable[..., Awaitable[None]]
 
@@ -94,8 +97,32 @@ class Command:
         )
 
     async def invoke(self, context: Context, arguments: Sequence[str]) -> None:
-        converted = self.convert_arguments(arguments)
+        converted = await self.convert_arguments_async(context, arguments)
         await self.callback(context, *converted)
+
+    async def convert_arguments_async(
+        self, context: Context, arguments: Sequence[str]
+    ) -> tuple[object, ...]:
+        if not self.parameters:
+            return ()
+        values: list[object] = []
+        position = 0
+        for parameter in self.parameters:
+            if parameter.variadic:
+                for argument in arguments[position:]:
+                    values.append(await _convert_async(context, argument, parameter))
+                position = len(arguments)
+                continue
+            if position < len(arguments):
+                values.append(await _convert_async(context, arguments[position], parameter))
+                position += 1
+                continue
+            if parameter.required:
+                raise MissingRequiredArgument(self.name, parameter.name)
+            values.append(parameter.default)
+        if position < len(arguments):
+            raise TooManyArguments(self.name, tuple(arguments[position:]))
+        return tuple(values)
 
     def convert_arguments(self, arguments: Sequence[str]) -> tuple[object, ...]:
         # Context-only callbacks keep the original framework behavior: raw arguments
@@ -233,6 +260,8 @@ def _alias_path(command_path: tuple[str, ...], alias: str) -> tuple[str, ...]:
 def _is_supported_annotation(annotation: object) -> bool:
     if annotation in (str, int, float, bool):
         return True
+    if annotation in (Member, Channel, Role):
+        return True
     if isinstance(annotation, type) and issubclass(annotation, Enum):
         return all(isinstance(member.value, (str, int)) for member in annotation)
     origin = get_origin(annotation)
@@ -278,3 +307,32 @@ def _convert(value: str, annotation: object, parameter_name: str) -> object:
         type_name = getattr(annotation, "__name__", str(annotation))
         raise BadArgument(parameter_name, value, type_name) from exc
     raise UnsupportedCommandParameter(parameter_name, repr(annotation))
+
+
+async def _convert_async(context: Context, value: str, parameter: CommandParameter) -> object:
+    annotation = parameter.annotation
+    origin = get_origin(annotation)
+    if origin in (Union, types.UnionType):
+        annotation = next(item for item in get_args(annotation) if item is not type(None))
+    if annotation not in (Member, Channel, Role):
+        return _convert(value, parameter.annotation, parameter.name)
+    patterns = {
+        Member: r"^(?:<@!?(\d+)>|(\d+))$",
+        Channel: r"^(?:<#([0-9a-fA-F-]{36})>|([0-9a-fA-F-]{36}))$",
+        Role: r"^(?:<@&([0-9a-fA-F-]{36})>|([0-9a-fA-F-]{36}))$",
+    }
+    match = re.fullmatch(patterns[annotation], value)
+    if match is None:
+        raise BadArgument(parameter.name, value, annotation.__name__)
+    identifier = next(part for part in match.groups() if part is not None)
+    try:
+        if annotation is Member:
+            entity = await context.fetch_member(int(identifier))
+            if entity is None:
+                raise LookupError("member is unavailable")
+            return entity
+        if annotation is Channel:
+            return await context.fetch_channel(identifier)
+        return await context.fetch_role(identifier)
+    except (LookupError, NotFound, ValueError) as exc:
+        raise BadArgument(parameter.name, value, annotation.__name__) from exc

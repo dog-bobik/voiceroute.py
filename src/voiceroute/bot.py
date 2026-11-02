@@ -820,6 +820,8 @@ class Bot:
             _messages=self.client.messages,
             _members=self.client.members,
             _communities=self.client.communities,
+            _channels=self.client.channels,
+            _roles=self.client.roles,
             invoked_with=invocation.invoked_with,
             prefix=invocation.prefix,
         )
