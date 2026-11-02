@@ -57,6 +57,13 @@ class PrivateMessagesAPI:
         items = payload.get("items", ())
         return tuple(item for item in items if isinstance(item, dict)), payload.get("nextCursor")
 
+    async def get_message(self, channel_id: str, message_id: str) -> dict[str, Any]:
+        """Fetch one private message in a currently authorized conversation."""
+        payload = await self._transport.request(
+            "GET", f"/api/v1/application-dms/{channel_id}/messages/{message_id}"
+        )
+        return _object(payload, "private message lookup")
+
     async def send(
         self,
         channel_id: str,
