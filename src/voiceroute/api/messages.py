@@ -278,6 +278,14 @@ class MessagesAPI:
         )
         return _required_message(payload, "reaction update")
 
+    async def clear_reactions_v1(self, community_id: str, channel_id: str, message_id: str) -> None:
+        """Clear every reaction from a UUID-addressed v1 message."""
+        await self._transport.request(
+            "DELETE",
+            f"{self._v1_message_path(community_id, channel_id, message_id)}/reactions",
+            retryable=True,
+        )
+
     async def pins(
         self,
         community_id: str,

@@ -53,6 +53,7 @@ await client.messages.set_reaction(
     "👍",
     active=True,
 )
+await client.messages.clear_reactions_v1(community_id, channel_id, rich_message.id)
 ```
 
 Сервер по-прежнему проверяет членство бота, видимость канала и необходимые права.
