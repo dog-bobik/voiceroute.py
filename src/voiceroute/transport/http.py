@@ -2,6 +2,7 @@
 
 import asyncio
 import random
+import re
 import uuid
 from collections.abc import AsyncIterator, Mapping
 from contextlib import asynccontextmanager
@@ -129,6 +130,7 @@ class HTTPTransport:
         self._concurrency = asyncio.Semaphore(max_concurrency)
         self._max_response_bytes = max_response_bytes
         self.last_rate_limit = RateLimitMetadata()
+        self._route_buckets: dict[tuple[str, str], str] = {}
 
     async def request(
         self,
@@ -203,8 +205,9 @@ class HTTPTransport:
             request_headers["X-Request-ID"] = request_id
 
         response: httpx.Response | None = None
+        route_key = _rate_limit_route_key(method, path)
         for attempt in range(1, self._max_attempts + 1):
-            await self._rate_limiter.acquire()
+            await self._rate_limiter.acquire(self._route_buckets.get(route_key))
             try:
                 async with self._concurrency:
                     response = await self._request_limited(
@@ -220,6 +223,10 @@ class HTTPTransport:
                     await self._sleep_before_retry(attempt)
                     continue
                 raise TransportError("VoiceRoute request failed") from exc
+
+            bucket = response.headers.get("X-RateLimit-Bucket")
+            if bucket:
+                self._route_buckets[route_key] = bucket
 
             if response.status_code == 429 and can_retry and attempt < self._max_attempts:
                 await self._sleep_for_rate_limit(response, attempt)
@@ -307,11 +314,15 @@ class HTTPTransport:
         if self._closed:
             raise ClientClosedError("the VoiceRoute client is closed")
 
-        await self._rate_limiter.acquire()
+        route_key = _rate_limit_route_key("GET", path)
+        await self._rate_limiter.acquire(self._route_buckets.get(route_key))
         try:
             async with self._client.stream(
                 "GET", path, params=self._clean_params(params), headers=headers
             ) as response:
+                bucket = response.headers.get("X-RateLimit-Bucket")
+                if bucket:
+                    self._route_buckets[route_key] = bucket
                 if response.is_error:
                     await response.aread()
                     self._raise_for_response(response)
@@ -427,6 +438,22 @@ class HTTPTransport:
         value = details.get("retryAfterMs") if details is not None else None
         milliseconds = _optional_float(str(value)) if value is not None else None
         return milliseconds / 1000 if milliseconds is not None else None
+
+
+_UUID_SEGMENT = re.compile(
+    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+)
+
+
+def _rate_limit_route_key(method: str, path: str) -> tuple[str, str]:
+    """Normalize resource IDs and secret path tokens before storing bucket mappings."""
+    segments = []
+    for segment in path.split("?")[0].split("/"):
+        if segment.isdecimal() or _UUID_SEGMENT.fullmatch(segment) or len(segment) > 32:
+            segments.append("{id}")
+        else:
+            segments.append(segment)
+    return method.upper(), "/".join(segments)
 
 
 def _optional_string(value: object) -> str | None:
