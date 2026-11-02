@@ -7,6 +7,7 @@ import inspect
 import time
 from collections import defaultdict, deque
 from collections.abc import Awaitable, Callable, Sequence
+from contextlib import AsyncExitStack
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Protocol, TypeVar, cast
@@ -18,6 +19,7 @@ from voiceroute.models import Permission
 Check = Callable[[Context], bool | Awaitable[bool]]
 NextMiddleware = Callable[[], Awaitable[None]]
 Middleware = Callable[[Context, NextMiddleware], Awaitable[None]]
+DependencyProvider = object | Callable[[Context], object | Awaitable[object]]
 CallbackT = TypeVar("CallbackT", bound=Callable[..., Awaitable[None]])
 
 
@@ -83,6 +85,7 @@ class CommandPipeline:
         self._cooldowns: dict[tuple[str, str], deque[float]] = defaultdict(deque)
         self._active: dict[tuple[str, str], int] = defaultdict(int)
         self._state_lock = asyncio.Lock()
+        self._providers: dict[str, DependencyProvider] = {}
 
     @property
     def middleware(self) -> tuple[Middleware, ...]:
@@ -96,6 +99,17 @@ class CommandPipeline:
     def remove_middleware(self, middleware: Middleware) -> None:
         self._middleware.remove(middleware)
 
+    def add_provider(self, name: str, provider: DependencyProvider) -> None:
+        """Register a root dependency or per-invocation provider by name."""
+        if not name:
+            raise ValueError("dependency name cannot be empty")
+        if name in self._providers:
+            raise ValueError(f"dependency provider is already registered: {name}")
+        self._providers[name] = provider
+
+    def remove_provider(self, name: str) -> None:
+        del self._providers[name]
+
     async def invoke(
         self,
         command: PipelineCommand,
@@ -106,10 +120,23 @@ class CommandPipeline:
         await self._acquire_cooldown(command, context)
         concurrency_key = await self._acquire_concurrency(command, context)
         try:
-            await self._run_middleware(command, context, arguments)
+            async with AsyncExitStack() as stack:
+                await self._resolve_providers(context, stack)
+                await self._run_middleware(command, context, arguments)
         finally:
             if concurrency_key is not None:
                 await self._release_concurrency(concurrency_key)
+
+    async def _resolve_providers(self, context: Context, stack: AsyncExitStack) -> None:
+        for name, provider in self._providers.items():
+            value = provider(context) if callable(provider) else provider
+            if inspect.isawaitable(value):
+                value = await value
+            if hasattr(value, "__aenter__") and hasattr(value, "__aexit__"):
+                value = await stack.enter_async_context(value)
+            elif hasattr(value, "__enter__") and hasattr(value, "__exit__"):
+                value = stack.enter_context(value)
+            context.data[name] = value
 
     async def _run_checks(self, command: PipelineCommand, context: Context) -> None:
         for predicate in command.checks:

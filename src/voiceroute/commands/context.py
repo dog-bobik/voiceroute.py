@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
+from typing import Any
 
 from voiceroute.api.communities import CommunitiesAPI
 from voiceroute.api.members import MembersAPI
@@ -26,7 +27,15 @@ class Context:
     _communities: CommunitiesAPI | None = field(default=None, repr=False)
     invoked_with: str | None = None
     prefix: str | None = None
+    data: dict[str, Any] = field(default_factory=dict)
     _reply_index: int = field(default=0, init=False, repr=False)
+
+    def require(self, name: str) -> Any:
+        """Return a dependency injected for this command or raise a clear error."""
+        try:
+            return self.data[name]
+        except KeyError as exc:
+            raise LookupError(f"command dependency is not available: {name}") from exc
 
     @property
     def replied_message_seq(self) -> str | None:

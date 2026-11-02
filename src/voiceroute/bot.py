@@ -384,6 +384,10 @@ class Bot:
         self.command_pipeline.add_middleware(handler)
         return handler
 
+    def add_dependency(self, name: str, provider: object) -> None:
+        """Provide a root value or a per-command resource through Context.data."""
+        self.command_pipeline.add_provider(name, provider)
+
     def event(self, handler: HandlerT) -> HandlerT:
         """Register an async handler named on_ready, on_message, on_access_lost, or on_error."""
         self._ensure_async(handler)
