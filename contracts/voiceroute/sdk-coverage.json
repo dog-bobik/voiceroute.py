@@ -1,0 +1,5237 @@
+{
+  "asyncapi_channels": [
+    "gateway"
+  ],
+  "classification_note": "review-required means auth permits botToken; it does not assert SDK coverage",
+  "counts": {
+    "bot_candidate": 138,
+    "events": 83,
+    "excluded_auth": 102,
+    "operations": 240,
+    "public_resource_modules": 23
+  },
+  "events": [
+    {
+      "event": "APPLICATION_UPDATED",
+      "handler_aliases": [
+        "on_application_updated",
+        "on_application_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "applicationId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "APPLICATION_USER_DATA_DELETION_REQUESTED",
+      "handler_aliases": [
+        "on_application_user_data_deletion_requested"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "applicationId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "ATTACHMENT_SCAN_COMPLETED",
+      "handler_aliases": [
+        "on_attachment_scan_completed"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "AUDIT_LOG_ENTRY_CREATED",
+      "handler_aliases": [
+        "on_audit_log_entry_created",
+        "on_audit_log_entry_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "AUTOMOD_ACTION_EXECUTED",
+      "handler_aliases": [
+        "on_automod_action_executed",
+        "on_automod_action_action",
+        "on_automod_action"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "AUTOMOD_RULE_CREATED",
+      "handler_aliases": [
+        "on_automod_rule_created",
+        "on_automod_rule_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "AUTOMOD_RULE_DELETED",
+      "handler_aliases": [
+        "on_automod_rule_deleted",
+        "on_automod_rule_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "AUTOMOD_RULE_UPDATED",
+      "handler_aliases": [
+        "on_automod_rule_updated",
+        "on_automod_rule_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "BAN_CREATED",
+      "handler_aliases": [
+        "on_ban_created",
+        "on_ban_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "BAN_DELETED",
+      "handler_aliases": [
+        "on_ban_deleted",
+        "on_ban_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CATEGORY_CREATED",
+      "handler_aliases": [
+        "on_category_created",
+        "on_category_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "categoryId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CATEGORY_DELETED",
+      "handler_aliases": [
+        "on_category_deleted",
+        "on_category_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "categoryId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CATEGORY_ORDER_UPDATED",
+      "handler_aliases": [
+        "on_category_order_updated",
+        "on_category_order_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "categoryId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CATEGORY_UPDATED",
+      "handler_aliases": [
+        "on_category_updated",
+        "on_category_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "categoryId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CHANNEL_CREATED",
+      "handler_aliases": [
+        "on_channel_created",
+        "on_channel_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CHANNEL_DELETED",
+      "handler_aliases": [
+        "on_channel_deleted",
+        "on_channel_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CHANNEL_ORDER_UPDATED",
+      "handler_aliases": [
+        "on_channel_order_updated",
+        "on_channel_order_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CHANNEL_PERMISSIONS_UPDATED",
+      "handler_aliases": [
+        "on_channel_permissions_updated",
+        "on_channel_permissions_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "CHANNEL_UPDATED",
+      "handler_aliases": [
+        "on_channel_updated",
+        "on_channel_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "COMMUNITY_AVAILABLE",
+      "handler_aliases": [
+        "on_community_available"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "COMMUNITY_DELETED",
+      "handler_aliases": [
+        "on_community_deleted",
+        "on_community_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "COMMUNITY_UNAVAILABLE",
+      "handler_aliases": [
+        "on_community_unavailable"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "COMMUNITY_UPDATED",
+      "handler_aliases": [
+        "on_community_updated",
+        "on_community_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "DIRECT_MESSAGE_CREATED",
+      "handler_aliases": [
+        "on_direct_message_created",
+        "on_direct_message_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "DIRECT_MESSAGE_DELETED",
+      "handler_aliases": [
+        "on_direct_message_deleted",
+        "on_direct_message_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "DIRECT_MESSAGE_UPDATED",
+      "handler_aliases": [
+        "on_direct_message_updated",
+        "on_direct_message_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "EXPRESSION_CREATED",
+      "handler_aliases": [
+        "on_expression_created",
+        "on_expression_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "EXPRESSION_DELETED",
+      "handler_aliases": [
+        "on_expression_deleted",
+        "on_expression_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "EXPRESSION_UPDATED",
+      "handler_aliases": [
+        "on_expression_updated",
+        "on_expression_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "FORUM_UPDATED",
+      "handler_aliases": [
+        "on_forum_updated",
+        "on_forum_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "INSTALLATION_CREATED",
+      "handler_aliases": [
+        "on_installation_created",
+        "on_installation_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "installationId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "INSTALLATION_DELETED",
+      "handler_aliases": [
+        "on_installation_deleted",
+        "on_installation_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "installationId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "INSTALLATION_UPDATED",
+      "handler_aliases": [
+        "on_installation_updated",
+        "on_installation_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "installationId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "INTERACTION_CREATED",
+      "handler_aliases": [
+        "on_interaction_created",
+        "on_interaction_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "interactionId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "INVITE_CREATED",
+      "handler_aliases": [
+        "on_invite_created",
+        "on_invite_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "INVITE_DELETED",
+      "handler_aliases": [
+        "on_invite_deleted",
+        "on_invite_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MEMBERS_CHUNK",
+      "handler_aliases": [
+        "on_members_chunk"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MEMBER_JOINED",
+      "handler_aliases": [
+        "on_member_joined",
+        "on_member_join"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MEMBER_LEFT",
+      "handler_aliases": [
+        "on_member_left",
+        "on_member_remove",
+        "on_member_leave"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MEMBER_UPDATED",
+      "handler_aliases": [
+        "on_member_updated",
+        "on_member_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MESSAGES_BULK_DELETED",
+      "handler_aliases": [
+        "on_messages_bulk_deleted",
+        "on_messages_bulk_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MESSAGE_CREATED",
+      "handler_aliases": [
+        "on_message_created",
+        "on_message_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "messageId",
+        "messageSeq"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MESSAGE_DELETED",
+      "handler_aliases": [
+        "on_message_deleted",
+        "on_message_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "messageId",
+        "messageSeq"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MESSAGE_PINS_UPDATED",
+      "handler_aliases": [
+        "on_message_pins_updated",
+        "on_message_pins_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "messageId",
+        "messageSeq"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MESSAGE_UPDATED",
+      "handler_aliases": [
+        "on_message_updated",
+        "on_message_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "messageId",
+        "messageSeq"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "MINI_APP_ACCESS_REVOKED",
+      "handler_aliases": [],
+      "payload_model": null,
+      "resource_ordering_fields": [],
+      "status": "unmapped"
+    },
+    {
+      "event": "MINI_APP_ACTION_CANCELLED",
+      "handler_aliases": [],
+      "payload_model": null,
+      "resource_ordering_fields": [],
+      "status": "unmapped"
+    },
+    {
+      "event": "MINI_APP_ACTION_CREATED",
+      "handler_aliases": [],
+      "payload_model": null,
+      "resource_ordering_fields": [],
+      "status": "unmapped"
+    },
+    {
+      "event": "MINI_APP_POLICY_UPDATED",
+      "handler_aliases": [],
+      "payload_model": null,
+      "resource_ordering_fields": [],
+      "status": "unmapped"
+    },
+    {
+      "event": "MINI_APP_SESSION_CLOSED",
+      "handler_aliases": [],
+      "payload_model": null,
+      "resource_ordering_fields": [],
+      "status": "unmapped"
+    },
+    {
+      "event": "MINI_APP_SESSION_OPENED",
+      "handler_aliases": [],
+      "payload_model": null,
+      "resource_ordering_fields": [],
+      "status": "unmapped"
+    },
+    {
+      "event": "MINI_APP_STATE_UPDATED",
+      "handler_aliases": [],
+      "payload_model": null,
+      "resource_ordering_fields": [],
+      "status": "unmapped"
+    },
+    {
+      "event": "POLL_CLOSED",
+      "handler_aliases": [
+        "on_poll_closed",
+        "on_poll_close"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "pollId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "POLL_CREATED",
+      "handler_aliases": [
+        "on_poll_created",
+        "on_poll_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "pollId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "POLL_VOTE_ADDED",
+      "handler_aliases": [
+        "on_poll_vote_added",
+        "on_poll_vote_add"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "pollId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "POLL_VOTE_REMOVED",
+      "handler_aliases": [
+        "on_poll_vote_removed",
+        "on_poll_vote_remove"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "pollId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "PRESENCE_UPDATED",
+      "handler_aliases": [
+        "on_presence_updated",
+        "on_presence_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "REACTIONS_CLEARED",
+      "handler_aliases": [
+        "on_reactions_cleared"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "REACTION_ADDED",
+      "handler_aliases": [
+        "on_reaction_added",
+        "on_reaction_add"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "messageId",
+        "messageSeq"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "REACTION_REMOVED",
+      "handler_aliases": [
+        "on_reaction_removed",
+        "on_reaction_remove"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "messageId",
+        "messageSeq"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "ROLE_CREATED",
+      "handler_aliases": [
+        "on_role_created",
+        "on_role_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "roleId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "ROLE_DELETED",
+      "handler_aliases": [
+        "on_role_deleted",
+        "on_role_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "roleId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "ROLE_ORDER_UPDATED",
+      "handler_aliases": [
+        "on_role_order_updated",
+        "on_role_order_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "roleId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "ROLE_UPDATED",
+      "handler_aliases": [
+        "on_role_updated",
+        "on_role_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "roleId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "SOUNDBOARD_PLAYED",
+      "handler_aliases": [
+        "on_soundboard_played",
+        "on_soundboard_play"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "STAGE_UPDATED",
+      "handler_aliases": [
+        "on_stage_updated",
+        "on_stage_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "THREAD_CREATED",
+      "handler_aliases": [
+        "on_thread_created",
+        "on_thread_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "threadId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "THREAD_DELETED",
+      "handler_aliases": [
+        "on_thread_deleted",
+        "on_thread_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "threadId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "THREAD_MEMBERS_UPDATED",
+      "handler_aliases": [
+        "on_thread_members_updated",
+        "on_thread_members_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "threadId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "THREAD_MEMBER_UPDATED",
+      "handler_aliases": [
+        "on_thread_member_updated",
+        "on_thread_member_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "threadId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "THREAD_UPDATED",
+      "handler_aliases": [
+        "on_thread_updated",
+        "on_thread_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "threadId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "TIMEOUT_UPDATED",
+      "handler_aliases": [
+        "on_timeout_updated",
+        "on_timeout_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "TYPING_STARTED",
+      "handler_aliases": [
+        "on_typing_started",
+        "on_typing_start"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "USER_INSTALLATION_CREATED",
+      "handler_aliases": [
+        "on_user_installation_created",
+        "on_user_installation_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "installationId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "USER_INSTALLATION_DELETED",
+      "handler_aliases": [
+        "on_user_installation_deleted",
+        "on_user_installation_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "installationId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "USER_INSTALLATION_UPDATED",
+      "handler_aliases": [
+        "on_user_installation_updated",
+        "on_user_installation_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "installationId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "VOICE_RECEIVE_STARTED",
+      "handler_aliases": [
+        "on_voice_receive_started",
+        "on_voice_receive_start"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "VOICE_RECEIVE_STOPPED",
+      "handler_aliases": [
+        "on_voice_receive_stopped",
+        "on_voice_receive_stop"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "VOICE_SERVER_UPDATED",
+      "handler_aliases": [
+        "on_voice_server_updated",
+        "on_voice_server_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "VOICE_STATE_UPDATED",
+      "handler_aliases": [
+        "on_voice_state_updated",
+        "on_voice_state_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [
+        "communityId",
+        "channelId",
+        "userId"
+      ],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "WEBHOOK_CREATED",
+      "handler_aliases": [
+        "on_webhook_created",
+        "on_webhook_create"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "WEBHOOK_DELETED",
+      "handler_aliases": [
+        "on_webhook_deleted",
+        "on_webhook_delete"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    },
+    {
+      "event": "WEBHOOK_UPDATED",
+      "handler_aliases": [
+        "on_webhook_updated",
+        "on_webhook_update"
+      ],
+      "payload_model": "voiceroute.models.PlatformEvent",
+      "resource_ordering_fields": [],
+      "status": "generic-dispatch"
+    }
+  ],
+  "operations": [
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listApplicationDmMessages",
+      "path": "/application-dms/{channelId}/messages",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createApplicationDmMessage",
+      "path": "/application-dms/{channelId}/messages",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteApplicationDmMessage",
+      "path": "/application-dms/{channelId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationDmMessage",
+      "path": "/application-dms/{channelId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "editApplicationDmMessage",
+      "path": "/application-dms/{channelId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCurrentBotApplication",
+      "path": "/applications/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getBotAccessManifest",
+      "path": "/applications/{applicationId}/access-manifest",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [],
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationBrandingAsset",
+      "path": "/applications/{applicationId}/assets/{kind}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listGlobalCommands",
+      "path": "/applications/{applicationId}/commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createGlobalCommand",
+      "path": "/applications/{applicationId}/commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "syncGlobalCommands",
+      "path": "/applications/{applicationId}/commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteGlobalCommand",
+      "path": "/applications/{applicationId}/commands/{commandId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getGlobalCommand",
+      "path": "/applications/{applicationId}/commands/{commandId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateGlobalCommand",
+      "path": "/applications/{applicationId}/commands/{commandId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommandPermissions",
+      "path": "/applications/{applicationId}/communities/{communityId}/command-permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityCommands",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createCommunityCommand",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "syncCommunityCommands",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunityCommand",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityCommand",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityCommand",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommandPermissions",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "replaceCommandPermissions",
+      "path": "/applications/{applicationId}/communities/{communityId}/commands/{commandId}/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationDeliveryStatus",
+      "path": "/applications/{applicationId}/event-delivery-status",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listEventSubscriptions",
+      "path": "/applications/{applicationId}/event-subscriptions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createEventSubscription",
+      "path": "/applications/{applicationId}/event-subscriptions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteEventSubscription",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getEventSubscription",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateEventSubscription",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listSubscriptionDeliveries",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getSubscriptionDelivery",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries/{deliveryId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "acknowledgeSubscriptionDelivery",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries/{deliveryId}/ack",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "replaySubscriptionDelivery",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/deliveries/{deliveryId}/replay",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "pullSubscriptionDeliveries",
+      "path": "/applications/{applicationId}/event-subscriptions/{subscriptionId}/pull",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "installBotWithGrants",
+      "path": "/applications/{applicationId}/installations",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "acknowledgeMiniAppAction",
+      "path": "/applications/{applicationId}/mini-app/actions/{actionId}/ack",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "completeMiniAppAction",
+      "path": "/applications/{applicationId}/mini-app/actions/{actionId}/complete",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "rejectMiniAppAction",
+      "path": "/applications/{applicationId}/mini-app/actions/{actionId}/reject",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "resolveApplicationMiniAppInstance",
+      "path": "/applications/{applicationId}/mini-app/instances/resolve",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationMiniAppState",
+      "path": "/applications/{applicationId}/mini-app/instances/{instanceId}/state",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "publishMiniAppState",
+      "path": "/applications/{applicationId}/mini-app/instances/{instanceId}/state",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "launchMiniApp",
+      "path": "/applications/{applicationId}/mini-app/sessions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "closeMiniAppSession",
+      "path": "/applications/{applicationId}/mini-app/sessions/{sessionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getHostMiniAppSession",
+      "path": "/applications/{applicationId}/mini-app/sessions/{sessionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "markMiniAppReady",
+      "path": "/applications/{applicationId}/mini-app/sessions/{sessionId}/ready",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "renewMiniAppSession",
+      "path": "/applications/{applicationId}/mini-app/sessions/{sessionId}/renew",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "discoverOwnPrivateCommands",
+      "path": "/applications/{applicationId}/private-commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.interactions",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "invokeOwnPrivateComponent",
+      "path": "/applications/{applicationId}/private-component-interactions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.interactions",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "invokeOwnPrivateCommand",
+      "path": "/applications/{applicationId}/private-interactions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.interactions",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOwnPrivateInteraction",
+      "path": "/applications/{applicationId}/private-interactions/{interactionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.interactions",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "submitOwnPrivateModal",
+      "path": "/applications/{applicationId}/private-interactions/{interactionId}/modal",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [],
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationProfile",
+      "path": "/applications/{applicationId}/profile",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationDm",
+      "path": "/applications/{applicationId}/users/{userId}/dm",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "openApplicationDm",
+      "path": "/applications/{applicationId}/users/{userId}/dm",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationVerificationKeys",
+      "path": "/applications/{applicationId}/verification-keys",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getAsyncApi",
+      "path": "/asyncapi.json",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCapabilities",
+      "path": "/capabilities",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listInstalledCommandsForManagement",
+      "path": "/communities/{communityId}/application-commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.automod",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listAutoModActions",
+      "path": "/communities/{communityId}/automod/actions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.automod",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listAutoModRules",
+      "path": "/communities/{communityId}/automod/rules",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.automod",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createAutoModRule",
+      "path": "/communities/{communityId}/automod/rules",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.automod",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteAutoModRule",
+      "path": "/communities/{communityId}/automod/rules/{ruleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.automod",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getAutoModRule",
+      "path": "/communities/{communityId}/automod/rules/{ruleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.automod",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateAutoModRule",
+      "path": "/communities/{communityId}/automod/rules/{ruleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.bots",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getBotMiniApp",
+      "path": "/communities/{communityId}/bots/{botUserId}/mini-app",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityCategories",
+      "path": "/communities/{communityId}/categories",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createCommunityCategory",
+      "path": "/communities/{communityId}/categories",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "reorderCommunityCategories",
+      "path": "/communities/{communityId}/categories/order",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunityCategory",
+      "path": "/communities/{communityId}/categories/{categoryId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityCategory",
+      "path": "/communities/{communityId}/categories/{categoryId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityCategory",
+      "path": "/communities/{communityId}/categories/{categoryId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCategoryOverrides",
+      "path": "/communities/{communityId}/categories/{categoryId}/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "replaceCategoryOverrides",
+      "path": "/communities/{communityId}/categories/{categoryId}/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityChannels",
+      "path": "/communities/{communityId}/channels",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createCommunityChannel",
+      "path": "/communities/{communityId}/channels",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "reorderCommunityChannels",
+      "path": "/communities/{communityId}/channels/order",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunityChannel",
+      "path": "/communities/{communityId}/channels/{channelId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityChannel",
+      "path": "/communities/{communityId}/channels/{channelId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityChannel",
+      "path": "/communities/{communityId}/channels/{channelId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "discoverChannelCommands",
+      "path": "/communities/{communityId}/channels/{channelId}/application-commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.automod",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getChannelAutoModAlerts",
+      "path": "/communities/{communityId}/channels/{channelId}/automod/alerts",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "cloneCommunityChannel",
+      "path": "/communities/{communityId}/channels/{channelId}/clone",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "invokeMessageComponent",
+      "path": "/communities/{communityId}/channels/{channelId}/component-interactions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "invokeApplicationCommand",
+      "path": "/communities/{communityId}/channels/{channelId}/interactions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOwnInteraction",
+      "path": "/communities/{communityId}/channels/{channelId}/interactions/{interactionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "submitInteractionModal",
+      "path": "/communities/{communityId}/channels/{channelId}/interactions/{interactionId}/modal",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listMessages",
+      "path": "/communities/{communityId}/channels/{channelId}/messages",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createMessage",
+      "path": "/communities/{communityId}/channels/{channelId}/messages",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "bulkDeleteMessages",
+      "path": "/communities/{communityId}/channels/{channelId}/messages/bulk-delete",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteMessage",
+      "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMessage",
+      "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateMessage",
+      "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "clearMessageReactions",
+      "path": "/communities/{communityId}/channels/{channelId}/messages/{messageId}/reactions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getChannelOverrides",
+      "path": "/communities/{communityId}/channels/{channelId}/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "replaceChannelOverrides",
+      "path": "/communities/{communityId}/channels/{channelId}/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "syncChannelOverrides",
+      "path": "/communities/{communityId}/channels/{channelId}/permissions/sync",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createPoll",
+      "path": "/communities/{communityId}/channels/{channelId}/polls",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getPoll",
+      "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "closePoll",
+      "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}/close",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listPollVoters",
+      "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}/voters",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "removePollBallot",
+      "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}/votes/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "setPollBallot",
+      "path": "/communities/{communityId}/channels/{channelId}/polls/{pollId}/votes/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listChannelThreads",
+      "path": "/communities/{communityId}/channels/{channelId}/threads",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createChannelThread",
+      "path": "/communities/{communityId}/channels/{channelId}/threads",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listTyping",
+      "path": "/communities/{communityId}/channels/{channelId}/typing",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "startTyping",
+      "path": "/communities/{communityId}/channels/{channelId}/typing",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityEmojis",
+      "path": "/communities/{communityId}/emojis",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createCommunityEmoji",
+      "path": "/communities/{communityId}/emojis",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunityEmoji",
+      "path": "/communities/{communityId}/emojis/{expressionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityEmoji",
+      "path": "/communities/{communityId}/emojis/{expressionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityEmoji",
+      "path": "/communities/{communityId}/emojis/{expressionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthBearer"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityMembers",
+      "path": "/communities/{communityId}/members",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "searchCommunityMembers",
+      "path": "/communities/{communityId}/members/search",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityMember",
+      "path": "/communities/{communityId}/members/{userId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityMember",
+      "path": "/communities/{communityId}/members/{userId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ],
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getEffectiveMemberPermissions",
+      "path": "/communities/{communityId}/members/{userId}/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "removeCommunityMemberRole",
+      "path": "/communities/{communityId}/members/{userId}/roles/{roleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "addCommunityMemberRole",
+      "path": "/communities/{communityId}/members/{userId}/roles/{roleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "simulateCommunityPermissions",
+      "path": "/communities/{communityId}/permissions/simulate",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityRoles",
+      "path": "/communities/{communityId}/roles",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createCommunityRole",
+      "path": "/communities/{communityId}/roles",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "reorderCommunityRoles",
+      "path": "/communities/{communityId}/roles/order",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunityRole",
+      "path": "/communities/{communityId}/roles/{roleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityRole",
+      "path": "/communities/{communityId}/roles/{roleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityRole",
+      "path": "/communities/{communityId}/roles/{roleId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityStickers",
+      "path": "/communities/{communityId}/stickers",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createCommunitySticker",
+      "path": "/communities/{communityId}/stickers",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunitySticker",
+      "path": "/communities/{communityId}/stickers/{expressionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunitySticker",
+      "path": "/communities/{communityId}/stickers/{expressionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunitySticker",
+      "path": "/communities/{communityId}/stickers/{expressionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunityThread",
+      "path": "/communities/{communityId}/threads/{threadId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityThread",
+      "path": "/communities/{communityId}/threads/{threadId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityThread",
+      "path": "/communities/{communityId}/threads/{threadId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listThreadMembers",
+      "path": "/communities/{communityId}/threads/{threadId}/members",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "leaveThread",
+      "path": "/communities/{communityId}/threads/{threadId}/members/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOwnThreadMembership",
+      "path": "/communities/{communityId}/threads/{threadId}/members/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "joinThread",
+      "path": "/communities/{communityId}/threads/{threadId}/members/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "removeThreadMember",
+      "path": "/communities/{communityId}/threads/{threadId}/members/{userId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "addThreadMember",
+      "path": "/communities/{communityId}/threads/{threadId}/members/{userId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listMessagesInThread",
+      "path": "/communities/{communityId}/threads/{threadId}/messages",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createMessageInThread",
+      "path": "/communities/{communityId}/threads/{threadId}/messages",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "bulkDeleteMessagesInThread",
+      "path": "/communities/{communityId}/threads/{threadId}/messages/bulk-delete",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteMessageInThread",
+      "path": "/communities/{communityId}/threads/{threadId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMessageInThread",
+      "path": "/communities/{communityId}/threads/{threadId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateMessageInThread",
+      "path": "/communities/{communityId}/threads/{threadId}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createCommunityVoiceConnection",
+      "path": "/communities/{communityId}/voice-connections",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteCommunityVoiceConnection",
+      "path": "/communities/{communityId}/voice-connections/{connectionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityVoicePolicy",
+      "path": "/communities/{communityId}/voice-policy",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateCommunityVoicePolicy",
+      "path": "/communities/{communityId}/voice-policy",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listCommunityVoiceStates",
+      "path": "/communities/{communityId}/voice-states",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCommunityUserVoiceState",
+      "path": "/communities/{communityId}/voice-states/{userId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listMessageWebhooks",
+      "path": "/communities/{communityId}/webhooks",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createMessageWebhook",
+      "path": "/communities/{communityId}/webhooks",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteMessageWebhook",
+      "path": "/communities/{communityId}/webhooks/{webhookId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMessageWebhook",
+      "path": "/communities/{communityId}/webhooks/{webhookId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateMessageWebhook",
+      "path": "/communities/{communityId}/webhooks/{webhookId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "rotateMessageWebhookSecret",
+      "path": "/communities/{communityId}/webhooks/{webhookId}/rotate",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listDeveloperApplications",
+      "path": "/developers/applications",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createDeveloperApplication",
+      "path": "/developers/applications",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateDeveloperManifest",
+      "path": "/developers/applications/{applicationId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.audit",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listApplicationAudit",
+      "path": "/developers/applications/{applicationId}/audit",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listBotCredentials",
+      "path": "/developers/applications/{applicationId}/bot-credentials",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "rotateBotCredential",
+      "path": "/developers/applications/{applicationId}/bot-credentials",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "revokeBotCredential",
+      "path": "/developers/applications/{applicationId}/bot-credentials/{credentialId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteApplicationBranding",
+      "path": "/developers/applications/{applicationId}/branding/{kind}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "uploadApplicationBranding",
+      "path": "/developers/applications/{applicationId}/branding/{kind}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationMetadata",
+      "path": "/developers/applications/{applicationId}/metadata",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateApplicationMetadata",
+      "path": "/developers/applications/{applicationId}/metadata",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMiniAppConfiguration",
+      "path": "/developers/applications/{applicationId}/mini-app",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateMiniAppDraft",
+      "path": "/developers/applications/{applicationId}/mini-app",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMiniAppDiagnostics",
+      "path": "/developers/applications/{applicationId}/mini-app/diagnostics",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "publishMiniApp",
+      "path": "/developers/applications/{applicationId}/mini-app/publish",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "verifyMiniAppOrigin",
+      "path": "/developers/applications/{applicationId}/mini-app/verify-origin",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOAuthClient",
+      "path": "/developers/applications/{applicationId}/oauth",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "updateOAuthClient",
+      "path": "/developers/applications/{applicationId}/oauth",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createClientSecret",
+      "path": "/developers/applications/{applicationId}/oauth/secrets",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "revokeClientSecret",
+      "path": "/developers/applications/{applicationId}/oauth/secrets/{secretId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listSandboxRuns",
+      "path": "/developers/applications/{applicationId}/sandbox/runs",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createSandboxRun",
+      "path": "/developers/applications/{applicationId}/sandbox/runs",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteSandboxRun",
+      "path": "/developers/applications/{applicationId}/sandbox/runs/{runId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.events",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "simulateSandboxEvent",
+      "path": "/developers/applications/{applicationId}/sandbox/runs/{runId}/events",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createSandboxFault",
+      "path": "/developers/applications/{applicationId}/sandbox/runs/{runId}/faults",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "rotateApplicationSigningKey",
+      "path": "/developers/applications/{applicationId}/signing-keys/rotate",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationTeam",
+      "path": "/developers/applications/{applicationId}/team",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "inviteApplicationMember",
+      "path": "/developers/applications/{applicationId}/team/invitations",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "cancelApplicationInvitation",
+      "path": "/developers/applications/{applicationId}/team/invitations/{invitationId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.members",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "removeApplicationMember",
+      "path": "/developers/applications/{applicationId}/team/members/{userId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.members",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "changeApplicationMemberRole",
+      "path": "/developers/applications/{applicationId}/team/members/{userId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "requestApplicationOwnership",
+      "path": "/developers/applications/{applicationId}/team/ownership",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.platform",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getApplicationDiagnostics",
+      "path": "/developers/applications/{id}/platform/diagnostics",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getFile",
+      "path": "/files/{fileId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ],
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "downloadFile",
+      "path": "/files/{fileId}/content",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getGateway",
+      "path": "/gateway",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.interactions",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "respondToInteraction",
+      "path": "/interactions/{interactionId}/{interactionToken}/callback",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ],
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getEmbedImage",
+      "path": "/media/images/{imageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.webhooks",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "executeMessageWebhook",
+      "path": "/message-webhooks/{webhookId}/{webhookToken}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteWebhookMessage",
+      "path": "/message-webhooks/{webhookId}/{webhookToken}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getWebhookMessage",
+      "path": "/message-webhooks/{webhookId}/{webhookToken}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "editWebhookMessage",
+      "path": "/message-webhooks/{webhookId}/{webhookToken}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "miniAppToken"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMiniAppContext",
+      "path": "/mini-app/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "miniAppToken"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMiniAppAction",
+      "path": "/mini-app/actions/{actionId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "miniAppToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.events",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "pollMiniAppEvents",
+      "path": "/mini-app/events",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "miniAppToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.events",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "streamMiniAppEvents",
+      "path": "/mini-app/events/stream",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "miniAppToken"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createMiniAppAction",
+      "path": "/mini-app/instances/{instanceId}/actions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "miniAppToken"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getMiniAppState",
+      "path": "/mini-app/instances/{instanceId}/state",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "exchangeMiniAppCode",
+      "path": "/mini-app/sessions/exchange",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getCurrentOAuthAuthorization",
+      "path": "/oauth2/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "reviewOAuthConsent",
+      "path": "/oauth2/authorize",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "approveOAuthConsent",
+      "path": "/oauth2/authorize",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthClientBasic"
+        ],
+        []
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "introspectOwnOAuthToken",
+      "path": "/oauth2/introspect",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthClientBasic"
+        ],
+        []
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "revokeOAuthGrant",
+      "path": "/oauth2/revoke",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthClientBasic"
+        ],
+        []
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "exchangeOAuthToken",
+      "path": "/oauth2/token",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOpenApi",
+      "path": "/openapi.json",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getPermissionRegistry",
+      "path": "/permissions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getPlatformServiceStatus",
+      "path": "/status",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.uploads",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createUpload",
+      "path": "/uploads",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.uploads",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "cancelUpload",
+      "path": "/uploads/{uploadId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.uploads",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getUpload",
+      "path": "/uploads/{uploadId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.uploads",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "completeUpload",
+      "path": "/uploads/{uploadId}/complete",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "botToken"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.uploads",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "putUploadPart",
+      "path": "/uploads/{uploadId}/parts/{partNumber}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "unmapped"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOAuthUser",
+      "path": "/users/@me",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listApplicationInvitations",
+      "path": "/users/@me/application-invitations",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "acceptApplicationInvitation",
+      "path": "/users/@me/application-invitations/{invitationId}/accept",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "declineApplicationInvitation",
+      "path": "/users/@me/application-invitations/{invitationId}/decline",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listOwnApplicationPrivacy",
+      "path": "/users/@me/application-privacy",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "eraseOwnApplicationData",
+      "path": "/users/@me/applications/{applicationId}/data",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOwnApplicationPrivacy",
+      "path": "/users/@me/applications/{applicationId}/privacy",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.private_messages",
+      "contract_test": null,
+      "method": "PUT",
+      "operationId": "setOwnApplicationPrivacy",
+      "path": "/users/@me/applications/{applicationId}/privacy",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.communities",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listOAuthUserCommunities",
+      "path": "/users/@me/communities",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listOwnInstallations",
+      "path": "/users/@me/installations",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "revokeInstallation",
+      "path": "/users/@me/installations/{installationId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "narrowInstallationScopes",
+      "path": "/users/@me/installations/{installationId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "listOwnCommunityMentions",
+      "path": "/users/@me/mentions",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "acknowledgeOwnCommunityMentions",
+      "path": "/users/@me/mentions/ack",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "humanSession"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "discoverOwnConversationCommands",
+      "path": "/users/@me/private-commands",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "oauthBearer"
+        ]
+      ],
+      "candidate_module": null,
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getOAuthUserProfile",
+      "path": "/users/@me/profile",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.webhooks",
+      "contract_test": null,
+      "method": "POST",
+      "operationId": "createInteractionFollowup",
+      "path": "/webhooks/{applicationId}/{interactionToken}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "DELETE",
+      "operationId": "deleteInteractionResponse",
+      "path": "/webhooks/{applicationId}/{interactionToken}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "GET",
+      "operationId": "getInteractionResponse",
+      "path": "/webhooks/{applicationId}/{interactionToken}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    },
+    {
+      "auth_surfaces": [
+        [
+          "public"
+        ]
+      ],
+      "candidate_module": "voiceroute.api.messages",
+      "contract_test": null,
+      "method": "PATCH",
+      "operationId": "editInteractionResponse",
+      "path": "/webhooks/{applicationId}/{interactionToken}/messages/{messageId}",
+      "request_dto": null,
+      "response_dto": null,
+      "sdk_method": null,
+      "status": "excluded-auth"
+    }
+  ],
+  "source": {
+    "asyncapi": "asyncapi.json",
+    "capabilities": "capabilities.json",
+    "openapi": "openapi.json"
+  }
+}
