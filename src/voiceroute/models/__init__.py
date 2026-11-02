@@ -77,6 +77,7 @@ from voiceroute.models.role import (
 from voiceroute.models.threads import Thread, ThreadMember, ThreadMemberPage, ThreadPage
 from voiceroute.models.user import User
 from voiceroute.models.voice import VoiceServerGrant, VoiceState, VoiceStatePage, VoiceTrack
+from voiceroute.models.webhook import Webhook
 from voiceroute.models.wire import (
     UNSET,
     OpenEnumValue,
@@ -172,6 +173,7 @@ __all__ = [
     "VoiceState",
     "VoiceStatePage",
     "VoiceTrack",
+    "Webhook",
     "WireObject",
     "camel_to_snake",
     "is_set",

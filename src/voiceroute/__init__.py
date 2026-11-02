@@ -2,12 +2,14 @@
 
 from voiceroute.api import (
     CommandSyncDiff,
+    MessageWebhookClient,
     MiniAppsAPI,
     MiniAppState,
     PollsAPI,
     ThreadsAPI,
     Upload,
     UploadsAPI,
+    WebhooksAPI,
 )
 from voiceroute.bot import Bot
 from voiceroute.client import VoiceRouteClient
@@ -224,6 +226,7 @@ from voiceroute.models import (
     VoiceState,
     VoiceStatePage,
     VoiceTrack,
+    Webhook,
 )
 from voiceroute.runtime import RuntimeState
 from voiceroute.state import CacheChange, CachePolicy, StateCache
@@ -394,6 +397,7 @@ __all__ = [
     "Message",
     "MessagePage",
     "MessageUpserted",
+    "MessageWebhookClient",
     "Middleware",
     "MiniAppState",
     "MiniAppsAPI",
@@ -480,6 +484,8 @@ __all__ = [
     "VoiceState",
     "VoiceStatePage",
     "VoiceTrack",
+    "Webhook",
+    "WebhooksAPI",
     "application_command",
     "bot_has_permissions",
     "check",

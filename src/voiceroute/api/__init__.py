@@ -17,6 +17,7 @@ from voiceroute.api.roles import RolesAPI
 from voiceroute.api.threads import ThreadsAPI
 from voiceroute.api.uploads import Upload, UploadsAPI
 from voiceroute.api.voice import VoiceAPI
+from voiceroute.api.webhooks import MessageWebhookClient, WebhooksAPI
 
 __all__ = [
     "ApplicationCommandsAPI",
@@ -28,6 +29,7 @@ __all__ = [
     "EventsAPI",
     "InteractionsAPI",
     "MembersAPI",
+    "MessageWebhookClient",
     "MessagesAPI",
     "MiniAppState",
     "MiniAppsAPI",
@@ -39,4 +41,5 @@ __all__ = [
     "Upload",
     "UploadsAPI",
     "VoiceAPI",
+    "WebhooksAPI",
 ]
