@@ -1,0 +1,2666 @@
+{
+  "description": "Published v1 PlatformError codes and structured domain fallbacks. Messages are diagnostics, not localized product copy. Empty httpStatuses means operation-dependent. Use response.retryable, requestId and details rather than matching text. Future codes are additive; SDKs must preserve unknown codes.",
+  "errors": [
+    {
+      "code": "ALREADY_OWNER",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "You already own this application"
+      ]
+    },
+    {
+      "code": "ALREADY_TEAM_MEMBER",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "This user already belongs to the team"
+      ]
+    },
+    {
+      "code": "APPLICATION_AUTHOR_REQUIRED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Only the application can publish interactive controls"
+      ]
+    },
+    {
+      "code": "APPLICATION_BLOCKED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "The user has blocked this application",
+        "Unblock this application before authorizing it"
+      ]
+    },
+    {
+      "code": "APPLICATION_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 25 active applications per owner"
+      ]
+    },
+    {
+      "code": "ATTACHMENT_ALREADY_PUBLISHED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Upload a separate file for another message"
+      ]
+    },
+    {
+      "code": "ATTACHMENT_NOT_FOUND",
+      "httpStatuses": [
+        404
+      ],
+      "diagnosticMessages": [
+        "Attachment is not bound to this message",
+        "Attachment is unavailable for this message",
+        "The upload installation, thread target or staging grant has expired"
+      ]
+    },
+    {
+      "code": "AUTHENTICATION_REQUIRED",
+      "httpStatuses": [
+        401
+      ],
+      "diagnosticMessages": [
+        "A human session or bot token is required",
+        "A user session or bot credential is required",
+        "A user session or bot token is required",
+        "Authentication required",
+        "Sign in or use an application credential"
+      ]
+    },
+    {
+      "code": "AUTHOR_REQUIRED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Only the author application can edit its message",
+        "Only the author can edit this private message",
+        "The application can remove only its own messages"
+      ]
+    },
+    {
+      "code": "AUTOMOD_RULE_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 20 rules per community"
+      ]
+    },
+    {
+      "code": "BOT_AUTHENTICATION_REQUIRED",
+      "httpStatuses": [
+        401
+      ],
+      "diagnosticMessages": [
+        "A bot credential is required",
+        "A bot token is required",
+        "A bot token is required to acknowledge deliveries",
+        "A bot token is required to consume deliveries",
+        "Only bot tokens can author rich application messages",
+        "The application bot credential is required",
+        "Use a bot token and its ready upload",
+        "Use a bot token for message mutations",
+        "Use a bot token to create an application poll",
+        "Use a bot token to identify its application"
+      ]
+    },
+    {
+      "code": "BOT_USER_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Community bot permissions require a bot user",
+        "Community fixtures need a bot identity; use personal contexts for interaction-only applications",
+        "The application has no bot user",
+        "This application has no bot user"
+      ]
+    },
+    {
+      "code": "CATEGORY_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 50 categories per community"
+      ]
+    },
+    {
+      "code": "CHANNEL_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 50 channels per community"
+      ]
+    },
+    {
+      "code": "COMMAND_EXISTS",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "A command with this type and name already exists"
+      ]
+    },
+    {
+      "code": "COMMAND_LIMIT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "At most 100 commands per scope"
+      ]
+    },
+    {
+      "code": "CONFLICT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": []
+    },
+    {
+      "code": "CONSENT_CHANGED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Confirm the current manifest permissions before creating a fixture",
+        "Review the manifest bound to this consent request",
+        "The application changed; review consent again"
+      ]
+    },
+    {
+      "code": "CONSENT_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Explicit confirmation of the selected grants is required",
+        "Increasing scopes requires a new consent"
+      ]
+    },
+    {
+      "code": "CONTENT_LENGTH_REQUIRED",
+      "httpStatuses": [
+        411
+      ],
+      "diagnosticMessages": []
+    },
+    {
+      "code": "CONTENT_REJECTED",
+      "httpStatuses": [
+        422
+      ],
+      "diagnosticMessages": []
+    },
+    {
+      "code": "CREDENTIAL_LIMIT",
+      "httpStatuses": [
+        400,
+        409
+      ],
+      "diagnosticMessages": [
+        "At most five overlapping webhook credentials",
+        "Revoke an older token before another rotation"
+      ]
+    },
+    {
+      "code": "CURSOR_EXPIRED",
+      "httpStatuses": [
+        410
+      ],
+      "diagnosticMessages": [
+        "Restart the audit listing"
+      ]
+    },
+    {
+      "code": "DELIVERY_LEASE_EXPIRED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "This delivery lease changed or expired"
+      ]
+    },
+    {
+      "code": "DUPLICATE_COMMAND",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Command type and name must be unique within a scope"
+      ]
+    },
+    {
+      "code": "EPHEMERAL_REQUIRED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "This context permits only a private response to the invoker",
+        "This context permits only an ephemeral response"
+      ]
+    },
+    {
+      "code": "EXPIRED",
+      "httpStatuses": [
+        410
+      ],
+      "diagnosticMessages": [
+        "The source upload expired",
+        "The upload expired"
+      ]
+    },
+    {
+      "code": "EXPRESSION_HISTORY_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Community expression history is limited to 5000 assets"
+      ]
+    },
+    {
+      "code": "EXPRESSION_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Expression slots are full"
+      ]
+    },
+    {
+      "code": "EXPRESSION_NAME_CONFLICT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "This expression name is already used"
+      ]
+    },
+    {
+      "code": "EXPRESSION_STORAGE_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Community expression storage is limited to 64 MiB including history"
+      ]
+    },
+    {
+      "code": "EXPRESSION_UPLOAD_NOT_READY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a live ready upload from this community",
+        "Use an unpublished owned upload"
+      ]
+    },
+    {
+      "code": "FILE_PUBLISHED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Remove a published attachment through its message"
+      ]
+    },
+    {
+      "code": "FILE_QUOTA",
+      "httpStatuses": [
+        413
+      ],
+      "diagnosticMessages": [
+        "Application branding storage is full",
+        "At most 20 active sessions and 1 GiB of files per application",
+        "File storage quota exceeded"
+      ]
+    },
+    {
+      "code": "FOLLOWUP_LIMIT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "At most 25 responses per interaction",
+        "At most 25 responses per private interaction"
+      ]
+    },
+    {
+      "code": "GRANT_OUTSIDE_MANIFEST",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Selected grants must be a subset of the displayed manifest"
+      ]
+    },
+    {
+      "code": "HUMAN_CONSENT_REQUIRED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "An administrator human session must explicitly authorize application audio receive"
+      ]
+    },
+    {
+      "code": "HUMAN_SESSION_REQUIRED",
+      "httpStatuses": [
+        401,
+        403
+      ],
+      "diagnosticMessages": [
+        "A human developer session is required",
+        "A human session is required",
+        "An application security administrator must confirm HTTPS subscription changes",
+        "An application security administrator must confirm an HTTPS endpoint",
+        "Sign in again",
+        "Sign in to use an application"
+      ]
+    },
+    {
+      "code": "IDEMPOTENCY_CONFLICT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "The voice request ID was already used for a different state"
+      ]
+    },
+    {
+      "code": "IDEMPOTENCY_KEY_REUSED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Client action ID was already used",
+        "This key was used with a different request"
+      ]
+    },
+    {
+      "code": "IMAGE_QUOTA",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Remove older image messages before adding more images"
+      ]
+    },
+    {
+      "code": "IMMUTABLE_REPLY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "The reply target cannot be changed after sending",
+        "The reply target cannot change"
+      ]
+    },
+    {
+      "code": "IMMUTABLE_VISIBILITY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Message visibility cannot be changed"
+      ]
+    },
+    {
+      "code": "INSTALLATION_GRANT_REQUIRED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": []
+    },
+    {
+      "code": "INTERACTION_ALREADY_ACKNOWLEDGED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "An initial response already exists",
+        "This interaction already has an initial response"
+      ]
+    },
+    {
+      "code": "INTERACTION_CANCELLED",
+      "httpStatuses": [
+        410
+      ],
+      "diagnosticMessages": [
+        "A newer autocomplete request superseded this interaction",
+        "This private interaction was cancelled"
+      ]
+    },
+    {
+      "code": "INTERACTION_EXPIRED",
+      "httpStatuses": [
+        410
+      ],
+      "diagnosticMessages": [
+        "The initial response deadline was missed"
+      ]
+    },
+    {
+      "code": "INTERACTION_NOT_ACKNOWLEDGED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "A message interaction must be acknowledged first"
+      ]
+    },
+    {
+      "code": "INVALID_ANSWER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose an answer from this poll"
+      ]
+    },
+    {
+      "code": "INVALID_APPLICATION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Unsupported application fields",
+        "Use name 1–40, description up to 400 characters and boolean public/createBot"
+      ]
+    },
+    {
+      "code": "INVALID_AUTHORIZATION_REQUEST",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use response_type=code and an exactly registered redirect_uri"
+      ]
+    },
+    {
+      "code": "INVALID_AUTOCOMPLETE_REVISION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Autocomplete requires a session UUID and a positive decimal revision"
+      ]
+    },
+    {
+      "code": "INVALID_AUTOMOD_RULE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Provide a changed field"
+      ]
+    },
+    {
+      "code": "INVALID_BALLOT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Selection does not match this poll",
+        "Use answerIds or delete the ballot",
+        "Use unique answer UUIDs"
+      ]
+    },
+    {
+      "code": "INVALID_BULK_DELETE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use 2–100 unique message UUIDs and decimal versions"
+      ]
+    },
+    {
+      "code": "INVALID_CALLBACK",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Autocomplete requires AUTOCOMPLETE_RESULT",
+        "Autocomplete requires choices",
+        "Deferred source update has no payload",
+        "Deferred update has no payload",
+        "Invalid callback",
+        "Only EPHEMERAL can be set on a deferred response",
+        "Only a component can update its source",
+        "Only a message component may update its source",
+        "Only commands and components may open a modal",
+        "Use the default Mini App entry point"
+      ]
+    },
+    {
+      "code": "INVALID_CAPABILITIES",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Select supported data and event capabilities"
+      ]
+    },
+    {
+      "code": "INVALID_CATEGORY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a category UUID or null"
+      ]
+    },
+    {
+      "code": "INVALID_CATEGORY_ORDER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Include every category UUID once",
+        "Include exactly the current category IDs"
+      ]
+    },
+    {
+      "code": "INVALID_CHANNEL_KIND",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use text, voice, forum or stage"
+      ]
+    },
+    {
+      "code": "INVALID_CHANNEL_ORDER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Include exactly the current channel IDs",
+        "Supply every channel once, with a category UUID or null and optional permissionsSynced"
+      ]
+    },
+    {
+      "code": "INVALID_CHANNEL_SETTINGS",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid topic, guidelines or tag requirement",
+        "Settings must match the channel kind"
+      ]
+    },
+    {
+      "code": "INVALID_CHECKSUM",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "X-Part-SHA256 is required",
+        "checksumSha256 must contain 64 hexadecimal characters"
+      ]
+    },
+    {
+      "code": "INVALID_CLIENT",
+      "httpStatuses": [
+        401
+      ],
+      "diagnosticMessages": [
+        "A public client must use PKCE without a client secret",
+        "Client authentication required",
+        "Invalid client credentials",
+        "Malformed client credentials",
+        "Use client authentication, not a user or bot credential",
+        "Use one client authentication method"
+      ]
+    },
+    {
+      "code": "INVALID_CLIENT_SETTINGS",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid client configuration",
+        "Invalid client type",
+        "Unknown client setting"
+      ]
+    },
+    {
+      "code": "INVALID_CLIENT_TYPE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Only confidential clients use secrets"
+      ]
+    },
+    {
+      "code": "INVALID_COMMAND",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Expected an object"
+      ]
+    },
+    {
+      "code": "INVALID_COMMAND_CONTEXT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Community-scoped commands support only COMMUNITY; register personal contexts globally"
+      ]
+    },
+    {
+      "code": "INVALID_COMMANDS",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "commands must contain at most 100 definitions"
+      ]
+    },
+    {
+      "code": "INVALID_COMPONENT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid component invocation",
+        "Invalid private component invocation"
+      ]
+    },
+    {
+      "code": "INVALID_COMPONENT_VALUES",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Selection does not satisfy component bounds",
+        "Unknown select value",
+        "Unknown selected value"
+      ]
+    },
+    {
+      "code": "INVALID_CONTENT_TYPE",
+      "httpStatuses": [
+        415
+      ],
+      "diagnosticMessages": [
+        "Parts require application/octet-stream",
+        "Upload a PNG, JPEG or WebP image"
+      ]
+    },
+    {
+      "code": "INVALID_CREDENTIAL_GRACE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "gracePeriodSeconds must be 0–3600"
+      ]
+    },
+    {
+      "code": "INVALID_CURSOR",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Cursor does not match this resource",
+        "Invalid cursor"
+      ]
+    },
+    {
+      "code": "INVALID_DELIVERY_ACK",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use the current leaseId"
+      ]
+    },
+    {
+      "code": "INVALID_DESCRIPTION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "description must contain at most 1024 characters"
+      ]
+    },
+    {
+      "code": "INVALID_EVENT_ENDPOINT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a public HTTPS endpoint",
+        "Use a public HTTPS endpoint on port 443",
+        "Use a public HTTPS endpoint without URL credentials, query or fragment"
+      ]
+    },
+    {
+      "code": "INVALID_EXPRESSION_DESCRIPTION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Description must contain 1–200 characters; tag at most 32, without controls"
+      ]
+    },
+    {
+      "code": "INVALID_EXPRESSION_IMAGE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Emoji dimensions must be at most 128×128; stickers exactly 320×320",
+        "Image container is invalid",
+        "Unsupported expression size or image format",
+        "Uploaded image checksum does not match"
+      ]
+    },
+    {
+      "code": "INVALID_EXPRESSION_NAME",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Emoji names use 2–32 ASCII letters/digits/underscores; sticker names use 2–30 characters"
+      ]
+    },
+    {
+      "code": "INVALID_EXPRESSION_ROLES",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Restriction roles must belong to this community",
+        "Use boolean available and up to 100 unique role UUIDs"
+      ]
+    },
+    {
+      "code": "INVALID_EXPRESSION_UPLOAD",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "uploadId must be a UUID"
+      ]
+    },
+    {
+      "code": "INVALID_FILENAME",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid normalized filename",
+        "Use a filename without paths or control characters, up to 120 characters"
+      ]
+    },
+    {
+      "code": "INVALID_GRACE_PERIOD",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose 0–3600 grace period seconds"
+      ]
+    },
+    {
+      "code": "INVALID_GRANT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": []
+    },
+    {
+      "code": "INVALID_IDEMPOTENCY_KEY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Idempotency-Key must be a UUID",
+        "Idempotency-Key must be a UUID or ULID"
+      ]
+    },
+    {
+      "code": "INVALID_IMAGE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid or oversized image container",
+        "Use a static icon up to 512×512 or banner up to 2048×1024"
+      ]
+    },
+    {
+      "code": "INVALID_IMAGE_OWNER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A public webhook or application image owner is required"
+      ]
+    },
+    {
+      "code": "INVALID_INSTALLATION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose an allowed installation context and target",
+        "Server permissions require a bot installation",
+        "Use valid application and community IDs",
+        "User installations cannot grant community permissions or install a community bot"
+      ]
+    },
+    {
+      "code": "INVALID_INTERACTION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid focused option",
+        "Invalid interaction type",
+        "Invalid private autocomplete or command type",
+        "Invalid private command invocation",
+        "Unknown interaction fields"
+      ]
+    },
+    {
+      "code": "INVALID_INVITATION_RESPONSE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use supported invitation fields"
+      ]
+    },
+    {
+      "code": "INVALID_KEY_ROTATION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "graceSeconds must be 0–604800"
+      ]
+    },
+    {
+      "code": "INVALID_LOCALE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid locale"
+      ]
+    },
+    {
+      "code": "INVALID_MANIFEST",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use supported application fields",
+        "public must be boolean"
+      ]
+    },
+    {
+      "code": "INVALID_MEDIA_TOKEN",
+      "httpStatuses": [
+        401
+      ],
+      "diagnosticMessages": [
+        "IDENTIFY is required",
+        "IDENTIFY must be JSON",
+        "Invalid IDENTIFY",
+        "Invalid or consumed media token",
+        "Media token was consumed"
+      ]
+    },
+    {
+      "code": "INVALID_MENTION_ACK",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use 1–100 unique mention UUIDs"
+      ]
+    },
+    {
+      "code": "INVALID_MENTIONS",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A mentioned role does not belong to this community",
+        "Mention target is not available in this channel",
+        "Only the invoker can be mentioned",
+        "Only this private channel owner can be mentioned"
+      ]
+    },
+    {
+      "code": "INVALID_MESSAGE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A message requires content, embeds, attachments, components or an existing poll",
+        "Deletion accepts only reason",
+        "Unsupported message fields",
+        "Unsupported webhook message fields",
+        "content must contain 1–4000 characters"
+      ]
+    },
+    {
+      "code": "INVALID_METADATA",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Audio retention must be 0–365 days or null",
+        "Invalid HTTPS URL",
+        "Use a public HTTPS hostname; deletion URLs cannot contain query or fragment",
+        "Use an absolute public HTTPS URL",
+        "Use supported metadata fields"
+      ]
+    },
+    {
+      "code": "INVALID_MODAL",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "The modal does not match the opened form"
+      ]
+    },
+    {
+      "code": "INVALID_NAME",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": []
+    },
+    {
+      "code": "INVALID_NICKNAME",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a nickname of 1–32 characters or null to clear it"
+      ]
+    },
+    {
+      "code": "INVALID_OPTION_CONTEXT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "This resource option is unavailable outside its community context",
+        "This selector is unavailable outside a community"
+      ]
+    },
+    {
+      "code": "INVALID_OPTIONS",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A required option is missing",
+        "Choose a registered value",
+        "Invalid focused option",
+        "Unknown autocomplete option",
+        "Use a current private-context user",
+        "Use registered option names only"
+      ]
+    },
+    {
+      "code": "INVALID_OVERRIDES",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Permission targets must be unique",
+        "Use disjoint allow/deny channel permission IDs",
+        "Use role UUIDs or member decimal IDs",
+        "Use up to 100 unique permission targets"
+      ]
+    },
+    {
+      "code": "INVALID_PAGE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "limit must be 1–100",
+        "limit must be a single integer"
+      ]
+    },
+    {
+      "code": "INVALID_PART",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Part number is outside this upload",
+        "Use a part number"
+      ]
+    },
+    {
+      "code": "INVALID_PENDING",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "pending must be a boolean"
+      ]
+    },
+    {
+      "code": "INVALID_PERMISSION_SYNC",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A category is required",
+        "A category is required to synchronize permissions",
+        "Choose a category before synchronizing",
+        "permissionsSynced must be boolean"
+      ]
+    },
+    {
+      "code": "INVALID_PERMISSIONS",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A wildcard target has no ID",
+        "Duplicate permission target",
+        "Expected at most 100 targets",
+        "Invalid permission target",
+        "Permission IDs must be unique",
+        "Requested permissions exceed the application manifest",
+        "permissions must be a JSON array"
+      ]
+    },
+    {
+      "code": "INVALID_POLL",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A poll requires a question (1–300), 2–10 distinct answers (1–100), boolean policies and durationSeconds 60–604800"
+      ]
+    },
+    {
+      "code": "INVALID_PRESENCE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid activities or since timestamp",
+        "Invalid activity",
+        "Invalid presence"
+      ]
+    },
+    {
+      "code": "INVALID_PRIVATE_CONTEXT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Private context targets cannot be mixed",
+        "Use BOT_DM with an optional application channel, or PRIVATE_CHANNEL with a conversation"
+      ]
+    },
+    {
+      "code": "INVALID_PRIVATE_MEDIA",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Community files and image contexts cannot be published in a private application channel",
+        "Private media requires a private upload context"
+      ]
+    },
+    {
+      "code": "INVALID_PRIVATE_POLICY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a single boolean blocked field"
+      ]
+    },
+    {
+      "code": "INVALID_PROOF",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Enter your current account password"
+      ]
+    },
+    {
+      "code": "INVALID_QUERY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Categories use one bounded page",
+        "Channels use one bounded page",
+        "No callback query parameters are supported",
+        "No follow-up query parameters are supported",
+        "No query parameters",
+        "No query parameters are supported",
+        "No sandbox listing query is supported",
+        "Only cursor and limit are supported",
+        "Only download=1 is supported",
+        "Roles use one bounded page",
+        "This operation does not accept query parameters",
+        "This resource takes no query",
+        "This resource takes no query parameters",
+        "Unsupported poll query",
+        "Unsupported private-channel query",
+        "Unsupported query parameters",
+        "Use a conversation and pagination",
+        "Use a private context",
+        "Use an optional asset fingerprint",
+        "Use an optional channelId UUID",
+        "Use cursor and limit",
+        "Use cursor/limit",
+        "Use cursor/limit and archived=true|false|all",
+        "Use limit/cursor",
+        "Use wait=true/false and an optional threadId UUID",
+        "direction must be before or after"
+      ]
+    },
+    {
+      "code": "INVALID_RANGE",
+      "httpStatuses": [
+        416
+      ],
+      "diagnosticMessages": [
+        "Use a single satisfiable byte range"
+      ]
+    },
+    {
+      "code": "INVALID_REASON",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Audit reason must contain at most 512 characters without control characters",
+        "Closing accepts an optional reason up to 512 characters",
+        "Use a percent-encoded UTF-8 audit reason",
+        "reason must contain at most 512 characters"
+      ]
+    },
+    {
+      "code": "INVALID_REDIRECT_URI",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid redirect URI",
+        "Use an exact HTTPS URI without credentials, fragment or wildcard"
+      ]
+    },
+    {
+      "code": "INVALID_REPLY_CONTEXT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "An interaction-only response has no persistent reply target"
+      ]
+    },
+    {
+      "code": "INVALID_REQUEST",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "This operation takes an empty body and no query parameters",
+        "Unsupported or empty resource mutation",
+        "Use an empty body",
+        "Use only confirmation fields"
+      ]
+    },
+    {
+      "code": "INVALID_ROLE_COLOR",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a six-digit hex color or null"
+      ]
+    },
+    {
+      "code": "INVALID_ROLE_EMOJI",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use one Unicode emoji or null"
+      ]
+    },
+    {
+      "code": "INVALID_ROLE_ICON",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose an icon or Unicode emoji, not both",
+        "Use an available, validated emoji from this community or null"
+      ]
+    },
+    {
+      "code": "INVALID_ROLE_NAME",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Role name must contain 1–80 characters without controls"
+      ]
+    },
+    {
+      "code": "INVALID_ROLE_ORDER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Supply all role UUIDs once, highest first and @everyone last",
+        "Supply exactly the current role IDs with @everyone last"
+      ]
+    },
+    {
+      "code": "INVALID_ROLES",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use up to 100 unique role UUIDs"
+      ]
+    },
+    {
+      "code": "INVALID_SANDBOX_EVENT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose a supported event and content up to 4000 characters",
+        "Choose a supported synthetic domain action"
+      ]
+    },
+    {
+      "code": "INVALID_SANDBOX_FAULT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a sandbox run UUID",
+        "Use an allowed GET path, 1–5 faults and delay 0–2000 ms"
+      ]
+    },
+    {
+      "code": "INVALID_SANDBOX_REQUEST",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use supported sandbox fields and no query parameters"
+      ]
+    },
+    {
+      "code": "INVALID_SCOPE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Client Credentials may manage only the application commands",
+        "Community scopes must fit the access manifest",
+        "Select unique supported scopes"
+      ]
+    },
+    {
+      "code": "INVALID_SEARCH",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Search query contains invalid characters",
+        "Use a query of 1–100 characters and optional limit/cursor"
+      ]
+    },
+    {
+      "code": "INVALID_SIMULATION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Channel overrides require channelId",
+        "Choose disjoint channel permissions",
+        "Every simulated role must belong to this community",
+        "Override roles must belong to this community",
+        "Override targets must be unique",
+        "Use a member, optional channel, role IDs and overrides",
+        "Use typed role/member overrides",
+        "Use up to 100 unique role UUIDs"
+      ]
+    },
+    {
+      "code": "INVALID_SPOILER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "spoiler must be boolean"
+      ]
+    },
+    {
+      "code": "INVALID_SUBSCRIPTION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose supported transport, events, communities and 1–12 attempts",
+        "Only webhook subscriptions have a URL",
+        "Transport is immutable; use supported fields",
+        "Use a subscription object"
+      ]
+    },
+    {
+      "code": "INVALID_TARGET",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "CHAT_INPUT commands do not accept a target",
+        "Expected a member ID",
+        "Expected a message UUID"
+      ]
+    },
+    {
+      "code": "INVALID_TEAM_INVITATION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose a user and a supported role"
+      ]
+    },
+    {
+      "code": "INVALID_TEAM_ROLE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Choose a supported team role"
+      ]
+    },
+    {
+      "code": "INVALID_THREAD",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use boolean private/invitable and an optional parent message UUID",
+        "archived/invitable must be boolean"
+      ]
+    },
+    {
+      "code": "INVALID_THREAD_CONTEXT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Private threads require a text chat channel and cannot attach to a public parent message"
+      ]
+    },
+    {
+      "code": "INVALID_TIMEOUT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a UTC ISO timestamp or null"
+      ]
+    },
+    {
+      "code": "INVALID_TOKEN",
+      "httpStatuses": [
+        401
+      ],
+      "diagnosticMessages": [
+        "Expired or revoked OAuth access token",
+        "Gateway session is no longer active",
+        "Invalid OAuth access token",
+        "The Gateway session is no longer active",
+        "The user has blocked this application"
+      ]
+    },
+    {
+      "code": "INVALID_TRANSFER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid ownership transfer"
+      ]
+    },
+    {
+      "code": "INVALID_TRANSPORT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use opcode 13 for websocket ACK; HTTPS uses its HTTP response"
+      ]
+    },
+    {
+      "code": "INVALID_UPLOAD",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Cancellation does not accept a body",
+        "Completion body must be {}",
+        "Unsupported upload fields",
+        "Use community and channel UUIDs",
+        "threadId must be a UUID"
+      ]
+    },
+    {
+      "code": "INVALID_USER",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid username",
+        "Use a decimal user ID"
+      ]
+    },
+    {
+      "code": "INVALID_VISIBILITY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "EPHEMERAL is available only through an interaction",
+        "Incoming webhook messages are public",
+        "Use an interaction for an ephemeral response"
+      ]
+    },
+    {
+      "code": "INVALID_VOICE_CONNECTION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Specify channelId and optional boolean selfDeaf"
+      ]
+    },
+    {
+      "code": "INVALID_VOICE_FRAME",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Each PCM frame must contain 960 signed 16-bit little-endian samples",
+        "Expected PCM or END",
+        "Invalid JSON",
+        "Wait for READY; END is final"
+      ]
+    },
+    {
+      "code": "INVALID_VOICE_POLICY",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Specify allowApplicationReceive as a boolean"
+      ]
+    },
+    {
+      "code": "INVALID_VOICE_STATE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid voice state"
+      ]
+    },
+    {
+      "code": "INVALID_WEBHOOK",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a channel UUID, boolean override policies and an optional emoji avatar UUID",
+        "name must contain 1–80 characters without controls"
+      ]
+    },
+    {
+      "code": "INVALID_WEBHOOK_AVATAR",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Avatar emoji is unavailable",
+        "Use a community emoji UUID",
+        "Use an available community emoji permitted by your roles"
+      ]
+    },
+    {
+      "code": "INVALID_WEBHOOK_CHANNEL",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use a text or forum channel"
+      ]
+    },
+    {
+      "code": "INVALID_WEBHOOK_NAME",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "username must contain 1–80 characters without controls"
+      ]
+    },
+    {
+      "code": "INVITATION_EXPIRED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Invitation expired, changed or already answered",
+        "The application owner changed; refresh the invitation"
+      ]
+    },
+    {
+      "code": "INVITATION_PENDING",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "An invitation is already pending"
+      ]
+    },
+    {
+      "code": "LAST_DEFAULT_CHANNEL",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Create another channel of this kind before deleting the default"
+      ]
+    },
+    {
+      "code": "MANAGED_ROLE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "@everyone cannot be renamed",
+        "Built-in and application roles cannot be deleted separately"
+      ]
+    },
+    {
+      "code": "MANIFEST_CHANGED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Refresh the installation consent"
+      ]
+    },
+    {
+      "code": "MEDIA_CAPACITY",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "Voice connection capacity is full"
+      ]
+    },
+    {
+      "code": "MENTION_QUEUE_FULL",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "Mention delivery is temporarily at capacity"
+      ]
+    },
+    {
+      "code": "MFA_REQUIRED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Enter an authenticator or recovery code"
+      ]
+    },
+    {
+      "code": "MFA_SETUP_REQUIRED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Enable two-factor authentication to use this team role",
+        "Sensitive team roles require two-factor authentication"
+      ]
+    },
+    {
+      "code": "MINI_APP_ACTION_ALREADY_RESOLVED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Action is already resolved or unavailable"
+      ]
+    },
+    {
+      "code": "MINI_APP_ACTION_EXPIRED",
+      "httpStatuses": [
+        410
+      ],
+      "diagnosticMessages": [
+        "Action expired"
+      ]
+    },
+    {
+      "code": "MINI_APP_ACTION_FORBIDDEN",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Action belongs to another instance",
+        "Action policy denied access",
+        "State is not accessible",
+        "The actor no longer has permission"
+      ]
+    },
+    {
+      "code": "MINI_APP_BRIDGE_VERSION_UNSUPPORTED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Unsupported Host Bridge version"
+      ]
+    },
+    {
+      "code": "MINI_APP_CONTEXT_NOT_ALLOWED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "The required channel context is unavailable",
+        "The required context is unavailable",
+        "This launch context is not supported"
+      ]
+    },
+    {
+      "code": "MINI_APP_DISABLED",
+      "httpStatuses": [
+        403,
+        503
+      ],
+      "diagnosticMessages": [
+        "Mini App is disabled",
+        "Mini Apps are disabled on this deployment"
+      ]
+    },
+    {
+      "code": "MINI_APP_INSTANCE_NOT_FOUND",
+      "httpStatuses": [
+        404
+      ],
+      "diagnosticMessages": [
+        "Action not found",
+        "Instance not found",
+        "Resource not found"
+      ]
+    },
+    {
+      "code": "MINI_APP_INVALID_ACTION",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Invalid action name",
+        "Invalid action payload or instance"
+      ]
+    },
+    {
+      "code": "MINI_APP_INVALID_MANIFEST",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Declare retentionDays and externalBackend",
+        "Invalid manifest list",
+        "Invalid voice fallback",
+        "Invalid window dimensions",
+        "Name, description and enabled are required",
+        "The launch origin must be allowlisted and separate from the Host",
+        "Too many action policies",
+        "Unknown or invalid policy condition",
+        "Unsupported context or instance scope"
+      ]
+    },
+    {
+      "code": "MINI_APP_INVALID_REQUEST",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Expected a JSON object",
+        "Invalid command context",
+        "Invalid launch context or S256 challenge",
+        "Invalid readiness duration",
+        "State is required",
+        "Version must be a decimal string"
+      ]
+    },
+    {
+      "code": "MINI_APP_INVALID_URL",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use HTTPS without credentials, wildcards, query parameters or fragments",
+        "Use an absolute HTTPS URL"
+      ]
+    },
+    {
+      "code": "MINI_APP_LAUNCH_CODE_INVALID",
+      "httpStatuses": [
+        400,
+        401
+      ],
+      "diagnosticMessages": [
+        "Invalid launch proof",
+        "Launch code expired or invalid"
+      ]
+    },
+    {
+      "code": "MINI_APP_LAUNCH_CODE_USED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Launch code was already exchanged"
+      ]
+    },
+    {
+      "code": "MINI_APP_LAUNCH_FORBIDDEN",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Installation revoked",
+        "Launch policy denied access",
+        "The application cannot view this channel",
+        "The application is not installed or access was revoked",
+        "The context is no longer visible"
+      ]
+    },
+    {
+      "code": "MINI_APP_NOT_CONFIGURED",
+      "httpStatuses": [
+        404
+      ],
+      "diagnosticMessages": [
+        "Mini App is not published",
+        "Mini App not found"
+      ]
+    },
+    {
+      "code": "MINI_APP_ORIGIN_MISMATCH",
+      "httpStatuses": [
+        400,
+        403
+      ],
+      "diagnosticMessages": [
+        "Save the origin in the draft first",
+        "The exact launch origin is required"
+      ]
+    },
+    {
+      "code": "MINI_APP_ORIGIN_NOT_VERIFIED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Verify every allowed origin before publishing"
+      ]
+    },
+    {
+      "code": "MINI_APP_PAYLOAD_TOO_LARGE",
+      "httpStatuses": [
+        413
+      ],
+      "diagnosticMessages": [
+        "JSON complexity exceeds the limit",
+        "JSON exceeds the byte limit"
+      ]
+    },
+    {
+      "code": "MINI_APP_RATE_LIMITED",
+      "httpStatuses": [
+        429
+      ],
+      "diagnosticMessages": [
+        "Action backlog is full",
+        "Mini App request budget exhausted",
+        "Too many active Mini App windows"
+      ]
+    },
+    {
+      "code": "MINI_APP_SESSION_EXPIRED",
+      "httpStatuses": [
+        401
+      ],
+      "diagnosticMessages": [
+        "A MiniApp credential is required",
+        "Mini App credential expired"
+      ]
+    },
+    {
+      "code": "MINI_APP_SESSION_REVOKED",
+      "httpStatuses": [
+        401,
+        403,
+        404
+      ],
+      "diagnosticMessages": [
+        "Session access was revoked",
+        "Session does not belong to this Host",
+        "Session not found"
+      ]
+    },
+    {
+      "code": "MINI_APP_STATE_VERSION_CONFLICT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "State changed; read the current snapshot"
+      ]
+    },
+    {
+      "code": "MINI_APP_UNAVAILABLE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "A stable platform encryption key is required",
+        "Create a new launch request",
+        "Invalid platform encryption key"
+      ]
+    },
+    {
+      "code": "MINI_APP_VERSION_CONFLICT",
+      "httpStatuses": [
+        412
+      ],
+      "diagnosticMessages": [
+        "Reload the current manifest before changing it"
+      ]
+    },
+    {
+      "code": "MISSING_PERMISSION",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Closing another author’s poll requires manageMessages and a reason",
+        "Creator or manageThreads permission required",
+        "Current consent, intent and channel access are required",
+        "Nickname permission is required",
+        "No role position is available below the installing member",
+        "Reply history is no longer readable",
+        "The current channel permissions do not permit this file operation",
+        "Thread owner/moderator required for this membership change",
+        "Visible writable channel required",
+        "Webhook author cannot send to this destination",
+        "attachFiles is required",
+        "manageCommunity is required",
+        "manageCommunity is required for pending membership",
+        "manageMessages is required to remove other authors’ messages",
+        "mentionEveryone is required for everyone and role mentions",
+        "readMessageHistory is required",
+        "readMessageHistory is required for replies",
+        "readMessageHistory is required to reference a message",
+        "sendMessages and readMessageHistory are required"
+      ]
+    },
+    {
+      "code": "MISSING_SCOPE",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "The requested private scope consent is required",
+        "communities.members.read is required"
+      ]
+    },
+    {
+      "code": "MISSING_TEAM_PERMISSION",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Your team role does not permit this action"
+      ]
+    },
+    {
+      "code": "MODAL_ALREADY_SUBMITTED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "This modal has already been submitted"
+      ]
+    },
+    {
+      "code": "MODAL_UNAVAILABLE",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "This modal expired or was submitted"
+      ]
+    },
+    {
+      "code": "MODERATION_CAPTURE_UNAVAILABLE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "Moderation action could not be recorded; retry later"
+      ]
+    },
+    {
+      "code": "MODERATION_REASON_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "A reason is required to remove other authors’ messages"
+      ]
+    },
+    {
+      "code": "NOT_FOUND",
+      "httpStatuses": [
+        404
+      ],
+      "diagnosticMessages": [
+        "API method not found",
+        "Application not found",
+        "Image not available for this message",
+        "Resource not found",
+        "Sandbox run not found",
+        "Voice channel not found",
+        "Voice connection not found"
+      ]
+    },
+    {
+      "code": "OAUTH_CONSENT_UNAVAILABLE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "Configure credential encryption before authorizing applications",
+        "The consent receipt could not be opened"
+      ]
+    },
+    {
+      "code": "OAUTH_REQUIRED",
+      "httpStatuses": [
+        401
+      ],
+      "diagnosticMessages": [
+        "A user OAuth grant is required",
+        "An OAuth access token is required"
+      ]
+    },
+    {
+      "code": "ORIGIN_NOT_ALLOWED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "This origin is not registered for the OAuth client"
+      ]
+    },
+    {
+      "code": "OWNER_TRANSFER_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Ownership can change only through an accepted transfer"
+      ]
+    },
+    {
+      "code": "PART_CHECKSUM_MISMATCH",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Part checksum or length does not match"
+      ]
+    },
+    {
+      "code": "PART_TIMEOUT",
+      "httpStatuses": [
+        408
+      ],
+      "diagnosticMessages": [
+        "Retry this part with the same operation key"
+      ]
+    },
+    {
+      "code": "PART_TOO_LARGE",
+      "httpStatuses": [
+        413
+      ],
+      "diagnosticMessages": [
+        "Part exceeds its declared length"
+      ]
+    },
+    {
+      "code": "PAYLOAD_TOO_LARGE",
+      "httpStatuses": [
+        413
+      ],
+      "diagnosticMessages": []
+    },
+    {
+      "code": "PKCE_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Use PKCE S256 with a valid challenge"
+      ]
+    },
+    {
+      "code": "POLL_CLOSED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "The poll no longer accepts votes"
+      ]
+    },
+    {
+      "code": "POLL_QUOTA",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Close older polls before creating more"
+      ]
+    },
+    {
+      "code": "PRIVATE_HISTORY_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Clear private history before publishing more than 10000 retained messages"
+      ]
+    },
+    {
+      "code": "PROTECTED_MEMBER",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Owners and administrators cannot be pending",
+        "The creator retains ownership; use leave for their membership row"
+      ]
+    },
+    {
+      "code": "RATE_LIMITED",
+      "httpStatuses": [
+        429
+      ],
+      "diagnosticMessages": [
+        "Branding upload budget exhausted",
+        "Expression creation budget exhausted",
+        "Image budget exhausted",
+        "Interaction response budget exhausted",
+        "Poll creation budget exhausted",
+        "Private callback budget exhausted",
+        "Private channel write budget exhausted",
+        "Private interaction budget exhausted",
+        "Pull budget exhausted",
+        "Replay budget exhausted",
+        "Request budget exhausted",
+        "Sandbox action budget exhausted",
+        "Sandbox retry test",
+        "Signing rotation budget exhausted",
+        "Too many component interactions",
+        "Too many credential proof attempts",
+        "Too many interactions",
+        "Upload budget exhausted",
+        "Vote budget exhausted",
+        "Webhook budget exhausted"
+      ]
+    },
+    {
+      "code": "REINSTALL_REQUIRED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Remove and reinstall to change community grants",
+        "Remove the bot before granting a new installation",
+        "Use a new bot installation consent to change community access"
+      ]
+    },
+    {
+      "code": "REPLY_NOT_FOUND",
+      "httpStatuses": [
+        404
+      ],
+      "diagnosticMessages": [
+        "Reply target is unavailable in this private channel",
+        "Reply target no longer exists in this channel"
+      ]
+    },
+    {
+      "code": "REQUEST_CAPACITY",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "JSON request capacity is temporarily full",
+        "Sandbox delay capacity is temporarily full"
+      ]
+    },
+    {
+      "code": "RESOURCE_VERSION_CONFLICT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "No messages were deleted; refresh all versions",
+        "Refresh OAuth settings before editing",
+        "Refresh application privacy before changing it",
+        "Refresh application privacy before deleting data",
+        "Refresh categories before reordering",
+        "Refresh channels before reordering",
+        "Refresh command permissions",
+        "Refresh roles before reordering",
+        "Refresh the application before saving",
+        "Refresh the application metadata",
+        "Refresh the command before saving",
+        "Refresh the installation before changing it",
+        "Refresh the message before changing it",
+        "Refresh the message before clearing reactions",
+        "Refresh the poll before closing it",
+        "Refresh the private component source",
+        "Refresh the private message before changing it",
+        "Refresh the private message before deleting it",
+        "Refresh the private response before changing it",
+        "Refresh the resource before changing it",
+        "Refresh the response before changing it",
+        "Refresh the subscription before changing it",
+        "Refresh the team before changing it",
+        "The command changed; select it again",
+        "The component message changed; refresh before interacting",
+        "The private component source changed",
+        "The voice policy changed; reload before saving"
+      ]
+    },
+    {
+      "code": "ROLE_HIERARCHY",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Only members below your highest role can be edited",
+        "Roles at or above your highest role must retain their order and position",
+        "There is no position below your highest role"
+      ]
+    },
+    {
+      "code": "ROLE_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 100 roles per community"
+      ]
+    },
+    {
+      "code": "ROLE_POSITIONS_EXHAUSTED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "An owner must normalize the role order first"
+      ]
+    },
+    {
+      "code": "SANDBOX_INJECTED_FAILURE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "Sandbox retry test"
+      ]
+    },
+    {
+      "code": "SANDBOX_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 1000 simulator events per run",
+        "At most five synthetic members per run",
+        "At most three runs/application and 100 runs/environment",
+        "Channel fixture limit reached",
+        "Role fixture limit reached"
+      ]
+    },
+    {
+      "code": "SECRET_ALREADY_REVEALED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "This secret was already shown; create another if it was not saved",
+        "This token was already shown. Create another if it was not saved",
+        "Webhook token was already shown; rotate again if it was lost",
+        "Webhook token was already shown; rotate it if the response was lost"
+      ]
+    },
+    {
+      "code": "SECRET_LIMIT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "At most five active client secrets"
+      ]
+    },
+    {
+      "code": "SIGNING_UNAVAILABLE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "Application signing is not configured",
+        "Signing key could not be opened"
+      ]
+    },
+    {
+      "code": "STAGE_NOT_ACTIVE",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Start the stage before joining as an application"
+      ]
+    },
+    {
+      "code": "STALE_AUTOCOMPLETE",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "A newer autocomplete request exists",
+        "A newer input revision has already been accepted"
+      ]
+    },
+    {
+      "code": "STATE_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Browser authorization requires state"
+      ]
+    },
+    {
+      "code": "STORAGE_UNAVAILABLE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "File storage is temporarily at capacity",
+        "File storage is temporarily unavailable",
+        "File storage is unavailable"
+      ]
+    },
+    {
+      "code": "SUBSCRIPTION_LIMIT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "At most ten subscriptions per application"
+      ]
+    },
+    {
+      "code": "TEAM_LIMIT",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "At most 100 team members"
+      ]
+    },
+    {
+      "code": "TEAM_MEMBER_REQUIRED",
+      "httpStatuses": [
+        400,
+        409
+      ],
+      "diagnosticMessages": [
+        "The recipient is no longer a team member",
+        "Transfer ownership to an existing team member"
+      ]
+    },
+    {
+      "code": "THREAD_ARCHIVED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Unarchive before adding members",
+        "Unarchive before joining",
+        "Unarchive the thread before interacting",
+        "Unarchive the thread before responding",
+        "Unarchive the thread before sending or editing",
+        "Unarchive the thread before uploading"
+      ]
+    },
+    {
+      "code": "THREAD_EXISTS",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "This parent already has a thread"
+      ]
+    },
+    {
+      "code": "THREAD_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 1000 threads per community"
+      ]
+    },
+    {
+      "code": "THREAD_MEMBER_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 1000 members per thread"
+      ]
+    },
+    {
+      "code": "THREAD_TARGET_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Forum webhooks require an existing threadId target"
+      ]
+    },
+    {
+      "code": "UNSUPPORTED_CALLBACK",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Unsupported callback type"
+      ]
+    },
+    {
+      "code": "UNSUPPORTED_GRANT_TYPE",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Only authorization_code, refresh_token and client_credentials are supported"
+      ]
+    },
+    {
+      "code": "UPLOAD_BUSY",
+      "httpStatuses": [
+        429
+      ],
+      "diagnosticMessages": [
+        "Parallel upload budget exhausted"
+      ]
+    },
+    {
+      "code": "UPLOAD_EXPIRED",
+      "httpStatuses": [
+        410
+      ],
+      "diagnosticMessages": [
+        "Create a new upload session"
+      ]
+    },
+    {
+      "code": "UPLOAD_INCOMPLETE",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Resume the missing parts before completing this upload"
+      ]
+    },
+    {
+      "code": "UPLOAD_LOCKED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Parts cannot change after completion starts"
+      ]
+    },
+    {
+      "code": "UPLOAD_TOO_LARGE",
+      "httpStatuses": [
+        413
+      ],
+      "diagnosticMessages": [
+        "size must be a decimal string up to 10 MiB"
+      ]
+    },
+    {
+      "code": "UPLOADS_UNAVAILABLE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "File storage is unavailable",
+        "Image scanning is unavailable"
+      ]
+    },
+    {
+      "code": "VOICE_ACCESS_DENIED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "A current community installation, voice.connect scope and voiceStates installation grant are required",
+        "Current viewChannel and connect permissions are required",
+        "The responsible shard and voiceStates intent are required",
+        "The voice grant is no longer active"
+      ]
+    },
+    {
+      "code": "VOICE_CONNECT_FORBIDDEN",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "A regular voice channel is required",
+        "Current installation, voice.connect scope and channel access are required"
+      ]
+    },
+    {
+      "code": "VOICE_CONNECTION_EXISTS",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "The bot already has an active connection in this community"
+      ]
+    },
+    {
+      "code": "VOICE_CONNECTION_EXPIRED",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Create a connection with a new Idempotency-Key"
+      ]
+    },
+    {
+      "code": "VOICE_CONNECTION_IDLE",
+      "httpStatuses": [
+        408
+      ],
+      "diagnosticMessages": [
+        "Voice connection is idle"
+      ]
+    },
+    {
+      "code": "VOICE_CONNECTION_LIMITED",
+      "httpStatuses": [
+        429
+      ],
+      "diagnosticMessages": [
+        "Send PCM frames in real time",
+        "Voice connection capacity is full",
+        "Voice creation rate exceeded"
+      ]
+    },
+    {
+      "code": "VOICE_RECEIVE_DENIED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Audio receive requires a separate scope, listen permission, administrator policy and declared privacy/deletion/retention"
+      ]
+    },
+    {
+      "code": "VOICE_SESSION_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "Voice session capacity is full"
+      ]
+    },
+    {
+      "code": "VOICE_STATE_NOT_FOUND",
+      "httpStatuses": [
+        404
+      ],
+      "diagnosticMessages": [
+        "The user is not in an accessible voice channel"
+      ]
+    },
+    {
+      "code": "VOICE_TRANSMIT_DENIED",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "voice.transmit and speak permission are required"
+      ]
+    },
+    {
+      "code": "VOICE_TRANSMIT_FORBIDDEN",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "The bot cannot currently transmit audio",
+        "The bot cannot transmit",
+        "Voice transmit permission was revoked",
+        "voice.transmit scope and speak permission are required"
+      ]
+    },
+    {
+      "code": "VOICE_TRANSPORT_UNAVAILABLE",
+      "httpStatuses": [
+        503
+      ],
+      "diagnosticMessages": [
+        "Media lease expired",
+        "Media transport disconnected",
+        "Voice disconnect is pending; retry deletion",
+        "Voice transport is disabled on this deployment",
+        "Voice transport is temporarily unavailable"
+      ]
+    },
+    {
+      "code": "WEBHOOK_APPLICATION_REQUIRED",
+      "httpStatuses": [
+        400
+      ],
+      "diagnosticMessages": [
+        "Interactive components require an application-owned webhook"
+      ]
+    },
+    {
+      "code": "WEBHOOK_LIMIT",
+      "httpStatuses": [
+        409
+      ],
+      "diagnosticMessages": [
+        "At most 20 active and 1000 retained webhooks per community"
+      ]
+    },
+    {
+      "code": "WEBHOOK_OVERRIDE_FORBIDDEN",
+      "httpStatuses": [
+        403
+      ],
+      "diagnosticMessages": [
+        "Avatar overrides are disabled",
+        "Username overrides are disabled"
+      ]
+    }
+  ]
+}

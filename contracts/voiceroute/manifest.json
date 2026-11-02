@@ -1,0 +1,18 @@
+{
+  "files": {
+    "asyncapi.json": {
+      "sha256": "b5c5d946ba4e29f44e9010ebae1f4b2686966266c3033ef3ceea01843187973d"
+    },
+    "capabilities.json": {
+      "sha256": "75ab04163a42b9da1428a3b9854874bdc12cafc500549fc57d8dd9543f7c19bd"
+    },
+    "error-codes.json": {
+      "sha256": "e42a6375e1e1527557ccf55fa94006b223fd4f1a3caebbe22cccfb5d169b3253"
+    },
+    "openapi.json": {
+      "sha256": "52046f405d55f938223f5695fcbb644eaaad687b0df943e1af1b19700bd921be"
+    }
+  },
+  "source_repository": "VoiceRoute",
+  "source_revision": "13de59014f91db679eedd898e12cf3fe5441bdf1"
+}

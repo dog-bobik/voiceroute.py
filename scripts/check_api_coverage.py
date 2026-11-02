@@ -14,9 +14,10 @@ from pathlib import Path
 from typing import Any, cast
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OPENAPI = ROOT.parent / "VoiceRoute" / "docs/bot-platform/openapi.json"
-DEFAULT_ASYNCAPI = ROOT.parent / "VoiceRoute" / "docs/bot-platform/asyncapi.json"
-DEFAULT_CAPABILITIES = ROOT.parent / "VoiceRoute" / "docs/bot-platform/capabilities.json"
+CONTRACTS = ROOT / "contracts/voiceroute"
+DEFAULT_OPENAPI = CONTRACTS / "openapi.json"
+DEFAULT_ASYNCAPI = CONTRACTS / "asyncapi.json"
+DEFAULT_CAPABILITIES = CONTRACTS / "capabilities.json"
 
 RESOURCE_MODULES = {
     "application_commands": "application_commands",
@@ -101,8 +102,7 @@ def main() -> int:
         "events": sorted(map(str, events)),
         "asyncapi_channels": sorted(asyncapi.get("channels", {})),
         "classification_note": (
-            "review-required means auth permits botToken; "
-            "it does not assert SDK coverage"
+            "review-required means auth permits botToken; it does not assert SDK coverage"
         ),
     }
     if args.json:
