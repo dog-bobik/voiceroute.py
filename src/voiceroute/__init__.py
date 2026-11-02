@@ -1,6 +1,14 @@
 """Async Python SDK and bot framework for VoiceRoute."""
 
-from voiceroute.api import CommandSyncDiff, MiniAppsAPI, MiniAppState, Upload, UploadsAPI
+from voiceroute.api import (
+    CommandSyncDiff,
+    MiniAppsAPI,
+    MiniAppState,
+    PollsAPI,
+    ThreadsAPI,
+    Upload,
+    UploadsAPI,
+)
 from voiceroute.bot import Bot
 from voiceroute.client import VoiceRouteClient
 from voiceroute.commands import (
@@ -193,6 +201,10 @@ from voiceroute.models import (
     PlatformEvent,
     PlatformEventType,
     PlatformServiceStatus,
+    Poll,
+    PollCreation,
+    PollVoter,
+    PollVoterPage,
     PresenceStatus,
     RichMessage,
     RichMessagePage,
@@ -201,6 +213,10 @@ from voiceroute.models import (
     ServiceIncident,
     StartupDiagnostics,
     TextInput,
+    Thread,
+    ThreadMember,
+    ThreadMemberPage,
+    ThreadPage,
     User,
     VoiceCapabilities,
     VoiceServerGrant,
@@ -394,6 +410,11 @@ __all__ = [
     "PlatformEvent",
     "PlatformEventType",
     "PlatformServiceStatus",
+    "Poll",
+    "PollCreation",
+    "PollVoter",
+    "PollVoterPage",
+    "PollsAPI",
     "PostgreSQLGatewayCheckpointStore",
     "PrefixCommandAdapter",
     "Presence",
@@ -423,6 +444,11 @@ __all__ = [
     "Status",
     "StreamCheckpoint",
     "TextInput",
+    "Thread",
+    "ThreadMember",
+    "ThreadMemberPage",
+    "ThreadPage",
+    "ThreadsAPI",
     "TooManyArguments",
     "Unauthorized",
     "UnexpectedRedirect",

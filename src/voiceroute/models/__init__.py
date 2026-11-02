@@ -66,6 +66,7 @@ from voiceroute.models.platform import (
     VoiceCapabilities,
 )
 from voiceroute.models.platform_event import PlatformEvent
+from voiceroute.models.polls import Poll, PollCreation, PollVoter, PollVoterPage
 from voiceroute.models.rich_message import RichMessage, RichMessagePage
 from voiceroute.models.role import (
     ChannelPermissionSnapshot,
@@ -73,6 +74,7 @@ from voiceroute.models.role import (
     PermissionTargetType,
     Role,
 )
+from voiceroute.models.threads import Thread, ThreadMember, ThreadMemberPage, ThreadPage
 from voiceroute.models.user import User
 from voiceroute.models.voice import VoiceServerGrant, VoiceState, VoiceStatePage, VoiceTrack
 from voiceroute.models.wire import (
@@ -147,6 +149,10 @@ __all__ = [
     "PlatformEvent",
     "PlatformEventType",
     "PlatformServiceStatus",
+    "Poll",
+    "PollCreation",
+    "PollVoter",
+    "PollVoterPage",
     "PresenceStatus",
     "RichMessage",
     "RichMessagePage",
@@ -155,6 +161,10 @@ __all__ = [
     "ServiceIncident",
     "StartupDiagnostics",
     "TextInput",
+    "Thread",
+    "ThreadMember",
+    "ThreadMemberPage",
+    "ThreadPage",
     "UnsetType",
     "User",
     "VoiceCapabilities",
