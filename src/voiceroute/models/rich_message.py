@@ -18,6 +18,16 @@ class RichMessage:
     content: str
     data: MappingProxyType[str, Any] = field(default_factory=lambda: MappingProxyType({}))
 
+    @property
+    def version(self) -> str:
+        return str(self.data.get("version", ""))
+
+    @property
+    def etag(self) -> str:
+        if not self.version:
+            raise RuntimeError("message version is missing from the response")
+        return f'"message-{self.version}"'
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
         known = {"id", "sequence", "communityId", "channelId", "content"}
