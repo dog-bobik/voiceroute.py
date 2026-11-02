@@ -28,6 +28,17 @@ class VoiceAPI:
             next_cursor=(str(data["nextCursor"]) if data.get("nextCursor") is not None else None),
         )
 
+    async def get_state(self, community_id: str, user_id: int) -> VoiceState:
+        """Fetch a single user's current voice state."""
+        if user_id <= 0:
+            raise ValueError("user_id must be positive")
+        payload = await self._transport.request(
+            "GET", f"/api/v1/communities/{community_id}/voice-states/{user_id}"
+        )
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no voice state")
+        return VoiceState.from_dict(payload)
+
     async def find_member_channel(self, community_id: str, user_id: int) -> str | None:
         cursor: str | None = None
         visited: set[str] = set()
