@@ -31,6 +31,7 @@ from voiceroute.commands.pipeline import (
     max_concurrency,
 )
 from voiceroute.commands.prefix import PrefixCommandAdapter
+from voiceroute.commands.router import Router
 
 __all__ = [
     "ApplicationCommandHandler",
@@ -52,6 +53,7 @@ __all__ = [
     "Middleware",
     "NextMiddleware",
     "PrefixCommandAdapter",
+    "Router",
     "application_command",
     "bot_has_permissions",
     "check",

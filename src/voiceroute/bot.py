@@ -25,6 +25,7 @@ from voiceroute.commands import (
     InteractionContext,
     Middleware,
     PrefixCommandAdapter,
+    Router,
     application_command,
 )
 from voiceroute.errors import (
@@ -219,6 +220,13 @@ class Bot:
             return handler
 
         return decorator
+
+    def include_router(self, router: Router) -> tuple[Command, ...]:
+        """Install a router tree into the bot's shared command registry."""
+        commands = router.commands
+        for command in commands:
+            self._ensure_async(command.callback)
+        return router.install(self.command_registry)
 
     def listen(self, name: str | None = None) -> Callable[[HandlerT], HandlerT]:
         """Register an additional event listener without using its function name as identity."""
