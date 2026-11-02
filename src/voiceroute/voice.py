@@ -58,7 +58,7 @@ class LiveKitMediaTransport:
         if room is None or rtc is None:
             return False
         try:
-            return room.connection_state == rtc.ConnectionState.CONN_CONNECTED
+            return bool(room.connection_state == rtc.ConnectionState.CONN_CONNECTED)
         except (AttributeError, RuntimeError):
             return False
 
