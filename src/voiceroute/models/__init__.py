@@ -23,7 +23,14 @@ from voiceroute.models.automod import AutoModConfig
 from voiceroute.models.automod_rule import AutoModRule, AutoModRulePage
 from voiceroute.models.bot import BotIdentity
 from voiceroute.models.community import Category, Channel, Community
-from voiceroute.models.delivery import DeliveryLease, EventSubscription
+from voiceroute.models.delivery import (
+    DeliveryAttempt,
+    DeliveryDetails,
+    DeliveryLease,
+    DeliveryLog,
+    DeliveryLogPage,
+    EventSubscription,
+)
 from voiceroute.models.generated_events import PlatformEventType
 from voiceroute.models.interaction import (
     ActionRow,
@@ -127,7 +134,11 @@ __all__ = [
     "Community",
     "Component",
     "CurrentApplication",
+    "DeliveryAttempt",
+    "DeliveryDetails",
     "DeliveryLease",
+    "DeliveryLog",
+    "DeliveryLogPage",
     "EffectivePermissions",
     "EventSubscription",
     "FileCapabilities",

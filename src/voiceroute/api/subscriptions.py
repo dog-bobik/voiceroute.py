@@ -4,7 +4,14 @@ from __future__ import annotations
 
 import uuid
 
-from voiceroute.models import DeliveryLease, EventSubscription
+from voiceroute.models import (
+    DeliveryAttempt,
+    DeliveryDetails,
+    DeliveryLease,
+    DeliveryLog,
+    DeliveryLogPage,
+    EventSubscription,
+)
 from voiceroute.transport import Transport
 
 
@@ -149,6 +156,49 @@ class SubscriptionsAPI:
         )
         items = (payload or {}).get("items", ())
         return tuple(DeliveryLease.from_dict(item) for item in items if isinstance(item, dict))
+
+    async def deliveries(
+        self,
+        application_id: str,
+        subscription_id: str,
+        *,
+        cursor: str | None = None,
+        limit: int = 50,
+    ) -> DeliveryLogPage:
+        """Read durable delivery metadata, never event payload contents."""
+        if not 1 <= limit <= 100:
+            raise ValueError("limit must be between 1 and 100")
+        payload = (
+            await self._transport.request(
+                "GET",
+                f"{_resource(application_id, subscription_id)}/deliveries",
+                params={"cursor": cursor, "limit": limit},
+            )
+            or {}
+        )
+        values = payload.get("items", ())
+        return DeliveryLogPage(
+            tuple(DeliveryLog.from_dict(item) for item in values if isinstance(item, dict)),
+            str(payload["nextCursor"]) if payload.get("nextCursor") is not None else None,
+        )
+
+    async def get_delivery(
+        self, application_id: str, subscription_id: str, delivery_id: str
+    ) -> DeliveryDetails:
+        payload = (
+            await self._transport.request(
+                "GET", f"{_resource(application_id, subscription_id)}/deliveries/{delivery_id}"
+            )
+            or {}
+        )
+        delivery = payload.get("delivery")
+        attempts = payload.get("attempts", ())
+        if not isinstance(delivery, dict) or not isinstance(attempts, list):
+            raise RuntimeError("VoiceRoute returned an invalid delivery detail response")
+        return DeliveryDetails(
+            DeliveryLog.from_dict(delivery),
+            tuple(DeliveryAttempt.from_dict(item) for item in attempts if isinstance(item, dict)),
+        )
 
     async def acknowledge(
         self,
