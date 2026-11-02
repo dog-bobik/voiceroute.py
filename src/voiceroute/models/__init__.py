@@ -72,7 +72,10 @@ from voiceroute.models.polls import Poll, PollCreation, PollVoter, PollVoterPage
 from voiceroute.models.rich_message import RichMessage, RichMessagePage
 from voiceroute.models.role import (
     ChannelPermissionSnapshot,
+    EffectivePermissions,
     PermissionOverride,
+    PermissionRegistry,
+    PermissionSimulation,
     PermissionTargetType,
     Role,
 )
@@ -124,6 +127,7 @@ __all__ = [
     "Component",
     "CurrentApplication",
     "DeliveryLease",
+    "EffectivePermissions",
     "EventSubscription",
     "FileCapabilities",
     "GatewayCapabilities",
@@ -150,6 +154,8 @@ __all__ = [
     "OpenEnumValue",
     "Permission",
     "PermissionOverride",
+    "PermissionRegistry",
+    "PermissionSimulation",
     "PermissionTargetType",
     "Permissions",
     "PlatformBotIdentity",

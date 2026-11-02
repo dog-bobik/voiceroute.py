@@ -22,6 +22,9 @@ class Role:
     managed_application_id: str | None
     permissions: Permissions
     can_manage: bool
+    version: str = ""
+    managed: bool = False
+    unicode_emoji: str | None = None
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Self:
@@ -35,7 +38,16 @@ class Role:
             managed_application_id=_optional_string(data.get("managedApplicationId")),
             permissions=Permissions(str(value) for value in data.get("permissions", ())),
             can_manage=bool(data.get("canManage", False)),
+            version=str(data.get("version", "")),
+            managed=bool(data.get("managed", data.get("managedApplicationId") is not None)),
+            unicode_emoji=_optional_string(data.get("unicodeEmoji")),
         )
+
+    @property
+    def etag(self) -> str:
+        if not self.version:
+            raise RuntimeError("role version is missing from the response")
+        return f'"role-{self.version}"'
 
 
 class PermissionTargetType(StrEnum):
@@ -82,6 +94,63 @@ class ChannelPermissionSnapshot:
             category_id=_optional_string(data.get("categoryId")),
             category_name=_optional_string(data.get("categoryName")),
             permissions_synced=bool(data.get("permissionsSynced", False)),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class EffectivePermissions:
+    community_id: str
+    user_id: int
+    channel_id: str | None
+    registry_version: str
+    permissions: Permissions
+    role_ids: tuple[str, ...]
+    timeout_until: str | None
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        return cls(
+            community_id=str(data["communityId"]),
+            user_id=int(data["userId"]),
+            channel_id=_optional_string(data.get("channelId")),
+            registry_version=str(data["registryVersion"]),
+            permissions=Permissions(str(value) for value in data.get("permissions", ())),
+            role_ids=tuple(map(str, data.get("roleIds", ()))),
+            timeout_until=_optional_string(data.get("timeoutUntil")),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class PermissionRegistry:
+    version: str
+    items: tuple[tuple[str, str], ...]
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        return cls(
+            version=str(data["version"]),
+            items=tuple(
+                (str(item["id"]), str(item["scope"]))
+                for item in data.get("items", ())
+                if isinstance(item, dict)
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class PermissionSimulation:
+    effective: EffectivePermissions
+    added: Permissions
+    removed: Permissions
+    dry_run: bool
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        return cls(
+            effective=EffectivePermissions.from_dict(data),
+            added=Permissions(str(value) for value in data.get("added", ())),
+            removed=Permissions(str(value) for value in data.get("removed", ())),
+            dry_run=bool(data.get("dryRun", False)),
         )
 
 

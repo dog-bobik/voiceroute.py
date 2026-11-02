@@ -1,12 +1,16 @@
 """Community roles and channel permission overrides."""
 
 import builtins
-from collections.abc import Sequence
+import uuid
+from collections.abc import Mapping, Sequence
 
 from voiceroute.models import (
     ChannelPermissionSnapshot,
+    EffectivePermissions,
     Permission,
     PermissionOverride,
+    PermissionRegistry,
+    PermissionSimulation,
     PermissionTargetType,
     Role,
 )
@@ -18,6 +22,180 @@ class RolesAPI:
 
     def __init__(self, transport: Transport) -> None:
         self._transport = transport
+
+    async def list_v1(
+        self, community_id: str, *, cursor: str | None = None, limit: int = 50
+    ) -> tuple[Role, ...]:
+        if not 1 <= limit <= 100:
+            raise ValueError("limit must be between 1 and 100")
+        payload = (
+            await self._transport.request(
+                "GET",
+                f"/api/v1/communities/{community_id}/roles",
+                params={"cursor": cursor, "limit": limit},
+            )
+            or {}
+        )
+        values = payload.get("items", ())
+        return tuple(Role.from_dict(item) for item in values if isinstance(item, dict))
+
+    async def get_v1(self, community_id: str, role_id: str) -> Role:
+        payload = await self._transport.request(
+            "GET", f"/api/v1/communities/{community_id}/roles/{role_id}"
+        )
+        return _required_role(payload, "looked up")
+
+    async def create_v1(
+        self,
+        community_id: str,
+        name: str,
+        *,
+        color: str | None = None,
+        permissions: Sequence[Permission | str] = (),
+        unicode_emoji: str | None = None,
+        icon_expression_id: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> Role:
+        if not name or len(name) > 100:
+            raise ValueError("role name must contain between 1 and 100 characters")
+        payload = await self._transport.request(
+            "POST",
+            f"/api/v1/communities/{community_id}/roles",
+            json={
+                "name": name,
+                "color": color,
+                "permissions": [str(item) for item in permissions],
+                "unicodeEmoji": unicode_emoji,
+                "iconExpressionId": icon_expression_id,
+            },
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+        return _required_role(payload, "created")
+
+    async def update_v1(
+        self,
+        community_id: str,
+        role_id: str,
+        *,
+        if_match: str,
+        name: str | None = None,
+        color: str | None = None,
+        permissions: Sequence[Permission | str] | None = None,
+        unicode_emoji: str | None = None,
+        icon_expression_id: str | None = None,
+        clear_icon: bool = False,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> Role:
+        body: dict[str, object] = {}
+        if name is not None:
+            if not name or len(name) > 100:
+                raise ValueError("role name must contain between 1 and 100 characters")
+            body["name"] = name
+        if color is not None:
+            body["color"] = color
+        if permissions is not None:
+            body["permissions"] = [str(item) for item in permissions]
+        if unicode_emoji is not None:
+            body["unicodeEmoji"] = unicode_emoji
+        if icon_expression_id is not None:
+            body["iconExpressionId"] = icon_expression_id
+        if clear_icon:
+            if icon_expression_id is not None:
+                raise ValueError("clear_icon and icon_expression_id cannot be combined")
+            body["iconExpressionId"] = None
+            body["unicodeEmoji"] = None
+        if not body:
+            raise ValueError("at least one role field must be supplied")
+        payload = await self._transport.request(
+            "PATCH",
+            f"/api/v1/communities/{community_id}/roles/{role_id}",
+            json=body,
+            if_match=if_match,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+        return _required_role(payload, "updated")
+
+    async def delete_v1(
+        self,
+        community_id: str,
+        role_id: str,
+        *,
+        if_match: str,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> None:
+        await self._transport.request(
+            "DELETE",
+            f"/api/v1/communities/{community_id}/roles/{role_id}",
+            if_match=if_match,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+            retryable=True,
+        )
+
+    async def reorder_v1(
+        self,
+        community_id: str,
+        role_ids: Sequence[str],
+        *,
+        if_match: str,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> tuple[Role, ...]:
+        if len(set(role_ids)) != len(role_ids):
+            raise ValueError("role_ids must be unique")
+        payload = (
+            await self._transport.request(
+                "PUT",
+                f"/api/v1/communities/{community_id}/roles/order",
+                json={"roleIds": list(role_ids)},
+                if_match=if_match,
+                idempotency_key=str(idempotency_key or uuid.uuid4()),
+            )
+            or {}
+        )
+        return tuple(
+            Role.from_dict(item) for item in payload.get("items", ()) if isinstance(item, dict)
+        )
+
+    async def permission_registry(self) -> PermissionRegistry:
+        payload = await self._transport.request("GET", "/api/v1/permissions")
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no permission registry")
+        return PermissionRegistry.from_dict(payload)
+
+    async def effective_permissions(
+        self, community_id: str, user_id: int, *, channel_id: str | None = None
+    ) -> EffectivePermissions:
+        if user_id <= 0:
+            raise ValueError("user_id must be positive")
+        payload = await self._transport.request(
+            "GET",
+            f"/api/v1/communities/{community_id}/members/{user_id}/permissions",
+            params={"channelId": channel_id},
+        )
+        return EffectivePermissions.from_dict(_required_object(payload, "effective permissions"))
+
+    async def simulate_permissions(
+        self,
+        community_id: str,
+        user_id: int,
+        *,
+        channel_id: str | None = None,
+        role_ids: Sequence[str] = (),
+        overrides: Sequence[Mapping[str, object]] = (),
+    ) -> PermissionSimulation:
+        if user_id <= 0 or len(set(role_ids)) != len(role_ids):
+            raise ValueError("user_id must be positive and role_ids must be unique")
+        payload = await self._transport.request(
+            "POST",
+            f"/api/v1/communities/{community_id}/permissions/simulate",
+            json={
+                "userId": str(user_id),
+                "channelId": channel_id,
+                "roleIds": list(role_ids),
+                "overrides": [dict(item) for item in overrides],
+            },
+            idempotency_key=str(uuid.uuid4()),
+        )
+        return PermissionSimulation.from_dict(_required_object(payload, "permission simulation"))
 
     async def list(self, community_id: str) -> builtins.list[Role]:
         payload = await self._transport.request("GET", f"/api/communities/{community_id}/roles")
@@ -143,3 +321,9 @@ def _required_role(payload: dict[str, object] | None, operation: str) -> Role:
     if not isinstance(raw_role, dict):
         raise RuntimeError(f"VoiceRoute returned no {operation} role")
     return Role.from_dict(raw_role)
+
+
+def _required_object(payload: dict[str, object] | None, operation: str) -> dict[str, object]:
+    if payload is None:
+        raise RuntimeError(f"VoiceRoute returned no response after {operation}")
+    return payload

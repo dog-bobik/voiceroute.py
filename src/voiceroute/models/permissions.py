@@ -55,15 +55,19 @@ class Permissions:
     __slots__ = ("_values",)
 
     def __init__(self, values: Iterable[Permission | str] = ()) -> None:
-        normalized = frozenset(Permission(value) for value in values)
-        self._values = ALL_PERMISSIONS if Permission.ADMINISTRATOR in normalized else normalized
+        normalized = frozenset(str(value) for value in values)
+        self._values = (
+            frozenset(permission.value for permission in ALL_PERMISSIONS)
+            if Permission.ADMINISTRATOR.value in normalized
+            else normalized
+        )
 
     @classmethod
     def all(cls) -> Self:
         return cls(ALL_PERMISSIONS)
 
     def has(self, permission: Permission | str) -> bool:
-        return Permission(permission) in self._values
+        return str(permission) in self._values
 
     def has_all(self, permissions: Iterable[Permission | str]) -> bool:
         return all(self.has(permission) for permission in permissions)
@@ -73,19 +77,22 @@ class Permissions:
 
     def missing(self, permissions: Iterable[Permission | str]) -> tuple[Permission, ...]:
         required = tuple(Permission(permission) for permission in permissions)
-        return tuple(permission for permission in required if permission not in self._values)
+        return tuple(permission for permission in required if permission.value not in self._values)
 
     def to_values(self) -> tuple[str, ...]:
-        return tuple(permission.value for permission in Permission if permission in self._values)
+        known = {permission.value for permission in Permission}
+        return tuple(
+            permission.value for permission in Permission if permission.value in self._values
+        ) + tuple(sorted(permission for permission in self._values if permission not in known))
 
     def __contains__(self, permission: object) -> bool:
         try:
-            return Permission(permission) in self._values  # type: ignore[arg-type]
+            return str(Permission(permission)) in self._values  # type: ignore[arg-type]
         except (TypeError, ValueError):
-            return False
+            return str(permission) in self._values
 
     def __iter__(self) -> Iterator[Permission]:
-        return (permission for permission in Permission if permission in self._values)
+        return (permission for permission in Permission if permission.value in self._values)
 
     def __len__(self) -> int:
         return len(self._values)
@@ -97,10 +104,7 @@ class Permissions:
         if isinstance(other, Permissions):
             return self._values == other._values
         if isinstance(other, (tuple, list, set, frozenset)):
-            try:
-                return self._values == frozenset(Permission(value) for value in other)
-            except (TypeError, ValueError):
-                return False
+            return self._values == frozenset(str(value) for value in other)
         return False
 
     def __repr__(self) -> str:
