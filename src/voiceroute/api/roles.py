@@ -311,6 +311,141 @@ class RolesAPI:
             raise RuntimeError("VoiceRoute returned no permission override")
         return PermissionOverride.from_dict(payload["override"])
 
+    async def channel_permissions_v1(
+        self, community_id: str, channel_id: str
+    ) -> ChannelPermissionSnapshot:
+        payload = await self._transport.request(
+            "GET", f"/api/v1/communities/{community_id}/channels/{channel_id}/permissions"
+        )
+        return ChannelPermissionSnapshot.from_dict(payload or {})
+
+    async def category_permissions_v1(
+        self, community_id: str, category_id: str
+    ) -> tuple[PermissionOverride, ...]:
+        payload = (
+            await self._transport.request(
+                "GET", f"/api/v1/communities/{community_id}/categories/{category_id}/permissions"
+            )
+            or {}
+        )
+        values = payload.get("items", ())
+        return tuple(
+            PermissionOverride.from_dict(item) for item in values if isinstance(item, dict)
+        )
+
+    async def replace_category_overrides_v1(
+        self,
+        community_id: str,
+        category_id: str,
+        overrides: Sequence[PermissionOverride],
+        *,
+        if_match: str,
+        audit_reason: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> tuple[PermissionOverride, ...]:
+        if len(overrides) > 100:
+            raise ValueError("at most 100 permission overrides are supported")
+        payload = (
+            await self._transport.request(
+                "PUT",
+                f"/api/v1/communities/{community_id}/categories/{category_id}/permissions",
+                json={"overrides": [_override_dict(item) for item in overrides]},
+                headers=_audit_headers(audit_reason),
+                if_match=if_match,
+                idempotency_key=str(idempotency_key or uuid.uuid4()),
+            )
+            or {}
+        )
+        return tuple(
+            PermissionOverride.from_dict(item)
+            for item in payload.get("items", ())
+            if isinstance(item, dict)
+        )
+
+    async def replace_channel_overrides_v1(
+        self,
+        community_id: str,
+        channel_id: str,
+        overrides: Sequence[PermissionOverride],
+        *,
+        if_match: str,
+        audit_reason: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> ChannelPermissionSnapshot:
+        if len(overrides) > 100:
+            raise ValueError("at most 100 permission overrides are supported")
+        payload = await self._transport.request(
+            "PUT",
+            f"/api/v1/communities/{community_id}/channels/{channel_id}/permissions",
+            json={"overrides": [_override_dict(item) for item in overrides]},
+            headers=_audit_headers(audit_reason),
+            if_match=if_match,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+        return ChannelPermissionSnapshot.from_dict(payload or {})
+
+    async def add_member_role_v1(
+        self,
+        community_id: str,
+        user_id: int,
+        role_id: str,
+        *,
+        if_match: str,
+        audit_reason: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> None:
+        await self._member_role_request(
+            "PUT",
+            community_id,
+            user_id,
+            role_id,
+            if_match=if_match,
+            audit_reason=audit_reason,
+            idempotency_key=idempotency_key,
+        )
+
+    async def remove_member_role_v1(
+        self,
+        community_id: str,
+        user_id: int,
+        role_id: str,
+        *,
+        if_match: str,
+        audit_reason: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> None:
+        await self._member_role_request(
+            "DELETE",
+            community_id,
+            user_id,
+            role_id,
+            if_match=if_match,
+            audit_reason=audit_reason,
+            idempotency_key=idempotency_key,
+        )
+
+    async def _member_role_request(
+        self,
+        method: str,
+        community_id: str,
+        user_id: int,
+        role_id: str,
+        *,
+        if_match: str,
+        audit_reason: str | None,
+        idempotency_key: str | uuid.UUID | None,
+    ) -> None:
+        if user_id <= 0:
+            raise ValueError("user_id must be positive")
+        await self._transport.request(
+            method,
+            f"/api/v1/communities/{community_id}/members/{user_id}/roles/{role_id}",
+            headers=_audit_headers(audit_reason),
+            if_match=if_match,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+            retryable=True,
+        )
+
 
 def _permission_values(values: Sequence[Permission | str]) -> list[str]:
     return list(dict.fromkeys(Permission(value).value for value in values))
@@ -327,3 +462,20 @@ def _required_object(payload: dict[str, object] | None, operation: str) -> dict[
     if payload is None:
         raise RuntimeError(f"VoiceRoute returned no response after {operation}")
     return payload
+
+
+def _override_dict(item: PermissionOverride) -> dict[str, object]:
+    return {
+        "targetType": item.target_type.value,
+        "targetId": item.target_id,
+        "allow": item.allow.to_values(),
+        "deny": item.deny.to_values(),
+    }
+
+
+def _audit_headers(reason: str | None) -> dict[str, str]:
+    if reason is None:
+        return {}
+    if len(reason) > 512:
+        raise ValueError("audit reason cannot exceed 512 characters")
+    return {"X-Audit-Log-Reason": reason}
