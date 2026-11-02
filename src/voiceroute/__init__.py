@@ -236,6 +236,7 @@ from voiceroute.state_models import (
     CachedRole,
 )
 from voiceroute.transport import RateLimiter
+from voiceroute.ui import View
 from voiceroute.voice import (
     LiveKitMediaTransport,
     VoiceAccessDenied,
@@ -458,6 +459,7 @@ __all__ = [
     "User",
     "ValidationError",
     "VersionConflict",
+    "View",
     "VoiceAccessDenied",
     "VoiceCapabilities",
     "VoiceError",
