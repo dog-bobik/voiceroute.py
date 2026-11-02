@@ -2,7 +2,8 @@
 
 import builtins
 import uuid
-from collections.abc import Mapping, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
+from typing import cast
 
 from voiceroute.models import (
     ChannelPermissionSnapshot,
@@ -13,8 +14,9 @@ from voiceroute.models import (
     PermissionSimulation,
     PermissionTargetType,
     Role,
+    RolePage,
 )
-from voiceroute.transport import Transport
+from voiceroute.transport import HTTPResult, Transport
 
 
 class RolesAPI:
@@ -22,22 +24,45 @@ class RolesAPI:
 
     def __init__(self, transport: Transport) -> None:
         self._transport = transport
+        self._role_collection_etags: dict[str, str] = {}
 
     async def list_v1(
         self, community_id: str, *, cursor: str | None = None, limit: int = 50
     ) -> tuple[Role, ...]:
+        return (await self.list_page_v1(community_id, cursor=cursor, limit=limit)).items
+
+    async def list_page_v1(
+        self, community_id: str, *, cursor: str | None = None, limit: int = 50
+    ) -> RolePage:
         if not 1 <= limit <= 100:
             raise ValueError("limit must be between 1 and 100")
-        payload = (
-            await self._transport.request(
-                "GET",
-                f"/api/v1/communities/{community_id}/roles",
-                params={"cursor": cursor, "limit": limit},
-            )
-            or {}
+        path = f"/api/v1/communities/{community_id}/roles"
+        metadata_request = cast(
+            Callable[..., Awaitable[HTTPResult]] | None,
+            getattr(self._transport, "request_with_response", None),
         )
+        if metadata_request is None:
+            payload = (
+                await self._transport.request(
+                    "GET", path, params={"cursor": cursor, "limit": limit}
+                )
+                or {}
+            )
+            etag = None
+        else:
+            response = await metadata_request(
+                "GET", path, params={"cursor": cursor, "limit": limit}
+            )
+            payload = response.payload or {}
+            etag = response.etag
+        if etag is not None:
+            self._role_collection_etags[community_id] = etag
         values = payload.get("items", ())
-        return tuple(Role.from_dict(item) for item in values if isinstance(item, dict))
+        return RolePage(
+            tuple(Role.from_dict(item) for item in values if isinstance(item, dict)),
+            str(payload["nextCursor"]) if payload.get("nextCursor") is not None else None,
+            etag,
+        )
 
     async def get_v1(self, community_id: str, role_id: str) -> Role:
         payload = await self._transport.request(
@@ -136,9 +161,12 @@ class RolesAPI:
         community_id: str,
         role_ids: Sequence[str],
         *,
-        if_match: str,
+        if_match: str | None = None,
         idempotency_key: str | uuid.UUID | None = None,
     ) -> tuple[Role, ...]:
+        current_etag = if_match or self._role_collection_etags.get(community_id)
+        if not current_etag:
+            raise ValueError("if_match is required; fetch list_page_v1 first to capture the ETag")
         if len(set(role_ids)) != len(role_ids):
             raise ValueError("role_ids must be unique")
         payload = (
@@ -146,7 +174,7 @@ class RolesAPI:
                 "PUT",
                 f"/api/v1/communities/{community_id}/roles/order",
                 json={"roleIds": list(role_ids)},
-                if_match=if_match,
+                if_match=current_etag,
                 idempotency_key=str(idempotency_key or uuid.uuid4()),
             )
             or {}

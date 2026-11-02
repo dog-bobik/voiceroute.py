@@ -77,6 +77,13 @@ class PermissionOverride:
 
 
 @dataclass(frozen=True, slots=True)
+class RolePage:
+    items: tuple[Role, ...]
+    next_cursor: str | None = None
+    etag: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
 class ChannelPermissionSnapshot:
     """Overrides and category inheritance metadata for one channel."""
 

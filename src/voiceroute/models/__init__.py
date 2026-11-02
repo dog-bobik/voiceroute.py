@@ -87,6 +87,7 @@ from voiceroute.models.role import (
     PermissionSimulation,
     PermissionTargetType,
     Role,
+    RolePage,
 )
 from voiceroute.models.sticker import Sticker
 from voiceroute.models.threads import Thread, ThreadMember, ThreadMemberPage, ThreadPage
@@ -185,6 +186,7 @@ __all__ = [
     "RichMessage",
     "RichMessagePage",
     "Role",
+    "RolePage",
     "SelectOption",
     "ServiceIncident",
     "StartupDiagnostics",
