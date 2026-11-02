@@ -56,7 +56,13 @@ from voiceroute.events import (
 )
 from voiceroute.events.transport import ChannelTarget
 from voiceroute.extensions import Extension, extension_command, listener_name
-from voiceroute.gateway import Capabilities, GatewayCheckpointStore, GatewayClient, Intents
+from voiceroute.gateway import (
+    Capabilities,
+    Capability,
+    GatewayCheckpointStore,
+    GatewayClient,
+    Intents,
+)
 from voiceroute.models import (
     ApplicationCommand,
     BotIdentity,
@@ -70,6 +76,7 @@ from voiceroute.models import (
     Message,
     PlatformEvent,
     Role,
+    User,
 )
 from voiceroute.runtime import RuntimeState
 from voiceroute.state import CachePolicy, StateCache
@@ -918,7 +925,10 @@ class Bot:
         await task
 
     def _needs_legacy_message_streams(self) -> bool:
-        return bool(self.command_registry.commands or self._events.get("on_message"))
+        needs_message_content = bool(
+            self.command_registry.commands or self._events.get("on_message")
+        )
+        return needs_message_content and Capability.MESSAGE_CONTENT not in self.capabilities
 
     async def _handle_platform_event(self, event: PlatformEvent) -> None:
         await self._dispatch("on_raw_event", event)
@@ -937,8 +947,39 @@ class Bot:
             await self._dispatch(handler, event)
         if change is not None:
             await self._dispatch_cache_change(event.name, change.before, change.after)
+        if event.name == "MESSAGE_CREATED":
+            await self._handle_gateway_message(event)
         if not event.is_known:
             await self._dispatch("on_unknown_event", event)
+
+    async def _handle_gateway_message(self, event: PlatformEvent) -> None:
+        """Adapt content-bearing Gateway messages to the shared command pipeline."""
+        data = event.data
+        body = data.get("body")
+        if not isinstance(body, str):
+            return
+        try:
+            author_id = int(data["authorId"])
+        except (KeyError, TypeError, ValueError):
+            return
+        own_user_id = self.user.user.id if self.user is not None else None
+        author = User(
+            id=author_id,
+            username=str(author_id),
+            display_name=str(author_id),
+            bot=author_id == own_user_id,
+        )
+        raw_version = data.get("version")
+        version = int(raw_version) if isinstance(raw_version, (int, str)) else None
+        message = Message(
+            seq=str(data.get("messageSeq", "")),
+            community_id=str(data.get("communityId", "")),
+            channel_id=str(data.get("channelId", "")),
+            body=body,
+            author=author,
+            version=version,
+        )
+        await self._handle_message(MessageUpserted(message=message, cursor=event.sequence))
 
     async def _dispatch_cache_change(
         self,
