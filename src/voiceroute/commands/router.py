@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator, Sequence
+from dataclasses import replace
 from typing import TypeVar
 
 from voiceroute.commands.core import Command, CommandCallback, CommandRegistry
+from voiceroute.commands.pipeline import Check
 
 HandlerT = TypeVar("HandlerT", bound=CommandCallback)
 
@@ -21,6 +23,7 @@ class Router:
         self.name = name or "router"
         self._commands: list[Command] = []
         self._routers: list[Router] = []
+        self._filters: list[Check] = []
 
     @property
     def commands(self) -> tuple[Command, ...]:
@@ -29,9 +32,20 @@ class Router:
 
     def iter_commands(self) -> Iterator[Command]:
         """Iterate declarations depth-first in registration order."""
-        yield from self._commands
+        yield from self._iter_commands(())
+
+    def _iter_commands(self, inherited_filters: tuple[Check, ...]) -> Iterator[Command]:
+        active_filters = (*inherited_filters, *self._filters)
+        for command in self._commands:
+            yield replace(command, checks=(*active_filters, *command.checks))
         for router in self._routers:
-            yield from router.iter_commands()
+            yield from router._iter_commands(active_filters)
+
+    def add_filter(self, predicate: Check) -> None:
+        """Apply a check to every command declared in this router subtree."""
+        if not callable(predicate):
+            raise TypeError("router filter must be callable")
+        self._filters.append(predicate)
 
     def command(
         self,
