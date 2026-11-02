@@ -8,7 +8,7 @@
     "events": 83,
     "excluded_auth": 102,
     "operations": 240,
-    "public_resource_modules": 23
+    "public_resource_modules": 25
   },
   "events": [
     {
@@ -4802,7 +4802,7 @@
           "public"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "GET",
       "operationId": "getPermissionRegistry",
