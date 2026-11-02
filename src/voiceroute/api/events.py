@@ -10,13 +10,13 @@ from voiceroute.errors import RateLimited, ServiceUnavailable, SSEError, Transpo
 from voiceroute.events.models import AccessLost, BotEvent, InteractionCreated, MessageUpserted
 from voiceroute.events.sse import SSEDecoder
 from voiceroute.models import Interaction, Message
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class EventsAPI:
     """Consume authenticated channel message events with cursor recovery."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def listen_interactions(

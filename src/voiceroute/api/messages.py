@@ -6,13 +6,13 @@ import uuid
 from collections.abc import Mapping, Sequence
 
 from voiceroute.models import Message, MessagePage, RichMessage, RichMessagePage
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class MessagesAPI:
     """Read and send messages in bot-visible text channels."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def history_v1(

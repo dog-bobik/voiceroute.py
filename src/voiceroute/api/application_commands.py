@@ -12,7 +12,7 @@ from voiceroute.models import (
     CommandPermissions,
     CommandPermissionTarget,
 )
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,7 +26,7 @@ class CommandSyncDiff:
 class ApplicationCommandsAPI:
     """Global/community CRUD, atomic sync, dry diff, and permission rules."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     @staticmethod

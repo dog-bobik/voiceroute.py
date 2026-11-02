@@ -13,11 +13,11 @@ from voiceroute.models import (
     ThreadMemberPage,
     ThreadPage,
 )
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class ThreadsAPI:
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def list(

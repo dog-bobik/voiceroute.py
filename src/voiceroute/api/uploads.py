@@ -10,7 +10,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 PART_SIZE = 1_048_576
 MAX_UPLOAD_SIZE = 10 * PART_SIZE
@@ -55,7 +55,7 @@ class Upload:
 class UploadsAPI:
     """Create, resume, inspect, and cancel bot upload sessions."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def create(

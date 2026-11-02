@@ -12,11 +12,11 @@ from voiceroute.models import (
     Modal,
 )
 from voiceroute.models.interaction import autocomplete_payload
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class InteractionsAPI:
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def invoke(

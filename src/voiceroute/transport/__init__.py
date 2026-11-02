@@ -10,6 +10,7 @@ from voiceroute.transport.auth import (
     WebhookSecretAuth,
 )
 from voiceroute.transport.http import HTTPResult, HTTPTransport, RateLimitMetadata
+from voiceroute.transport.protocol import Transport
 from voiceroute.transport.rate_limit import RateLimiter
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "PathCredentialAuth",
     "RateLimitMetadata",
     "RateLimiter",
+    "Transport",
     "WebhookSecretAuth",
 ]

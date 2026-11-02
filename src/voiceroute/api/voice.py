@@ -1,11 +1,11 @@
 """Bot-compatible VoiceRoute voice state resources."""
 
 from voiceroute.models.voice import VoiceState, VoiceStatePage
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class VoiceAPI:
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def list_states(

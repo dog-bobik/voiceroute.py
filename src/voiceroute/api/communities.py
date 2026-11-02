@@ -5,13 +5,13 @@ from __future__ import annotations
 import builtins
 
 from voiceroute.models import Channel, Community
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class CommunitiesAPI:
     """Read communities and their bot-visible channels."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def list(self) -> list[Community]:

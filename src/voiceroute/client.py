@@ -1,5 +1,6 @@
 """Main VoiceRoute client."""
 
+import asyncio
 from types import TracebackType
 
 from voiceroute.api import (
@@ -31,7 +32,7 @@ from voiceroute.gateway import (
     Intents,
     ShardManager,
 )
-from voiceroute.transport import HTTPTransport, RateLimiter
+from voiceroute.transport import HTTPTransport, RateLimiter, Transport
 
 
 class VoiceRouteClient:
@@ -40,7 +41,9 @@ class VoiceRouteClient:
     def __init__(
         self,
         *,
-        token: str,
+        token: str | None = None,
+        transport: Transport | None = None,
+        owns_transport: bool | None = None,
         base_url: str = "https://voiceroute.cc",
         timeout: float = 30.0,
         rate_limiter: RateLimiter | None = None,
@@ -53,17 +56,28 @@ class VoiceRouteClient:
             base_url=base_url, timeout=timeout, api_version=APIVersion(api_version)
         )
         self.api_version = config.api_version
+        if token is None and transport is None:
+            raise ValueError("token or transport is required")
         self._token = token
         self._base_url = config.base_url
-        self._transport = HTTPTransport(
-            token=token,
-            base_url=config.base_url,
-            timeout=config.timeout,
-            rate_limiter=rate_limiter,
-            max_attempts=max_attempts,
-            max_concurrency=max_http_concurrency,
-            max_response_bytes=max_response_bytes,
+        self._transport: Transport = (
+            transport
+            if transport is not None
+            else HTTPTransport(
+                token=token,
+                base_url=config.base_url,
+                timeout=config.timeout,
+                rate_limiter=rate_limiter,
+                max_attempts=max_attempts,
+                max_concurrency=max_http_concurrency,
+                max_response_bytes=max_response_bytes,
+            )
         )
+        self._owns_transport = transport is None if owns_transport is None else owns_transport
+        self._resolved_api_version: APIVersion | None = (
+            self.api_version if self.api_version is not APIVersion.AUTO else None
+        )
+        self._version_lock = asyncio.Lock()
         self.application_commands = ApplicationCommandsAPI(self._transport)
         self.automod = AutoModAPI(self._transport)
         self.audit = AuditAPI(self._transport)
@@ -87,11 +101,16 @@ class VoiceRouteClient:
         self.polls = PollsAPI(self._transport)
 
     async def resolve_api_version(self) -> APIVersion:
-        """Resolve auto mode without changing existing resource routing."""
-        if self.api_version is not APIVersion.AUTO:
-            return self.api_version
-        capabilities = await self.platform.capabilities()
-        return APIVersion.V1 if capabilities.api_version == "1" else APIVersion.LEGACY
+        """Resolve and cache the deployment's API version for this client."""
+        if self._resolved_api_version is not None:
+            return self._resolved_api_version
+        async with self._version_lock:
+            if self._resolved_api_version is None:
+                capabilities = await self.platform.capabilities()
+                self._resolved_api_version = (
+                    APIVersion.V1 if capabilities.api_version == "1" else APIVersion.LEGACY
+                )
+            return self._resolved_api_version
 
     async def require_feature(self, feature: str) -> None:
         """Fail early when the connected deployment does not expose a feature."""
@@ -110,6 +129,8 @@ class VoiceRouteClient:
         drain_timeout: float = 30.0,
     ) -> GatewayClient:
         """Create a v1 Gateway session sharing this client's discovery API."""
+        if self._token is None:
+            raise RuntimeError("Gateway connections require a bot token")
         return GatewayClient(
             token=self._token,
             platform_api=self.platform,
@@ -157,7 +178,8 @@ class VoiceRouteClient:
 
     async def close(self) -> None:
         """Close network resources owned by this client."""
-        await self._transport.close()
+        if self._owns_transport:
+            await self._transport.close()
 
     async def __aenter__(self) -> "VoiceRouteClient":
         return self

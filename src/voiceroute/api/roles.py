@@ -10,13 +10,13 @@ from voiceroute.models import (
     PermissionTargetType,
     Role,
 )
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class RolesAPI:
     """Manage roles, assignments, and channel permission overrides."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def list(self, community_id: str) -> builtins.list[Role]:

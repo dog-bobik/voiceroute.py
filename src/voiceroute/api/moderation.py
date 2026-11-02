@@ -3,7 +3,7 @@
 import builtins
 
 from voiceroute.models import Ban, MemberTimeout, ModerationSnapshot
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 MAX_TIMEOUT_SECONDS = 28 * 24 * 60 * 60
 MAX_REASON_LENGTH = 512
@@ -12,7 +12,7 @@ MAX_REASON_LENGTH = 512
 class ModerationAPI:
     """Kick, ban, unban, and timeout community members."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def current_timeout(self, community_id: str) -> MemberTimeout | None:

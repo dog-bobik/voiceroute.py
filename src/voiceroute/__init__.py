@@ -236,7 +236,7 @@ from voiceroute.state_models import (
     CachedResource,
     CachedRole,
 )
-from voiceroute.transport import RateLimiter
+from voiceroute.transport import RateLimiter, Transport
 from voiceroute.ui import View
 from voiceroute.voice import (
     LiveKitMediaTransport,
@@ -458,6 +458,7 @@ __all__ = [
     "ThreadPage",
     "ThreadsAPI",
     "TooManyArguments",
+    "Transport",
     "Unauthorized",
     "UnexpectedRedirect",
     "UnsupportedCommandParameter",

@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,7 +29,7 @@ class MiniAppState:
 class MiniAppsAPI:
     """Read shared state and resolve user-created Mini App actions."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     @staticmethod

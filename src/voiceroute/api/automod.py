@@ -3,13 +3,13 @@
 import unicodedata
 
 from voiceroute.models import AutoModConfig
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class AutoModAPI:
     """Read and replace a community's automatic moderation policy."""
 
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def get(self, community_id: str) -> AutoModConfig:

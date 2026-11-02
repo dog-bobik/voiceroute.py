@@ -5,11 +5,11 @@ from __future__ import annotations
 import uuid
 
 from voiceroute.models import Poll, PollCreation, PollVoter, PollVoterPage, RichMessage
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class PollsAPI:
-    def __init__(self, transport: HTTPTransport) -> None:
+    def __init__(self, transport: Transport) -> None:
         self._transport = transport
 
     async def create(

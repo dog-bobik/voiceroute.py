@@ -14,7 +14,7 @@ from voiceroute.models import (
     PlatformServiceStatus,
     StartupDiagnostics,
 )
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 class PlatformAPI:
@@ -22,7 +22,7 @@ class PlatformAPI:
 
     def __init__(
         self,
-        transport: HTTPTransport,
+        transport: Transport,
         *,
         cache_ttl: float = 300.0,
         clock: Callable[[], float] = time.monotonic,

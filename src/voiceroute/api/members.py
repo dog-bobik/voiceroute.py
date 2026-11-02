@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from voiceroute.config import APIVersion
 from voiceroute.models import Member
-from voiceroute.transport import HTTPTransport
+from voiceroute.transport import Transport
 
 
 @dataclass(frozen=True, slots=True)
@@ -22,7 +22,7 @@ class MembersAPI:
 
     def __init__(
         self,
-        transport: HTTPTransport,
+        transport: Transport,
         *,
         api_version: APIVersion,
         resolve_api_version: Callable[[], Awaitable[APIVersion]],
