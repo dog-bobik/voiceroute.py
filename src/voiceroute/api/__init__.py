@@ -19,9 +19,9 @@ from voiceroute.api.private_messages import PrivateMessagesAPI
 from voiceroute.api.roles import RolesAPI
 from voiceroute.api.stickers import ExpressionsAPI, StickersAPI
 from voiceroute.api.subscriptions import SubscriptionsAPI
-from voiceroute.api.threads import ThreadsAPI
+from voiceroute.api.threads import OwnThreadMembership, ThreadsAPI
 from voiceroute.api.uploads import Upload, UploadsAPI
-from voiceroute.api.voice import VoiceAPI
+from voiceroute.api.voice import VoiceAPI, VoiceConnection, VoicePolicy
 from voiceroute.api.webhooks import MessageWebhookClient, WebhooksAPI
 
 __all__ = [
@@ -44,6 +44,7 @@ __all__ = [
     "MiniAppState",
     "MiniAppsAPI",
     "ModerationAPI",
+    "OwnThreadMembership",
     "PlatformAPI",
     "PollsAPI",
     "PrivateMessagesAPI",
@@ -55,5 +56,7 @@ __all__ = [
     "Upload",
     "UploadsAPI",
     "VoiceAPI",
+    "VoiceConnection",
+    "VoicePolicy",
     "WebhooksAPI",
 ]
