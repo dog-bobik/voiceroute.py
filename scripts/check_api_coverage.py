@@ -9,6 +9,7 @@ implemented. Full coverage requires typed models and request/response tests.
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import sys
 from pathlib import Path
@@ -275,6 +276,24 @@ def event_inventory(names: list[Any]) -> list[dict[str, Any]]:
     return inventory
 
 
+def binding_errors(operations_: list[dict[str, str]]) -> list[str]:
+    """Ensure declared operation bindings still resolve to public SDK methods."""
+    operation_ids = {item["operationId"] for item in operations_}
+    errors = [
+        f"stale operation binding: {operation_id}"
+        for operation_id in OPERATION_BINDINGS
+        if operation_id not in operation_ids
+    ]
+    for operation_id, (binding, _, _) in OPERATION_BINDINGS.items():
+        class_name, method_name = binding.split(".", 1)
+        module_name = "voiceroute.oauth" if class_name.startswith("OAuth") else "voiceroute.api"
+        module = importlib.import_module(module_name)
+        resource = getattr(module, class_name, None)
+        if resource is None or not hasattr(resource, method_name):
+            errors.append(f"unresolved SDK binding: {operation_id} -> {binding}")
+    return errors
+
+
 def operations(document: dict[str, Any]) -> list[dict[str, str]]:
     result = []
     for path, methods in document.get("paths", {}).items():
@@ -330,6 +349,10 @@ def main() -> int:
     asyncapi = load(args.asyncapi)
     capabilities = load(args.capabilities)
     ops = operations(api)
+    errors = binding_errors(ops)
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
     events = capabilities.get("events", [])
     event_map = event_inventory(events)
     report = {
