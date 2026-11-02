@@ -5,8 +5,10 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import inspect
+import os
+import tempfile
 import uuid
-from collections.abc import Awaitable, Callable
+from collections.abc import AsyncIterable, Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -70,8 +72,7 @@ class UploadsAPI:
         spoiler: bool = False,
         idempotency_key: str | uuid.UUID | None = None,
     ) -> Upload:
-        if not filename or len(filename) > 120:
-            raise ValueError("filename must contain between 1 and 120 characters")
+        filename = _validate_filename(filename)
         if not 0 <= size <= MAX_UPLOAD_SIZE:
             raise ValueError("upload size must be between 0 and 10 MiB")
         if len(checksum_sha256) != 64 or any(c not in "0123456789abcdef" for c in checksum_sha256):
@@ -142,6 +143,7 @@ class UploadsAPI:
         description: str = "",
         spoiler: bool = False,
         progress: ProgressCallback | None = None,
+        filename: str | None = None,
     ) -> Upload:
         """Upload a local file in 1 MiB chunks without buffering it all in memory."""
         file_path = Path(path)
@@ -158,7 +160,7 @@ class UploadsAPI:
         upload = await self.create(
             community_id,
             channel_id,
-            file_path.name,
+            _validate_filename(filename or file_path.name),
             size,
             digest.hexdigest(),
             description=description,
@@ -180,6 +182,45 @@ class UploadsAPI:
         finally:
             await asyncio.to_thread(source.close)
         return await self.complete(upload.id)
+
+    async def upload_stream(
+        self,
+        community_id: str,
+        channel_id: str,
+        filename: str,
+        chunks: AsyncIterable[bytes],
+        *,
+        description: str = "",
+        spoiler: bool = False,
+        progress: ProgressCallback | None = None,
+    ) -> Upload:
+        """Spool an async byte stream to disk, then upload it with bounded RAM."""
+        safe_filename = _validate_filename(filename)
+        file_descriptor, temporary_path = tempfile.mkstemp(prefix="voiceroute-upload-")
+        stream_file = os.fdopen(file_descriptor, "wb")
+        size = 0
+        try:
+            async for chunk in chunks:
+                if not isinstance(chunk, bytes):
+                    raise TypeError("upload stream chunks must be bytes")
+                size += len(chunk)
+                if size > MAX_UPLOAD_SIZE:
+                    raise ValueError("upload size cannot exceed 10 MiB")
+                await asyncio.to_thread(stream_file.write, chunk)
+            await asyncio.to_thread(stream_file.close)
+            return await self.upload_file(
+                community_id,
+                channel_id,
+                temporary_path,
+                description=description,
+                spoiler=spoiler,
+                progress=progress,
+                filename=safe_filename,
+            )
+        finally:
+            if not stream_file.closed:
+                await asyncio.to_thread(stream_file.close)
+            await asyncio.to_thread(Path(temporary_path).unlink, missing_ok=True)
 
     async def upload_bytes(
         self,
@@ -260,3 +301,11 @@ def _required_object(payload: dict[str, object] | None, operation: str) -> dict[
 
 def _integer(value: object) -> int:
     return int(value) if isinstance(value, (int, str)) else 0
+
+
+def _validate_filename(filename: str) -> str:
+    if not filename or len(filename) > 120 or filename in {".", ".."}:
+        raise ValueError("filename must contain between 1 and 120 characters")
+    if "/" in filename or "\\" in filename or "\x00" in filename:
+        raise ValueError("filename must not contain a path")
+    return filename
