@@ -51,9 +51,43 @@ async def test_get_member_uses_active_member_snapshot() -> None:
     respx.get("https://voiceroute.cc/api/communities/community-id/members").mock(
         return_value=httpx.Response(200, json={"items": [MEMBER]})
     )
-    async with VoiceRouteClient(token="vrb_test") as client:
+    async with VoiceRouteClient(token="vrb_test", api_version="legacy") as client:
         member = await client.members.get("community-id", 42)
 
     assert member is not None
     assert member.display_name == "Alice"
     assert member.can_timeout is True
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_get_member_uses_targeted_v1_route() -> None:
+    route = respx.get("https://voiceroute.cc/api/v1/communities/community-id/members/42").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "id": "42",
+                "username": "alice",
+                "displayName": "Alice",
+                "bot": False,
+                "role": "member",
+            },
+        )
+    )
+    async with VoiceRouteClient(token="vrb_test", api_version="v1") as client:
+        member = await client.members.get("community-id", 42)
+    assert route.called
+    assert member is not None and member.display_name == "Alice"
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_search_members_preserves_cursor_as_string() -> None:
+    route = respx.get("https://voiceroute.cc/api/v1/communities/community-id/members/search").mock(
+        return_value=httpx.Response(200, json={"items": [MEMBER], "nextCursor": "9007199254740993"})
+    )
+    async with VoiceRouteClient(token="vrb_test", api_version="v1") as client:
+        page = await client.members.search("community-id", "alice")
+    assert route.called
+    assert page.items[0].id == 42
+    assert page.next_cursor == "9007199254740993"

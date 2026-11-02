@@ -72,7 +72,11 @@ class VoiceRouteClient:
         self.mini_apps = MiniAppsAPI(self._transport)
         self.moderation = ModerationAPI(self._transport)
         self.platform = PlatformAPI(self._transport)
-        self.members = MembersAPI(self._transport)
+        self.members = MembersAPI(
+            self._transport,
+            api_version=self.api_version,
+            resolve_api_version=self.resolve_api_version,
+        )
         self.roles = RolesAPI(self._transport)
         self.voice = VoiceAPI(self._transport)
 
