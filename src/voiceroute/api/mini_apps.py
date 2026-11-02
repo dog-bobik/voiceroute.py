@@ -43,6 +43,37 @@ class MiniAppsAPI:
     def _base(application_id: str) -> str:
         return f"/api/v1/applications/{application_id}/mini-app"
 
+    async def resolve_instance(
+        self,
+        application_id: str,
+        community_id: str,
+        *,
+        channel_id: str | None = None,
+        actor_user_id: int | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> str:
+        """Resolve the opaque per-user Mini App instance for a context."""
+        if actor_user_id is not None and (actor_user_id < 0 or len(str(actor_user_id)) > 19):
+            raise ValueError("actor_user_id must fit the VoiceRoute user ID range")
+        context: dict[str, str] = {
+            "type": "CHANNEL" if channel_id is not None else "COMMUNITY",
+            "communityId": community_id,
+        }
+        if channel_id is not None:
+            context["channelId"] = channel_id
+        body: dict[str, object] = {"context": context}
+        if actor_user_id is not None:
+            body["actorUserId"] = str(actor_user_id)
+        payload = await self._transport.request(
+            "POST",
+            f"{self._base(application_id)}/instances/resolve",
+            json=body,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+        if payload is None or not isinstance(payload.get("instanceId"), str):
+            raise RuntimeError("VoiceRoute returned no Mini App instance ID")
+        return str(payload["instanceId"])
+
     async def get_state(self, application_id: str, instance_id: str) -> MiniAppState:
         payload = await self._transport.request(
             "GET", f"{self._base(application_id)}/instances/{instance_id}/state"
