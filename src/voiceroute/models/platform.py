@@ -445,6 +445,42 @@ class StartupDiagnostics:
 
 
 @dataclass(frozen=True, slots=True)
+class VerificationKey:
+    id: str
+    public_key: str
+    created_at: str
+    valid_until: str | None
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
+        return cls(
+            id=str(data["id"]),
+            public_key=str(data["publicKey"]),
+            created_at=str(data["createdAt"]),
+            valid_until=(str(data["validUntil"]) if data.get("validUntil") is not None else None),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class VerificationKeySet:
+    application_id: str
+    algorithm: str
+    keys: tuple[VerificationKey, ...]
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
+        return cls(
+            application_id=str(data["applicationId"]),
+            algorithm=str(data["algorithm"]),
+            keys=tuple(
+                VerificationKey.from_dict(item)
+                for item in data.get("keys", ())
+                if isinstance(item, Mapping)
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class GatewaySessionStartLimit:
     total: int
     remaining: int

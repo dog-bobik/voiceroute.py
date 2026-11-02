@@ -72,6 +72,8 @@ from voiceroute.models.platform import (
     PlatformServiceStatus,
     ServiceIncident,
     StartupDiagnostics,
+    VerificationKey,
+    VerificationKeySet,
     VoiceCapabilities,
 )
 from voiceroute.models.platform_event import PlatformEvent
@@ -194,6 +196,8 @@ __all__ = [
     "ThreadPage",
     "UnsetType",
     "User",
+    "VerificationKey",
+    "VerificationKeySet",
     "VoiceCapabilities",
     "VoiceServerGrant",
     "VoiceState",

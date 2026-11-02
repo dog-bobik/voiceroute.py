@@ -13,6 +13,7 @@ from voiceroute.models import (
     PlatformCapabilities,
     PlatformServiceStatus,
     StartupDiagnostics,
+    VerificationKeySet,
 )
 from voiceroute.transport import Transport
 
@@ -87,6 +88,15 @@ class PlatformAPI:
         if payload is None:
             raise RuntimeError("VoiceRoute returned no current application")
         return CurrentApplication.from_dict(payload)
+
+    async def verification_keys(self, application_id: str) -> VerificationKeySet:
+        """Fetch public webhook signing keys from this client's configured origin."""
+        payload = await self._transport.request(
+            "GET", f"/api/v1/applications/{application_id}/verification-keys"
+        )
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no webhook verification keys")
+        return VerificationKeySet.from_dict(payload)
 
     async def gateway(self) -> GatewayDiscovery:
         await self.require("gateway")
