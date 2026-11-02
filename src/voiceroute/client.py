@@ -13,6 +13,7 @@ from voiceroute.api import (
     CommunitiesAPI,
     EventsAPI,
     ExpressionsAPI,
+    FilesAPI,
     InteractionsAPI,
     MembersAPI,
     MessagesAPI,
@@ -90,6 +91,7 @@ class VoiceRouteClient:
         self.bots = BotsAPI(self._transport)
         self.communities = CommunitiesAPI(self._transport)
         self.events = EventsAPI(self._transport)
+        self.files = FilesAPI(self._transport)
         self.interactions = InteractionsAPI(self._transport)
         self.messages = MessagesAPI(self._transport)
         self.mini_apps = MiniAppsAPI(self._transport)

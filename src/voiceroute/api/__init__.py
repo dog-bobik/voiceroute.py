@@ -7,6 +7,7 @@ from voiceroute.api.bots import BotsAPI
 from voiceroute.api.channels import CategoriesAPI, ChannelsAPI, TypingIndicator
 from voiceroute.api.communities import CommunitiesAPI
 from voiceroute.api.events import EventsAPI
+from voiceroute.api.files import FileResource, FilesAPI
 from voiceroute.api.interactions import InteractionsAPI
 from voiceroute.api.members import MembersAPI
 from voiceroute.api.messages import MessagesAPI
@@ -34,6 +35,8 @@ __all__ = [
     "CommunitiesAPI",
     "EventsAPI",
     "ExpressionsAPI",
+    "FileResource",
+    "FilesAPI",
     "InteractionsAPI",
     "MembersAPI",
     "MessageWebhookClient",
