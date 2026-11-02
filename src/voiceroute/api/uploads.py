@@ -181,6 +181,40 @@ class UploadsAPI:
             await asyncio.to_thread(source.close)
         return await self.complete(upload.id)
 
+    async def upload_bytes(
+        self,
+        community_id: str,
+        channel_id: str,
+        filename: str,
+        content: bytes,
+        *,
+        description: str = "",
+        spoiler: bool = False,
+        progress: ProgressCallback | None = None,
+    ) -> Upload:
+        """Upload an in-memory payload in bounded server-sized parts."""
+        if len(content) > MAX_UPLOAD_SIZE:
+            raise ValueError("upload size cannot exceed 10 MiB")
+        upload = await self.create(
+            community_id,
+            channel_id,
+            filename,
+            len(content),
+            hashlib.sha256(content).hexdigest(),
+            description=description,
+            spoiler=spoiler,
+        )
+        if not 0 < upload.part_size <= PART_SIZE:
+            raise RuntimeError("VoiceRoute returned an invalid upload part size")
+        for number, offset in enumerate(range(0, len(content), upload.part_size), start=1):
+            chunk = content[offset : offset + upload.part_size]
+            await self.put_part(upload.id, number, chunk)
+            if progress is not None:
+                result = progress(min(offset + len(chunk), len(content)), len(content))
+                if inspect.isawaitable(result):
+                    await result
+        return await self.complete(upload.id)
+
     async def resume_file(
         self,
         upload_id: str,
