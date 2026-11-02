@@ -26,7 +26,6 @@ RESOURCE_MODULES = {
     "audit": "audit",
     "automod": "automod",
     "bots": "bots",
-    "communities": "communities",
     "events": "events",
     "interactions": "interactions",
     "members": "members",
@@ -45,10 +44,37 @@ RESOURCE_MODULES = {
     "emojis": "expressions",
     "webhooks": "webhooks",
     "application-dms": "private_messages",
-    "applications": "private_messages",
     "subscriptions": "subscriptions",
     "voice": "voice",
 }
+
+
+def candidate_module(path: str) -> str | None:
+    """Map contract paths to their most specific SDK resource module candidate."""
+    if "/event-subscriptions" in path or "/event-delivery-status" in path:
+        return "voiceroute.api.subscriptions"
+    if "/application-dms/" in path or path.endswith("/dm"):
+        return "voiceroute.api.private_messages"
+    if path.startswith("/webhooks/"):
+        return "voiceroute.api.interactions"
+    if path.startswith("/message-webhooks/") or "/webhooks" in path:
+        return "voiceroute.api.webhooks"
+    if "/mini-app" in path:
+        return "voiceroute.api.mini_apps"
+    if "/voice-" in path or path.endswith("/voice-policy"):
+        return "voiceroute.api.voice"
+    if "/commands" not in path and (
+        "/permissions" in path or ("/members/" in path and "/roles" in path)
+    ):
+        return "voiceroute.api.roles"
+    if "/commands" in path or "/application-commands" in path:
+        return "voiceroute.api.application_commands"
+    for segment, module in RESOURCE_MODULES.items():
+        if f"/{segment}/" in f"{path}/" or path.endswith(f"/{segment}"):
+            return f"voiceroute.api.{module}"
+    if path in {"/gateway", "/capabilities", "/status", "/openapi.json", "/asyncapi.json"}:
+        return "voiceroute.api.platform"
+    return None
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -91,16 +117,14 @@ def operations(document: dict[str, Any]) -> list[dict[str, str]]:
                 status = "excluded"
             else:
                 status = "missing"
-            resource = next(
-                (module for segment, module in RESOURCE_MODULES.items() if segment in path), None
-            )
+            resource = candidate_module(path)
             result.append(
                 {
                     "operationId": str(operation["operationId"]),
                     "method": method.upper(),
                     "path": path,
                     "auth_surfaces": clauses or [["public"]],
-                    "candidate_module": f"voiceroute.api.{resource}" if resource else None,
+                    "candidate_module": resource,
                     "sdk_method": None,
                     "request_dto": None,
                     "response_dto": None,

@@ -8,7 +8,7 @@
     "events": 83,
     "excluded_auth": 102,
     "operations": 240,
-    "public_resource_modules": 26
+    "public_resource_modules": 24
   },
   "events": [
     {
@@ -987,7 +987,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.private_messages",
       "contract_test": null,
       "method": "GET",
       "operationId": "listApplicationDmMessages",
@@ -1009,7 +1009,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.private_messages",
       "contract_test": null,
       "method": "POST",
       "operationId": "createApplicationDmMessage",
@@ -1031,7 +1031,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.private_messages",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteApplicationDmMessage",
@@ -1053,7 +1053,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.private_messages",
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationDmMessage",
@@ -1075,7 +1075,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.private_messages",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "editApplicationDmMessage",
@@ -1091,7 +1091,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getCurrentBotApplication",
@@ -1107,7 +1107,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getBotAccessManifest",
@@ -1130,7 +1130,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationBrandingAsset",
@@ -1152,7 +1152,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "GET",
       "operationId": "listGlobalCommands",
@@ -1174,7 +1174,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "POST",
       "operationId": "createGlobalCommand",
@@ -1196,7 +1196,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "PUT",
       "operationId": "syncGlobalCommands",
@@ -1218,7 +1218,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteGlobalCommand",
@@ -1240,7 +1240,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "GET",
       "operationId": "getGlobalCommand",
@@ -1262,7 +1262,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateGlobalCommand",
@@ -1278,7 +1278,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommandPermissions",
@@ -1300,7 +1300,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityCommands",
@@ -1322,7 +1322,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "POST",
       "operationId": "createCommunityCommand",
@@ -1344,7 +1344,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "PUT",
       "operationId": "syncCommunityCommands",
@@ -1366,7 +1366,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunityCommand",
@@ -1388,7 +1388,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityCommand",
@@ -1410,7 +1410,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityCommand",
@@ -1426,7 +1426,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommandPermissions",
@@ -1442,7 +1442,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "PUT",
       "operationId": "replaceCommandPermissions",
@@ -1461,7 +1461,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationDeliveryStatus",
@@ -1480,7 +1480,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "GET",
       "operationId": "listEventSubscriptions",
@@ -1499,7 +1499,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "POST",
       "operationId": "createEventSubscription",
@@ -1518,7 +1518,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteEventSubscription",
@@ -1537,7 +1537,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "GET",
       "operationId": "getEventSubscription",
@@ -1556,7 +1556,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateEventSubscription",
@@ -1575,7 +1575,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "GET",
       "operationId": "listSubscriptionDeliveries",
@@ -1594,7 +1594,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "GET",
       "operationId": "getSubscriptionDelivery",
@@ -1610,7 +1610,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "POST",
       "operationId": "acknowledgeSubscriptionDelivery",
@@ -1629,7 +1629,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "POST",
       "operationId": "replaySubscriptionDelivery",
@@ -1645,7 +1645,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.subscriptions",
       "contract_test": null,
       "method": "POST",
       "operationId": "pullSubscriptionDeliveries",
@@ -1661,7 +1661,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "installBotWithGrants",
@@ -1677,7 +1677,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "acknowledgeMiniAppAction",
@@ -1693,7 +1693,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "completeMiniAppAction",
@@ -1709,7 +1709,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "rejectMiniAppAction",
@@ -1725,7 +1725,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "resolveApplicationMiniAppInstance",
@@ -1741,7 +1741,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationMiniAppState",
@@ -1757,7 +1757,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "PUT",
       "operationId": "publishMiniAppState",
@@ -1773,7 +1773,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "launchMiniApp",
@@ -1789,7 +1789,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "closeMiniAppSession",
@@ -1805,7 +1805,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getHostMiniAppSession",
@@ -1821,7 +1821,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "markMiniAppReady",
@@ -1837,7 +1837,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "renewMiniAppSession",
@@ -1853,7 +1853,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "discoverOwnPrivateCommands",
@@ -1869,7 +1869,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.interactions",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "invokeOwnPrivateComponent",
@@ -1885,7 +1885,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.interactions",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "invokeOwnPrivateCommand",
@@ -1901,7 +1901,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.interactions",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getOwnPrivateInteraction",
@@ -1917,7 +1917,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.interactions",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "submitOwnPrivateModal",
@@ -1940,7 +1940,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationProfile",
@@ -2006,7 +2006,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationVerificationKeys",
@@ -2022,7 +2022,7 @@
           "public"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getAsyncApi",
@@ -2038,7 +2038,7 @@
           "public"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCapabilities",
@@ -2054,7 +2054,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "GET",
       "operationId": "listInstalledCommandsForManagement",
@@ -2184,7 +2184,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.bots",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getBotMiniApp",
@@ -2203,7 +2203,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityCategories",
@@ -2222,7 +2222,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "createCommunityCategory",
@@ -2241,7 +2241,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "PUT",
       "operationId": "reorderCommunityCategories",
@@ -2260,7 +2260,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunityCategory",
@@ -2279,7 +2279,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityCategory",
@@ -2298,7 +2298,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityCategory",
@@ -2317,7 +2317,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCategoryOverrides",
@@ -2336,7 +2336,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "PUT",
       "operationId": "replaceCategoryOverrides",
@@ -2355,7 +2355,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityChannels",
@@ -2374,7 +2374,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "createCommunityChannel",
@@ -2393,7 +2393,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "PUT",
       "operationId": "reorderCommunityChannels",
@@ -2412,7 +2412,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunityChannel",
@@ -2431,7 +2431,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityChannel",
@@ -2450,7 +2450,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityChannel",
@@ -2466,7 +2466,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.application_commands",
       "contract_test": null,
       "method": "GET",
       "operationId": "discoverChannelCommands",
@@ -2504,7 +2504,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "cloneCommunityChannel",
@@ -2520,7 +2520,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "invokeMessageComponent",
@@ -2536,7 +2536,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.interactions",
       "contract_test": null,
       "method": "POST",
       "operationId": "invokeApplicationCommand",
@@ -2552,7 +2552,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.interactions",
       "contract_test": null,
       "method": "GET",
       "operationId": "getOwnInteraction",
@@ -2568,7 +2568,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.interactions",
       "contract_test": null,
       "method": "POST",
       "operationId": "submitInteractionModal",
@@ -2587,7 +2587,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "GET",
       "operationId": "listMessages",
@@ -2603,7 +2603,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "POST",
       "operationId": "createMessage",
@@ -2619,7 +2619,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "POST",
       "operationId": "bulkDeleteMessages",
@@ -2635,7 +2635,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteMessage",
@@ -2654,7 +2654,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMessage",
@@ -2670,7 +2670,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateMessage",
@@ -2689,7 +2689,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "clearMessageReactions",
@@ -2708,7 +2708,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "GET",
       "operationId": "getChannelOverrides",
@@ -2727,7 +2727,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "PUT",
       "operationId": "replaceChannelOverrides",
@@ -2746,7 +2746,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "PUT",
       "operationId": "syncChannelOverrides",
@@ -2762,7 +2762,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "createPoll",
@@ -2781,7 +2781,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "getPoll",
@@ -2800,7 +2800,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "closePoll",
@@ -2819,7 +2819,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "listPollVoters",
@@ -2835,7 +2835,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "removePollBallot",
@@ -2851,7 +2851,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "PUT",
       "operationId": "setPollBallot",
@@ -2870,7 +2870,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "listChannelThreads",
@@ -2889,7 +2889,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "createChannelThread",
@@ -2908,7 +2908,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "GET",
       "operationId": "listTyping",
@@ -2927,7 +2927,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.channels",
       "contract_test": null,
       "method": "POST",
       "operationId": "startTyping",
@@ -2946,7 +2946,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.expressions",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityEmojis",
@@ -2962,7 +2962,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.expressions",
       "contract_test": null,
       "method": "POST",
       "operationId": "createCommunityEmoji",
@@ -2981,7 +2981,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.expressions",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunityEmoji",
@@ -3000,7 +3000,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.expressions",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityEmoji",
@@ -3019,7 +3019,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.expressions",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityEmoji",
@@ -3041,7 +3041,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityMembers",
@@ -3063,7 +3063,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "GET",
       "operationId": "searchCommunityMembers",
@@ -3085,7 +3085,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityMember",
@@ -3104,7 +3104,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityMember",
@@ -3126,7 +3126,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "GET",
       "operationId": "getEffectiveMemberPermissions",
@@ -3145,7 +3145,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "removeCommunityMemberRole",
@@ -3164,7 +3164,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "PUT",
       "operationId": "addCommunityMemberRole",
@@ -3183,7 +3183,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "POST",
       "operationId": "simulateCommunityPermissions",
@@ -3202,7 +3202,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityRoles",
@@ -3221,7 +3221,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "POST",
       "operationId": "createCommunityRole",
@@ -3240,7 +3240,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "PUT",
       "operationId": "reorderCommunityRoles",
@@ -3259,7 +3259,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunityRole",
@@ -3278,7 +3278,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityRole",
@@ -3297,7 +3297,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.roles",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityRole",
@@ -3316,7 +3316,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.stickers",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityStickers",
@@ -3332,7 +3332,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.stickers",
       "contract_test": null,
       "method": "POST",
       "operationId": "createCommunitySticker",
@@ -3351,7 +3351,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.stickers",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunitySticker",
@@ -3370,7 +3370,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.stickers",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunitySticker",
@@ -3389,7 +3389,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.stickers",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunitySticker",
@@ -3408,7 +3408,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunityThread",
@@ -3427,7 +3427,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityThread",
@@ -3446,7 +3446,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.threads",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityThread",
@@ -3465,7 +3465,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "GET",
       "operationId": "listThreadMembers",
@@ -3484,7 +3484,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "leaveThread",
@@ -3503,7 +3503,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "GET",
       "operationId": "getOwnThreadMembership",
@@ -3522,7 +3522,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "PUT",
       "operationId": "joinThread",
@@ -3541,7 +3541,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "removeThreadMember",
@@ -3560,7 +3560,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.members",
       "contract_test": null,
       "method": "PUT",
       "operationId": "addThreadMember",
@@ -3579,7 +3579,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "GET",
       "operationId": "listMessagesInThread",
@@ -3595,7 +3595,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "POST",
       "operationId": "createMessageInThread",
@@ -3611,7 +3611,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "POST",
       "operationId": "bulkDeleteMessagesInThread",
@@ -3627,7 +3627,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteMessageInThread",
@@ -3646,7 +3646,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMessageInThread",
@@ -3662,7 +3662,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.messages",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateMessageInThread",
@@ -3678,7 +3678,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.voice",
       "contract_test": null,
       "method": "POST",
       "operationId": "createCommunityVoiceConnection",
@@ -3694,7 +3694,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.voice",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteCommunityVoiceConnection",
@@ -3713,7 +3713,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.voice",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityVoicePolicy",
@@ -3729,7 +3729,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.voice",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateCommunityVoicePolicy",
@@ -3748,7 +3748,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.voice",
       "contract_test": null,
       "method": "GET",
       "operationId": "listCommunityVoiceStates",
@@ -3764,7 +3764,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.voice",
       "contract_test": null,
       "method": "GET",
       "operationId": "getCommunityUserVoiceState",
@@ -3783,7 +3783,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "GET",
       "operationId": "listMessageWebhooks",
@@ -3802,7 +3802,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "POST",
       "operationId": "createMessageWebhook",
@@ -3821,7 +3821,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteMessageWebhook",
@@ -3840,7 +3840,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMessageWebhook",
@@ -3859,7 +3859,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateMessageWebhook",
@@ -3878,7 +3878,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "POST",
       "operationId": "rotateMessageWebhookSecret",
@@ -3894,7 +3894,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "listDeveloperApplications",
@@ -3910,7 +3910,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "createDeveloperApplication",
@@ -3926,7 +3926,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateDeveloperManifest",
@@ -3958,7 +3958,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "listBotCredentials",
@@ -3974,7 +3974,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "rotateBotCredential",
@@ -3990,7 +3990,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "DELETE",
       "operationId": "revokeBotCredential",
@@ -4006,7 +4006,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteApplicationBranding",
@@ -4022,7 +4022,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "PUT",
       "operationId": "uploadApplicationBranding",
@@ -4038,7 +4038,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationMetadata",
@@ -4054,7 +4054,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateApplicationMetadata",
@@ -4070,7 +4070,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMiniAppConfiguration",
@@ -4086,7 +4086,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateMiniAppDraft",
@@ -4102,7 +4102,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMiniAppDiagnostics",
@@ -4118,7 +4118,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "publishMiniApp",
@@ -4134,7 +4134,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "verifyMiniAppOrigin",
@@ -4150,7 +4150,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getOAuthClient",
@@ -4166,7 +4166,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "PATCH",
       "operationId": "updateOAuthClient",
@@ -4182,7 +4182,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "createClientSecret",
@@ -4198,7 +4198,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "DELETE",
       "operationId": "revokeClientSecret",
@@ -4214,7 +4214,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "listSandboxRuns",
@@ -4230,7 +4230,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "createSandboxRun",
@@ -4246,7 +4246,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteSandboxRun",
@@ -4278,7 +4278,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "createSandboxFault",
@@ -4294,7 +4294,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "rotateApplicationSigningKey",
@@ -4310,7 +4310,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationTeam",
@@ -4326,7 +4326,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "inviteApplicationMember",
@@ -4342,7 +4342,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "DELETE",
       "operationId": "cancelApplicationInvitation",
@@ -4390,7 +4390,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "POST",
       "operationId": "requestApplicationOwnership",
@@ -4460,7 +4460,7 @@
           "botToken"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getGateway",
@@ -4527,7 +4527,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteWebhookMessage",
@@ -4543,7 +4543,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "GET",
       "operationId": "getWebhookMessage",
@@ -4559,7 +4559,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.webhooks",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "editWebhookMessage",
@@ -4575,7 +4575,7 @@
           "miniAppToken"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMiniAppContext",
@@ -4591,7 +4591,7 @@
           "miniAppToken"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMiniAppAction",
@@ -4607,7 +4607,7 @@
           "miniAppToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.events",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "pollMiniAppEvents",
@@ -4623,7 +4623,7 @@
           "miniAppToken"
         ]
       ],
-      "candidate_module": "voiceroute.api.events",
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "streamMiniAppEvents",
@@ -4639,7 +4639,7 @@
           "miniAppToken"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "createMiniAppAction",
@@ -4655,7 +4655,7 @@
           "miniAppToken"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "GET",
       "operationId": "getMiniAppState",
@@ -4671,7 +4671,7 @@
           "public"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.mini_apps",
       "contract_test": null,
       "method": "POST",
       "operationId": "exchangeMiniAppCode",
@@ -4786,7 +4786,7 @@
           "public"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getOpenApi",
@@ -4818,7 +4818,7 @@
           "public"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getPlatformServiceStatus",
@@ -4994,7 +4994,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "DELETE",
       "operationId": "eraseOwnApplicationData",
@@ -5010,7 +5010,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "getOwnApplicationPrivacy",
@@ -5026,7 +5026,7 @@
           "humanSession"
         ]
       ],
-      "candidate_module": "voiceroute.api.private_messages",
+      "candidate_module": null,
       "contract_test": null,
       "method": "PUT",
       "operationId": "setOwnApplicationPrivacy",
@@ -5042,7 +5042,7 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": "voiceroute.api.communities",
+      "candidate_module": null,
       "contract_test": null,
       "method": "GET",
       "operationId": "listOAuthUserCommunities",
@@ -5170,7 +5170,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.webhooks",
+      "candidate_module": "voiceroute.api.interactions",
       "contract_test": null,
       "method": "POST",
       "operationId": "createInteractionFollowup",
@@ -5186,7 +5186,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.interactions",
       "contract_test": null,
       "method": "DELETE",
       "operationId": "deleteInteractionResponse",
@@ -5202,7 +5202,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.interactions",
       "contract_test": null,
       "method": "GET",
       "operationId": "getInteractionResponse",
@@ -5218,7 +5218,7 @@
           "public"
         ]
       ],
-      "candidate_module": "voiceroute.api.messages",
+      "candidate_module": "voiceroute.api.interactions",
       "contract_test": null,
       "method": "PATCH",
       "operationId": "editInteractionResponse",
