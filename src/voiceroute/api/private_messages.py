@@ -29,6 +29,8 @@ class PrivateMessagesAPI:
         return _object(payload, "open private channel")
 
     async def get(self, user_id: str = "@me") -> dict[str, Any]:
+        if user_id != "@me" and (not user_id.isdecimal() or user_id.startswith("0")):
+            raise ValueError("user_id must be @me or a positive decimal user ID")
         payload = await self._transport.request(
             "GET", f"/api/v1/applications/{self.application_id}/users/{user_id}/dm"
         )
