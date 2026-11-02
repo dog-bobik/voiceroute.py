@@ -6,6 +6,7 @@ import inspect
 import types
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
+from enum import Enum
 from typing import Union, get_args, get_origin, get_type_hints
 
 from voiceroute.commands.context import Context
@@ -232,10 +233,12 @@ def _alias_path(command_path: tuple[str, ...], alias: str) -> tuple[str, ...]:
 def _is_supported_annotation(annotation: object) -> bool:
     if annotation in (str, int, float, bool):
         return True
+    if isinstance(annotation, type) and issubclass(annotation, Enum):
+        return all(isinstance(member.value, (str, int)) for member in annotation)
     origin = get_origin(annotation)
     if origin in (Union, types.UnionType):
         options = tuple(item for item in get_args(annotation) if item is not type(None))
-        return len(options) == 1 and options[0] in (str, int, float, bool)
+        return len(options) == 1 and _is_supported_annotation(options[0])
     return False
 
 
@@ -256,6 +259,20 @@ def _convert(value: str, annotation: object, parameter_name: str) -> object:
                 return True
             if normalized in {"0", "false", "no", "off"}:
                 return False
+            raise ValueError
+        if isinstance(annotation, type) and issubclass(annotation, Enum):
+            normalized = value.casefold()
+            match = next(
+                (
+                    member
+                    for member in annotation
+                    if member.name.casefold() == normalized
+                    or str(member.value).casefold() == normalized
+                ),
+                None,
+            )
+            if match is not None:
+                return match
             raise ValueError
     except ValueError as exc:
         type_name = getattr(annotation, "__name__", str(annotation))
