@@ -8,7 +8,7 @@ from collections.abc import Awaitable, Callable
 
 from voiceroute.commands.components import ComponentRouter
 from voiceroute.commands.interactions import InteractionContext
-from voiceroute.models import ActionRow, Component
+from voiceroute.models import ActionRow, Component, Modal, TextInput
 
 ViewCallback = Callable[[InteractionContext, str], Awaitable[None]]
 
@@ -38,6 +38,7 @@ class View:
         self._expires_at = time.monotonic() + timeout if timeout is not None else None
         self._router = router
         self._items: dict[str, tuple[Component, ViewCallback]] = {}
+        self._modal_callbacks: dict[str, ViewCallback] = {}
         self._stopped = False
         router.register(route, self._dispatch)
 
@@ -94,6 +95,29 @@ class View:
         self._items[item_id] = (bound, callback)
         return bound
 
+    def add_modal(
+        self,
+        item_id: str,
+        title: str,
+        inputs: tuple[TextInput, ...],
+        callback: ViewCallback,
+        *,
+        payload: str = "",
+    ) -> Modal:
+        """Register a modal submission callback and return its signed modal DTO."""
+        if self.is_finished:
+            raise RuntimeError("cannot add a modal to a finished view")
+        if not item_id or len(item_id) > 24 or "." in item_id:
+            raise ValueError("item_id must contain 1-24 characters without dots")
+        if item_id in self._modal_callbacks or item_id in self._items:
+            raise ValueError(f"view item is already registered: {item_id}")
+        if not title or len(title) > 45 or not 1 <= len(inputs) <= 5:
+            raise ValueError("modal title must be 1-45 characters and contain 1 to 5 inputs")
+        encoded_data = json.dumps([item_id, payload], separators=(",", ":"))
+        custom_id = self._router.custom_id(self.route, encoded_data)
+        self._modal_callbacks[item_id] = callback
+        return Modal(title=title, custom_id=custom_id, components=inputs)
+
     def stop(self) -> None:
         self._stopped = True
 
@@ -133,6 +157,6 @@ class View:
         except (TypeError, ValueError):
             return
         item = self._items.get(item_id)
-        if item is None:
-            return
-        await item[1](context, str(payload))
+        callback = item[1] if item is not None else self._modal_callbacks.get(item_id)
+        if callback is not None:
+            await callback(context, str(payload))
