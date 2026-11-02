@@ -119,7 +119,15 @@ from voiceroute.events import (
     StreamCheckpoint,
 )
 from voiceroute.extensions import Extension, ExtensionCommand, command, listener
-from voiceroute.fsm import FSMContext, FSMKey, FSMStorage, MemoryStorage, State, StatesGroup
+from voiceroute.fsm import (
+    FSMContext,
+    FSMKey,
+    FSMStorage,
+    MemoryStorage,
+    RedisStorage,
+    State,
+    StatesGroup,
+)
 from voiceroute.gateway import (
     PRIVILEGED_INTENTS,
     TRACKED_CAPABILITIES,
@@ -449,6 +457,7 @@ __all__ = [
     "RedisCursorStore",
     "RedisGatewayCheckpointCoordinator",
     "RedisGatewayCheckpointStore",
+    "RedisStorage",
     "RequestCapacity",
     "ResourceVersionConflict",
     "ResponseTooLarge",
