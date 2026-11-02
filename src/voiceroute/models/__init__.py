@@ -79,6 +79,7 @@ from voiceroute.models.role import (
     PermissionTargetType,
     Role,
 )
+from voiceroute.models.sticker import Sticker
 from voiceroute.models.threads import Thread, ThreadMember, ThreadMemberPage, ThreadPage
 from voiceroute.models.user import User
 from voiceroute.models.voice import VoiceServerGrant, VoiceState, VoiceStatePage, VoiceTrack
@@ -174,6 +175,7 @@ __all__ = [
     "SelectOption",
     "ServiceIncident",
     "StartupDiagnostics",
+    "Sticker",
     "TextInput",
     "Thread",
     "ThreadMember",

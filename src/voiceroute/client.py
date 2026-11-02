@@ -20,6 +20,7 @@ from voiceroute.api import (
     PlatformAPI,
     PollsAPI,
     RolesAPI,
+    StickersAPI,
     SubscriptionsAPI,
     ThreadsAPI,
     UploadsAPI,
@@ -105,6 +106,7 @@ class VoiceRouteClient:
         self.polls = PollsAPI(self._transport)
         self.webhooks = WebhooksAPI(self._transport)
         self.subscriptions = SubscriptionsAPI(self._transport)
+        self.stickers = StickersAPI(self._transport)
         self.channels = ChannelsAPI(self._transport)
         self.categories = CategoriesAPI(self._transport)
 
