@@ -150,6 +150,41 @@ class MessagesAPI:
             retryable=True,
         )
 
+    async def bulk_delete_v1(
+        self,
+        community_id: str,
+        channel_id: str,
+        messages: Sequence[RichMessage],
+        *,
+        reason: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> None:
+        """Delete 2 to 100 current v1 messages atomically using their versions."""
+        if not 2 <= len(messages) <= 100:
+            raise ValueError("bulk deletion requires between 2 and 100 messages")
+        if len({message.id for message in messages}) != len(messages):
+            raise ValueError("messages must have unique IDs")
+        if any(
+            message.community_id != community_id or message.channel_id != channel_id
+            for message in messages
+        ):
+            raise ValueError("all messages must belong to the supplied community and channel")
+        if any(not message.version for message in messages):
+            raise ValueError("all messages must include a current version")
+        if reason is not None and (len(reason) > 512 or "\x00" in reason):
+            raise ValueError("reason must contain at most 512 characters and no null character")
+        body: dict[str, object] = {
+            "messages": [{"id": message.id, "version": message.version} for message in messages]
+        }
+        if reason is not None:
+            body["reason"] = reason
+        await self._transport.request(
+            "POST",
+            f"{self._v1_messages_path(community_id, channel_id)}/bulk-delete",
+            json=body,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+
     async def history(
         self,
         community_id: str,
