@@ -1,12 +1,91 @@
 """Bot-compatible VoiceRoute voice state resources."""
 
+from __future__ import annotations
+
+import uuid
+from dataclasses import dataclass, field
+from typing import Any
+
 from voiceroute.models.voice import VoiceState, VoiceStatePage
 from voiceroute.transport import Transport
+
+
+@dataclass(frozen=True, slots=True)
+class VoiceConnection:
+    """Single-use outbound media credential; its token is hidden from repr."""
+
+    connection_id: str
+    media_websocket_url: str
+    media_token: str = field(repr=False)
+    expires_at: str
+    audio: dict[str, Any]
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> VoiceConnection:
+        audio = data.get("audio")
+        return cls(
+            connection_id=str(data["connectionId"]),
+            media_websocket_url=str(data["mediaWebSocketUrl"]),
+            media_token=str(data["mediaToken"]),
+            expires_at=str(data["expiresAt"]),
+            audio=dict(audio) if isinstance(audio, dict) else {},
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class VoicePolicy:
+    community_id: str
+    allow_application_receive: bool
+    version: str
+    updated_at: str | None
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> VoicePolicy:
+        return cls(
+            community_id=str(data["communityId"]),
+            allow_application_receive=bool(data["allowApplicationReceive"]),
+            version=str(data["version"]),
+            updated_at=str(data["updatedAt"]) if data.get("updatedAt") is not None else None,
+        )
 
 
 class VoiceAPI:
     def __init__(self, transport: Transport) -> None:
         self._transport = transport
+
+    async def connect(
+        self,
+        community_id: str,
+        channel_id: str,
+        *,
+        self_deaf: bool = True,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> VoiceConnection:
+        """Create a single-use media connection for this bot installation."""
+        payload = await self._transport.request(
+            "POST",
+            f"/api/v1/communities/{community_id}/voice-connections",
+            json={"channelId": channel_id, "selfDeaf": self_deaf},
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+        if payload is None:
+            raise RuntimeError("VoiceRoute returned no voice connection")
+        return VoiceConnection.from_dict(payload)
+
+    async def disconnect(self, community_id: str, connection_id: str) -> None:
+        await self._transport.request(
+            "DELETE",
+            f"/api/v1/communities/{community_id}/voice-connections/{connection_id}",
+            retryable=True,
+        )
+
+    async def policy(self, community_id: str) -> VoicePolicy:
+        payload = await self._transport.request(
+            "GET", f"/api/v1/communities/{community_id}/voice-policy"
+        )
+        if payload is None or not isinstance(payload.get("policy"), dict):
+            raise RuntimeError("VoiceRoute returned no voice policy")
+        return VoicePolicy.from_dict(payload["policy"])
 
     async def list_states(
         self,
