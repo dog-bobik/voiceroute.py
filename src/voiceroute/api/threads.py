@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Mapping, Sequence
 
 from voiceroute.models import (
     RichMessage,
@@ -249,15 +249,30 @@ class ThreadsAPI:
         community_id: str,
         thread_id: str,
         *,
-        content: str,
+        content: str = "",
+        embeds: Sequence[Mapping[str, object]] = (),
+        attachments: Sequence[Mapping[str, object]] = (),
+        allowed_mentions: Mapping[str, object] | None = None,
+        reply_to_message_id: str | None = None,
         idempotency_key: str | uuid.UUID | None = None,
     ) -> RichMessage:
-        if not content or len(content) > 4000:
-            raise ValueError("thread message must contain between 1 and 4000 characters")
+        if len(content) > 4000 or len(embeds) > 10 or len(attachments) > 10:
+            raise ValueError("thread message exceeds the v1 content or rich payload limits")
+        if not content and not embeds and not attachments:
+            raise ValueError("thread message must contain content or an attachment/embed")
+        body: dict[str, object] = {"content": content}
+        if embeds:
+            body["embeds"] = [dict(item) for item in embeds]
+        if attachments:
+            body["attachments"] = [dict(item) for item in attachments]
+        if allowed_mentions is not None:
+            body["allowedMentions"] = dict(allowed_mentions)
+        if reply_to_message_id is not None:
+            body["reply"] = {"messageId": reply_to_message_id}
         payload = await self._transport.request(
             "POST",
             f"{_thread_path(community_id, thread_id)}/messages",
-            json={"content": content},
+            json=body,
             idempotency_key=str(idempotency_key or uuid.uuid4()),
         )
         return RichMessage.from_dict(_required_object(payload, "thread message creation"))
