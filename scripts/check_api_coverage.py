@@ -55,6 +55,7 @@ OPERATION_BINDINGS: dict[str, tuple[str, str | None, str | None]] = {
     "createApplicationDmMessage": ("OAuthPrivateMessagesAPI.send", None, "dict"),
     "deleteApplicationDmMessage": ("OAuthPrivateMessagesAPI.delete", None, None),
     "editApplicationDmMessage": ("OAuthPrivateMessagesAPI.edit", None, "dict"),
+    "getApplicationDmMessage": ("OAuthPrivateMessagesAPI.get_message", None, "dict"),
     "getApplicationDm": ("OAuthPrivateMessagesAPI.get", None, "dict"),
     "openApplicationDm": ("OAuthPrivateMessagesAPI.open", None, "dict"),
     "listGlobalCommands": ("ApplicationCommandsAPI.list", None, "ApplicationCommand[]"),
@@ -81,7 +82,14 @@ OPERATION_BINDINGS: dict[str, tuple[str, str | None, str | None]] = {
     "pullSubscriptionDeliveries": ("SubscriptionsAPI.pull", None, "DeliveryLease[]"),
     "getApplicationDeliveryStatus": ("SubscriptionsAPI.delivery_status", None, "dict"),
     "getCurrentBotApplication": ("PlatformAPI.current_application", None, "CurrentApplication"),
+    "getApplicationProfile": ("PlatformAPI.application_profile", None, "ApplicationProfile"),
+    "getApplicationBrandingAsset": (
+        "PlatformAPI.branding_asset",
+        None,
+        "AsyncIterator[bytes]",
+    ),
     "getGateway": ("PlatformAPI.gateway", None, "GatewayDiscovery"),
+    "getEmbedImage": ("PlatformAPI.embed_image", None, "AsyncIterator[bytes]"),
     "acknowledgeMiniAppAction": ("MiniAppsAPI.acknowledge_action", None, None),
     "completeMiniAppAction": ("MiniAppsAPI.complete_action", None, None),
     "rejectMiniAppAction": ("MiniAppsAPI.reject_action", None, None),
@@ -145,13 +153,21 @@ OPERATION_BINDINGS: dict[str, tuple[str, str | None, str | None]] = {
     "updateCommunityThread": ("ThreadsAPI.update", None, "Thread"),
     "listThreadMembers": ("ThreadsAPI.members", None, "ThreadMemberPage"),
     "leaveThread": ("ThreadsAPI.leave", None, None),
+    "getOwnThreadMembership": ("ThreadsAPI.own_membership", None, "OwnThreadMembership"),
     "joinThread": ("ThreadsAPI.join", None, None),
     "removeThreadMember": ("ThreadsAPI.remove_member", None, None),
     "addThreadMember": ("ThreadsAPI.add_member", None, None),
     "listMessagesInThread": ("ThreadsAPI.history", None, "RichMessagePage"),
     "createMessageInThread": ("ThreadsAPI.send", None, "RichMessage"),
+    "bulkDeleteMessagesInThread": ("ThreadsAPI.bulk_delete_messages", None, None),
+    "deleteMessageInThread": ("ThreadsAPI.delete_message", None, None),
+    "getMessageInThread": ("ThreadsAPI.get_message", None, "RichMessage"),
+    "updateMessageInThread": ("ThreadsAPI.edit_message", None, "RichMessage"),
     "listCommunityVoiceStates": ("VoiceAPI.list_states", None, "VoiceStatePage"),
     "getCommunityUserVoiceState": ("VoiceAPI.get_state", None, "VoiceState"),
+    "createCommunityVoiceConnection": ("VoiceAPI.connect", None, "VoiceConnection"),
+    "deleteCommunityVoiceConnection": ("VoiceAPI.disconnect", None, None),
+    "getCommunityVoicePolicy": ("VoiceAPI.policy", None, "VoicePolicy"),
     "listMessageWebhooks": ("WebhooksAPI.list", None, "Webhook[]"),
     "createMessageWebhook": ("WebhooksAPI.create", None, "Webhook"),
     "deleteMessageWebhook": ("WebhooksAPI.delete", None, None),
@@ -198,7 +214,12 @@ OPERATION_BINDINGS: dict[str, tuple[str, str | None, str | None]] = {
 
 def candidate_module(path: str) -> str | None:
     """Map contract paths to their most specific SDK resource module candidate."""
-    if path == "/applications/@me" or path == "/gateway":
+    if (
+        path == "/applications/@me"
+        or path == "/gateway"
+        or ("/applications/" in path and ("/assets/" in path or path.endswith("/profile")))
+        or path.startswith("/media/images/")
+    ):
         return "voiceroute.api.platform"
     if path.startswith("/files/"):
         return "voiceroute.api.files"

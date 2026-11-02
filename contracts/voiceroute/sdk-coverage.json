@@ -7,9 +7,9 @@
     "bot_candidate": 138,
     "events": 83,
     "excluded_auth": 102,
-    "missing_mapping": 12,
+    "missing_mapping": 0,
     "operations": 240,
-    "partial_mapping": 126,
+    "partial_mapping": 138,
     "public_resource_modules": 24
   },
   "events": [
@@ -1061,9 +1061,9 @@
       "operationId": "getApplicationDmMessage",
       "path": "/application-dms/{channelId}/messages/{messageId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "dict",
+      "sdk_method": "OAuthPrivateMessagesAPI.get_message",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1132,15 +1132,15 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationBrandingAsset",
       "path": "/applications/{applicationId}/assets/{kind}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "AsyncIterator[bytes]",
+      "sdk_method": "PlatformAPI.branding_asset",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -1942,15 +1942,15 @@
           "oauthBearer"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getApplicationProfile",
       "path": "/applications/{applicationId}/profile",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "ApplicationProfile",
+      "sdk_method": "PlatformAPI.application_profile",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3511,9 +3511,9 @@
       "operationId": "getOwnThreadMembership",
       "path": "/communities/{communityId}/threads/{threadId}/members/@me",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "OwnThreadMembership",
+      "sdk_method": "ThreadsAPI.own_membership",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3620,8 +3620,8 @@
       "path": "/communities/{communityId}/threads/{threadId}/messages/bulk-delete",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ThreadsAPI.bulk_delete_messages",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3636,8 +3636,8 @@
       "path": "/communities/{communityId}/threads/{threadId}/messages/{messageId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "ThreadsAPI.delete_message",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3654,9 +3654,9 @@
       "operationId": "getMessageInThread",
       "path": "/communities/{communityId}/threads/{threadId}/messages/{messageId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessage",
+      "sdk_method": "ThreadsAPI.get_message",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3670,9 +3670,9 @@
       "operationId": "updateMessageInThread",
       "path": "/communities/{communityId}/threads/{threadId}/messages/{messageId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "RichMessage",
+      "sdk_method": "ThreadsAPI.edit_message",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3686,9 +3686,9 @@
       "operationId": "createCommunityVoiceConnection",
       "path": "/communities/{communityId}/voice-connections",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "VoiceConnection",
+      "sdk_method": "VoiceAPI.connect",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3703,8 +3703,8 @@
       "path": "/communities/{communityId}/voice-connections/{connectionId}",
       "request_dto": null,
       "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "sdk_method": "VoiceAPI.disconnect",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -3721,9 +3721,9 @@
       "operationId": "getCommunityVoicePolicy",
       "path": "/communities/{communityId}/voice-policy",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "VoicePolicy",
+      "sdk_method": "VoiceAPI.policy",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
@@ -4497,15 +4497,15 @@
           "botToken"
         ]
       ],
-      "candidate_module": null,
+      "candidate_module": "voiceroute.api.platform",
       "contract_test": null,
       "method": "GET",
       "operationId": "getEmbedImage",
       "path": "/media/images/{imageId}",
       "request_dto": null,
-      "response_dto": null,
-      "sdk_method": null,
-      "status": "missing"
+      "response_dto": "AsyncIterator[bytes]",
+      "sdk_method": "PlatformAPI.embed_image",
+      "status": "partial"
     },
     {
       "auth_surfaces": [
