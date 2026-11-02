@@ -20,8 +20,7 @@ class ComponentRouter:
         previous_secrets: tuple[str | bytes, ...] = (),
     ) -> None:
         values = tuple(
-            item.encode() if isinstance(item, str) else item
-            for item in (secret, *previous_secrets)
+            item.encode() if isinstance(item, str) else item for item in (secret, *previous_secrets)
         )
         if any(len(value) < 16 for value in values):
             raise ValueError("component signing secret must contain at least 16 bytes")

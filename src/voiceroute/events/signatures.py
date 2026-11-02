@@ -81,9 +81,7 @@ async def verify_signed_delivery(
         raise InvalidDeliverySignature("signed delivery body is not valid JSON") from exc
     if not isinstance(envelope, dict) or envelope.get("deliveryId") != delivery_id:
         raise InvalidDeliverySignature("header and envelope delivery IDs do not match")
-    if not await replay_store.claim(
-        delivery_id, expires_at=current + allowed_clock_skew_seconds
-    ):
+    if not await replay_store.claim(delivery_id, expires_at=current + allowed_clock_skew_seconds):
         raise InvalidDeliverySignature("delivery ID has already been processed")
     return envelope
 
