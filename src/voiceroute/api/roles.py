@@ -412,6 +412,27 @@ class RolesAPI:
         )
         return ChannelPermissionSnapshot.from_dict(payload or {})
 
+    async def sync_channel_overrides_v1(
+        self,
+        community_id: str,
+        channel_id: str,
+        *,
+        if_match: str,
+        audit_reason: str | None = None,
+        idempotency_key: str | uuid.UUID | None = None,
+    ) -> ChannelPermissionSnapshot:
+        """Copy category overrides onto a channel with optimistic concurrency."""
+        if not if_match:
+            raise ValueError("if_match is required to sync channel overrides")
+        payload = await self._transport.request(
+            "PUT",
+            f"/api/v1/communities/{community_id}/channels/{channel_id}/permissions/sync",
+            headers=_audit_headers(audit_reason),
+            if_match=if_match,
+            idempotency_key=str(idempotency_key or uuid.uuid4()),
+        )
+        return ChannelPermissionSnapshot.from_dict(payload or {})
+
     async def add_member_role_v1(
         self,
         community_id: str,
