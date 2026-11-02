@@ -181,6 +181,39 @@ class UploadsAPI:
             await asyncio.to_thread(source.close)
         return await self.complete(upload.id)
 
+    async def resume_file(
+        self,
+        upload_id: str,
+        path: str | Path,
+        *,
+        progress: ProgressCallback | None = None,
+    ) -> Upload:
+        """Resume a prior upload session, skipping parts the server has accepted."""
+        file_path = Path(path)
+        upload = await self.get(upload_id)
+        size = (await asyncio.to_thread(file_path.stat)).st_size
+        if size > MAX_UPLOAD_SIZE or not 0 < upload.part_size <= PART_SIZE:
+            raise ValueError("file size or server part size is invalid")
+        expected_parts = (size + upload.part_size - 1) // upload.part_size
+        if expected_parts != upload.part_count:
+            raise ValueError("file size does not match the existing upload session")
+        received = set(upload.received_parts)
+        source = await asyncio.to_thread(file_path.open, "rb")
+        completed = 0
+        try:
+            for number in range(1, upload.part_count + 1):
+                chunk = await asyncio.to_thread(source.read, upload.part_size)
+                if number not in received:
+                    await self.put_part(upload.id, number, chunk)
+                completed += len(chunk)
+                if progress is not None:
+                    result = progress(completed, size)
+                    if inspect.isawaitable(result):
+                        await result
+        finally:
+            await asyncio.to_thread(source.close)
+        return await self.complete(upload.id)
+
 
 def _required_object(payload: dict[str, object] | None, operation: str) -> dict[str, object]:
     if payload is None:
