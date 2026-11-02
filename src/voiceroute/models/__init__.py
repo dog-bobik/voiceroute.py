@@ -20,6 +20,7 @@ from voiceroute.models.audit import (
     AuditTarget,
 )
 from voiceroute.models.automod import AutoModConfig
+from voiceroute.models.automod_rule import AutoModRule, AutoModRulePage
 from voiceroute.models.bot import BotIdentity
 from voiceroute.models.community import Category, Channel, Community
 from voiceroute.models.delivery import DeliveryLease, EventSubscription
@@ -101,6 +102,8 @@ __all__ = [
     "AuditPage",
     "AuditTarget",
     "AutoModConfig",
+    "AutoModRule",
+    "AutoModRulePage",
     "Ban",
     "BotAccessCapabilities",
     "BotIdentity",
