@@ -239,6 +239,7 @@ from voiceroute.state_models import (
     CachedResource,
     CachedRole,
 )
+from voiceroute.tasks import BoundLoop, Loop, loop
 from voiceroute.transport import RateLimiter, Transport
 from voiceroute.ui import View
 from voiceroute.voice import (
@@ -282,6 +283,7 @@ __all__ = [
     "BotClosed",
     "BotEvent",
     "BotIdentity",
+    "BoundLoop",
     "BucketType",
     "ButtonStyle",
     "CacheChange",
@@ -385,6 +387,7 @@ __all__ = [
     "LegacyCapabilities",
     "LegacySSETransport",
     "LiveKitMediaTransport",
+    "Loop",
     "MaxConcurrencyReached",
     "Member",
     "MemberPresence",
@@ -494,6 +497,7 @@ __all__ = [
     "has_permissions",
     "is_owner",
     "listener",
+    "loop",
     "max_concurrency",
 ]
 

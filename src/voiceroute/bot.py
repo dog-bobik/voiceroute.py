@@ -357,8 +357,10 @@ class Bot:
 
         commands: list[Command] = []
         listeners: list[tuple[str, AsyncHandler]] = []
+        extension._bind(self)
         await extension.setup(self)
         try:
+            extension.start_tasks()
             for _, member in inspect.getmembers(extension, predicate=callable):
                 bound_handler = cast(AsyncHandler, member)
                 metadata = extension_command(member)
@@ -382,6 +384,7 @@ class Bot:
                 self.command_registry.remove(command)
             for event_name, handler in reversed(listeners):
                 self.remove_listener(handler, event_name)
+            await extension.stop_tasks()
             await extension.teardown(self)
             raise
 
@@ -403,6 +406,7 @@ class Bot:
             self.command_registry.remove(command)
         for event_name, handler in registration.listeners:
             self.remove_listener(handler, event_name)
+        await registration.extension.stop_tasks()
         if registration.module_name is not None:
             self._extension_modules.pop(registration.module_name, None)
         await registration.extension.teardown(self)
